@@ -1,2 +1,0 @@
-# ratios-argy
-prueba
