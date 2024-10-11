@@ -60,6 +60,18 @@ let firstSuggestionConfirmed = false;
 //let cursorPosition = searchInput.value.length;
 
 
+// Carga un archivo CSV desde una ruta
+function loadCSV(filePath) {
+    return fetch(filePath)
+        .then(response => {
+            if (!response.ok) throw new Error('Error al cargar archivo CSV');
+            return response.text();
+        })
+        .then(data => {
+            return parseCSV(data); // Función para procesar y convertir el CSV a un formato útil
+        });
+}
+
 function fetchAndUpdateChartData(symbol, file) {
     const url = `/ratios-argy/${file}`; // Construcción de la URL
     console.log(`Fetching data from: ${url}`); // Para depuración
