@@ -325,6 +325,47 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
         highlightedIndex = -1;
     }
 });
+
+// Funciones auxiliares para modular el código
+function updateSearchInput(selectedText, searchInput, firstSuggestionConfirmed) {
+    if (!firstSuggestionConfirmed) {
+        currentInput = selectedText;
+    } else {
+        const parts = searchInput.value.split('/');
+        currentInput = parts[0] + '/' + selectedText;
+    }
+    searchInput.value = currentInput;
+}
+
+function confirmFirstSuggestion(searchInput) {
+    if (!firstSuggestionConfirmed) {
+        firstSuggestionConfirmed = true;
+        searchInput.setSelectionRange(searchInput.value.length, searchInput.value.length);
+        highlightedIndex = -1; // Reiniciar el índice destacado
+        showSuggestions(''); // Mostrar nuevas sugerencias
+    }
+}
+
+function processSearchInput(searchInput, suggestions) {
+    const input = searchInput.value.trim().toUpperCase();
+    suggestions.innerHTML = ''; // Limpiar sugerencias anteriores
+    suggestions.style.display = 'none';
+
+    if (input.includes('/')) {
+        const [symbol1, symbol2] = input.split('/').map(s => s.trim());
+        if (instruments.includes(symbol1) && instruments.includes(symbol2)) {
+            loadChartData(`${symbol1}/${symbol2}`);
+        } else {
+            console.error('Uno o ambos símbolos no existen en la lista de instrumentos.');
+        }
+    } else if (instruments.includes(input)) {
+        loadChartData(input);
+    } else {
+        console.error('El símbolo no existe en la lista de instrumentos.');
+    }
+
+    highlightedIndex = -1; // Reiniciar el índice destacado
+}
 // Función para formatear el volumen
 function formatVolume(volume) {
     if (volume >= 1e6) {
