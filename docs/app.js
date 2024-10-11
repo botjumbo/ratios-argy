@@ -73,7 +73,7 @@ function loadCSV(filePath) {
 }
 
 function fetchAndUpdateChartData(symbol) {
-    fetch(`/ratios-argy/${symbol}.csv`) // Cambia la URL según la ubicación de tus archivos CSV
+    fetch(`/ratios-argy/${symbol}`) // Cambia la URL según la ubicación de tus archivos CSV
         .then(response => {
             if (!response.ok) {
                 throw new Error(`Error al cargar los datos del símbolo: ${symbol}. Respuesta del servidor: ${response.statusText}`);
