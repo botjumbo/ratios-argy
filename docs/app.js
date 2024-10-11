@@ -345,7 +345,6 @@ function confirmFirstSuggestion(searchInput) {
         showSuggestions(''); // Mostrar nuevas sugerencias
     }
 }
-
 function processSearchInput(searchInput, suggestions) {
     const input = searchInput.value.trim().toUpperCase();
     suggestions.innerHTML = ''; // Limpiar sugerencias anteriores
@@ -353,12 +352,12 @@ function processSearchInput(searchInput, suggestions) {
 
     if (input.includes('/')) {
         const [symbol1, symbol2] = input.split('/').map(s => s.trim());
-        if (instruments.includes(symbol1) && instruments.includes(symbol2)) {
+        if (symbol.includes(symbol1) && symbol.includes(symbol2)) { // Cambio a 'symbol'
             loadChartData(`${symbol1}/${symbol2}`);
         } else {
             console.error('Uno o ambos símbolos no existen en la lista de instrumentos.');
         }
-    } else if (instruments.includes(input)) {
+    } else if (symbol.includes(input)) { // Cambio a 'symbol'
         loadChartData(input);
     } else {
         console.error('El símbolo no existe en la lista de instrumentos.');
@@ -366,6 +365,7 @@ function processSearchInput(searchInput, suggestions) {
 
     highlightedIndex = -1; // Reiniciar el índice destacado
 }
+
 // Función para formatear el volumen
 function formatVolume(volume) {
     if (volume >= 1e6) {
@@ -741,29 +741,15 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
 
         }
 
-
-    } else if (e.key === '/') {
-        // Confirmar la primera sugerencia y agregar "/"
-        searchInput.setSelectionRange(searchInput.value.length, searchInput.value.length);
-
-            if (!firstSuggestionConfirmed) {
-                firstSuggestionConfirmed = true;
-                searchInput.value = currentInput; // Mostrar el valor actualizado en el campo de búsqueda
-                highlightedIndex = -1; // Reiniciar la selección de sugerencias
-                showSuggestions(''); // Actualizar las sugerencias para la segunda parte
-
-            }
-
-
     } else if (e.key === 'Enter') {
         // Prevenir el envío del formulario
         e.preventDefault(); 
         const input = document.getElementById('search-input').value.trim().toUpperCase();
-
+    
         // Limpiar las sugerencias antes de procesar
         suggestions.innerHTML = ''; // Limpia las sugerencias anteriores
         suggestions.style.display = 'none'; // Ocultar las sugerencias
-
+    
         // Verificar si hay sugerencias seleccionadas
         if (highlightedIndex >= 0 && suggestionDivs.length > 0) { // Asegúrate de que haya sugerencias
             selectedInstrument = suggestionDivs[highlightedIndex].textContent.trim(); // Actualiza la variable global
@@ -772,35 +758,35 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
             // Limpiar el campo de entrada si no hay selección
             document.getElementById('search-input').value = ''; 
         }
-
+    
         // Verificar si es un par de símbolos separados por "/"
         if (input.includes('/')) {
             const [symbol1, symbol2] = input.split('/').map(s => s.trim());
-
+    
             // Verificar que ambos símbolos existan en la lista de instrumentos
-            if (instruments.includes(symbol1) && instruments.includes(symbol2)) {
+            if (symbol.includes(symbol1) && symbol.includes(symbol2)) { // Cambio a 'symbol'
                 selectedInstrument = `${symbol1}/${symbol2}`; // Actualiza la variable global
                 loadChartData(selectedInstrument); // Cargar el gráfico del instrumento seleccionado
             } else {
                 console.error('Uno o ambos símbolos no existen en la lista de instrumentos.');
             }
-            
+    
         } else {
             // Si es un solo símbolo, cargar sus datos normalmente
             selectedInstrument = input;
-
+    
             // Verificar si el símbolo existe antes de cargar datos
-            if (instruments.includes(selectedInstrument)) {
+            if (symbol.includes(selectedInstrument)) { // Cambio a 'symbol'
                 loadChartData(selectedInstrument);
             } else {
                 console.error('El símbolo no existe en la lista de instrumentos.');
             }
         }
-
+    
         // Reiniciar el índice destacado tras la selección
         highlightedIndex = -1; 
     
-        
+    
     } else if (e.key === 'Escape') {
         // Cerrar las sugerencias al presionar "Escape"
         suggestions.style.display = 'none';
@@ -808,7 +794,6 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
         suggestions.innerHTML = ''; // Limpiar contenido de sugerencias
         highlightedIndex = -1; // Reiniciar el índice destacado
     }
-    
 });
 
 function filterInstruments() {
