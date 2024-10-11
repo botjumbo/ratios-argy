@@ -772,14 +772,14 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
     
         } else {
             // Si es un solo símbolo, cargar sus datos normalmente
-            selectedInstrument = input;
-    
+            selectedInstrument = input.toUpperCase();
+            console.log({selectedInstrument});
+
             // Verificar si el símbolo existe antes de cargar datos
             if (symbol.includes(selectedInstrument)) { // Cambio a 'symbol'
                 loadChartData(selectedInstrument);
             } else {
                 console.error('El símbolo no existe en la lista de instrumentos.');
-                console.log({selectedInstrument});
             }
         }
     
