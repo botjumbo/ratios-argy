@@ -366,49 +366,25 @@ document.getElementById('search-input').addEventListener('blur', function() {
 
 //Aca gestionar todo lo de la lista de instrumentos
 // Solicitar la lista de instrumentos
-
 fetch('/ratios-argy')
-        .then(response => {
-                if (!response.ok) {
-                    throw new Error('Error en la respuesta del servidor');
-                }
-                return response.json(); // Convertir la respuesta a JSON
-        })
-        .then(data => {
-        instruments = data; // Guarda los instrumentos globalmente
-        const instrumentList = document.getElementById('instrument-list');
-        
-        // Limpiar la lista existente antes de cargar nuevos instrumentos
-        instrumentList.innerHTML = ''; // Limpia los elementos anteriores
-
-        data.forEach(instrument => {
-            const listItem = document.createElement('li');
-            const button = document.createElement('button');
-            button.textContent = instrument;
-            button.onclick = () => {
-                selectedInstrument = instrument; // Almacena el instrumento seleccionado globalmente
-                loadChartData(selectedInstrument); // Carga los datos del gráfico
-                fetchAndUpdateChartData(selectedInstrument); // Actualiza el gráfico inmediatamente
-                
-                document.getElementById('instrument-title').textContent = `Análisis de ${selectedInstrument}`;
-            };
-            listItem.appendChild(button);
-            instrumentList.appendChild(listItem);
-        });
-
-        // Establece el primer instrumento como el seleccionado por defecto, si hay alguno
-        if (instruments.length > 0) {
-            selectedInstrument = instruments[0]; // Asigna el primer instrumento como seleccionado por defecto
-            loadChartData(selectedInstrument); // Cargar datos del gráfico para el primer instrumento
-            fetchAndUpdateChartData(selectedInstrument); // Actualizar el gráfico para el primer instrumento
-            document.getElementById('instrument-title').textContent = `Análisis de ${selectedInstrument}`;
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error en la respuesta del servidor');
         }
-
-        document.getElementById('search-input').value = ''; // Limpiar el campo de búsqueda
-
+        return response.json(); // Convertir la respuesta a JSON
     })
-    .catch(error => console.error('Error al cargar la lista de instrumentos:', error));
-
+    .then(csvFiles => {
+        // Procesar cada archivo CSV que obtuviste
+        const promises = csvFiles.map(file => loadCSV(`docs/${file}`));
+        return Promise.all(promises); // Esperar que todos los CSV sean cargados
+    })
+    .then(instrumentsData => {
+        instruments = instrumentsData.flat(); // Combina todos los resultados en un solo array
+        populateInstrumentList(); // Llama a la función para poblar la lista
+    })
+    .catch(error => {
+        console.error('Error al cargar los instrumentos:', error);
+    });
 function calculateBollingerBands(data, period = 20, multiplier = 2) {
     const bands = [];
     const movingAverage = [];
