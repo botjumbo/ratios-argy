@@ -11,6 +11,29 @@ Promise.all(promises)
         console.error('Error al cargar los instrumentos:', error);
     });
 
+function populateInstrumentList(instruments) {
+    const instrumentList = document.getElementById('instrument-list');
+    
+    // Limpiar la lista existente antes de cargar nuevos instrumentos
+    instrumentList.innerHTML = '';
+
+    // Recorrer los instrumentos y crear un botón para cada uno
+    instruments.forEach(instrument => {
+        const listItem = document.createElement('li');
+        const button = document.createElement('button');
+        button.textContent = instrument;
+        
+        button.onclick = () => {
+            selectedInstrument = instrument; // Actualiza el instrumento seleccionado
+            loadChartData(selectedInstrument); // Carga los datos en el gráfico
+            fetchAndUpdateChartData(selectedInstrument); // Actualiza el gráfico
+            document.getElementById('instrument-title').textContent = `Análisis de ${selectedInstrument}`;
+        };
+
+        listItem.appendChild(button);
+        instrumentList.appendChild(listItem);
+    });
+}
 function loadCSV(file) {
     return fetch(file)
         .then(response => {
