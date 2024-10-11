@@ -415,7 +415,7 @@ document.getElementById('search-input').addEventListener('blur', function() {
 
 });
 
-Promise.all(csvFiles.map(file => fetch(`/path/to/csvs/${file}`) // Reemplaza con la ruta correcta
+Promise.all(csvFiles.map(file => fetch(`/ratios-argy/${file}`) // Reemplaza con la ruta correcta
     .then(response => {
         if (!response.ok) {
             throw new Error('Error al cargar el archivo CSV: ' + response.statusText);
