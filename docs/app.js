@@ -151,7 +151,7 @@ function fetchAndUpdateChartData(symbol) {
 
         // Mostrar u ocultar las bandas de Bollinger según el estado
         updateBollingerBandsVisibility();
-    })
+    }
     .catch(error => console.error(`Error al cargar los datos del símbolo: ${symbol}.`, error));
 
 
