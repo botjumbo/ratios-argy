@@ -345,7 +345,7 @@ function confirmFirstSuggestion(searchInput) {
     }
 }
 function processSearchInput(searchInput, suggestions) {
-    const input = searchInput.value.trim().toUpperCase();
+    const input = searchInput.value.trim();
     suggestions.innerHTML = ''; // Limpiar sugerencias anteriores
     suggestions.style.display = 'none';
 
@@ -638,7 +638,7 @@ function loadChartData(input) {
     // Actualizar el estado del botón de bandas de Bollinger
     document.getElementById('toggle-bands').textContent = bandsVisible ? 'Ocultar Bandas de Bollinger' : 'Mostrar Bandas de Bollinger';
 
-    const inputUpperCase = input.toUpperCase(); // Convertir la entrada a mayúsculas
+    const inputUpperCase = input; //.toUpperCase(); // Convertir la entrada a mayúsculas
 
     // Actualizar el título del gráfico
     document.getElementById('instrument-title').textContent = `Análisis de ${inputUpperCase}`;
@@ -743,7 +743,7 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
     } else if (e.key === 'Enter') {
         // Prevenir el envío del formulario
         e.preventDefault(); 
-        const input = document.getElementById('search-input').value.trim().toUpperCase();
+        const input = document.getElementById('search-input').value.trim(); //.toUpperCase();
     
         // Limpiar las sugerencias antes de procesar
         suggestions.innerHTML = ''; // Limpia las sugerencias anteriores
@@ -796,7 +796,7 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
 });
 
 function filterInstruments() {
-    const input = document.getElementById('search-input').value.toUpperCase();
+    const input = document.getElementById('search-input').value; //.toUpperCase();
     const suggestions = document.getElementById('suggestions');
     suggestions.innerHTML = ''; // Limpiar las sugerencias
     let highlightedIndex = -1; // Reiniciar el índice destacado
