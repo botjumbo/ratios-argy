@@ -687,6 +687,7 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
             }
         } else {
             // Verificar si el símbolo existe antes de cargar los datos
+            selectedInstrument = input.toUpperCase(); // Convertir a mayúsculas
             if (symbol.includes(selectedInstrument)) {
                 loadChartData(selectedInstrument); // Cargar datos del gráfico
             } else {
