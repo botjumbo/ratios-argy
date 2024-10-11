@@ -529,9 +529,8 @@ function calculateRatio(data1, data2) {
 
     return divisionValues;
 }
-
 function loadChartData(input) {
-    // Limpiar datos previos del gráfico
+    // Limpiar los datos previos del gráfico
     lineSeries.setData([]);
     divisionSeries.setData([]);
     volumeSeries.setData([]);
@@ -544,36 +543,41 @@ function loadChartData(input) {
     movingAverageData = [];
     bandsVisible = false;
 
-    // Mantener el estado del botón de bandas de Bollinger
+    // Actualizar el estado del botón de bandas de Bollinger
     document.getElementById('toggle-bands').textContent = bandsVisible ? 'Ocultar Bandas de Bollinger' : 'Mostrar Bandas de Bollinger';
 
-    const inputUpperCase = input; // Convertir la entrada a mayúsculas
+    const inputUpperCase = input.toUpperCase(); // Convertir la entrada a mayúsculas
 
     // Actualizar el título del gráfico
     document.getElementById('instrument-title').textContent = `Análisis de ${inputUpperCase}`;
     console.log(`Instrumento actual: ${inputUpperCase}`); // Verifica el valor
 
-    // Verificar si el input es un ratio
-    if (inputUpperCase && inputUpperCase.includes('/')) {
-        // Si es un ratio, llamar a la función que procesa el ratio
-
+    // Verificar si el input es un ratio (par de símbolos separados por '/')
+    if (inputUpperCase.includes('/')) {
+        // Llamar a la función que procesa ratios
         fetchAndUpdateChartDataRatio(inputUpperCase);
     } else {
-        // Si no es un ratio, cargar los datos del símbolo individual
+        // Cargar datos del símbolo individual
         fetchAndUpdateChartData(inputUpperCase);
     }
 
-    document.getElementById('search-input').value = ''; // Limpiar el campo de entrada
+    // Limpiar el campo de búsqueda
+    document.getElementById('search-input').value = '';
 
-    // Si el usuario ha marcado la opción de "Mostrar bandas de Bollinger", mostramos las bandas automáticamente
+    // Si las bandas de Bollinger están activadas, cargarlas
     if (bandsVisible) {
+        const filteredResults = candleSeries.getData(); // Obtener los datos actuales del gráfico
+
+        // Calcular las bandas de Bollinger y medias móviles
         const { bands, movingAverage } = calculateBollingerBands(filteredResults.map(result => ({
             fecha: result.time,
-            cierre: result.value
+            cierre: result.close
         })));
+
         upperBandData = bands.map(b => ({ time: b.time, value: b.upper }));
         lowerBandData = bands.map(b => ({ time: b.time, value: b.lower }));
         movingAverageData = movingAverage;
+
         upperBandSeries.setData(upperBandData);
         lowerBandSeries.setData(lowerBandData);
         movingAverageSeries.setData(movingAverageData);
