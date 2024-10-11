@@ -85,7 +85,7 @@ function fetchAndUpdateChartData(symbol) {
                 const [especie, fecha, apertura, maximo, minimo, cierre, volumen] = row.split(',');
                 return { 
                     especie, 
-                    fecha: new Date(fecha).getTime(), 
+                    fecha, // Mantiene la fecha en el formato "YYYY-MM-DD"
                     apertura: parseFloat(apertura), 
                     maximo: parseFloat(maximo), 
                     minimo: parseFloat(minimo), 
@@ -94,18 +94,21 @@ function fetchAndUpdateChartData(symbol) {
                 };
             });
             
-             const formattedData = rows.map(item => {
-                const time = formatDate(item.fecha); // Formatea la fecha
-                const open = parseFloat(item.apertura); // Usa 'apertura' en lugar de 'open'
-                const high = parseFloat(item.maximo); // Usa 'maximo' en lugar de 'high'
-                const low = parseFloat(item.minimo); // Usa 'minimo' en lugar de 'low'
-                const close = parseFloat(item.cierre); // Usa 'cierre' en lugar de 'close'
-                const volume = parseFloat(item.volumen); // Asegúrate de que el volumen también esté bien formateado
-            
-                
-            
+            const formattedData = rows.map(item => {
+                const time = formatDate(item.fecha); // Usamos la fecha sin convertir
+                const open = parseFloat(item.apertura);
+                const high = parseFloat(item.maximo);
+                const low = parseFloat(item.minimo);
+                const close = parseFloat(item.cierre);
+                const volume = parseFloat(item.volumen);
+
+                // Verifica si hay datos no válidos
+                if (isNaN(open) || isNaN(high) || isNaN(low) || isNaN(close)) {
+                    console.error("Datos no válidos para:", item);
+                }
+
                 return {
-                    time: time,
+                    time: time, // La fecha en formato "YYYY-MM-DD"
                     open: open,
                     high: high,
                     low: low,
@@ -115,36 +118,42 @@ function fetchAndUpdateChartData(symbol) {
             });
 
             console.log("Datos formateados para candleSeries:", formattedData);
-
             candleSeries.setData(formattedData);
-
-            const volumeData = rows.map(item => ({
-                time: item.fecha,
-                value: item.volumen,
-                color: item.cierre >= item.apertura ? '#4fff00' : '#ff4976',
-            }));
-
-            volumeSeries.setData(volumeData);
-            console.log("Fechas para bandas de Bollinger:", formattedData.map(result => result.fecha));
-
-            // Calcular las bandas de Bollinger y la media móvil
-            const { bands, movingAverage } = calculateBollingerBands(
-                formattedData.map(result => ({
-                    fecha: result.time,
-                    cierre: result.close
-                }))
-            );
-
-            // Actualizar las bandas globalmente
-            upperBandData = bands.map(b => ({ time: b.time, value: b.upper }));
-            lowerBandData = bands.map(b => ({ time: b.time, value: b.lower }));
-            movingAverageData = movingAverage;
-
-            // Mostrar u ocultar las bandas de Bollinger según el estado
-            updateBollingerBandsVisibility();
         })
-        .catch(error => console.error(`Error al cargar los datos del símbolo: ${symbol}.`, error));
-}
+        .catch(error => {
+            console.error(error);
+        });
+
+
+        candleSeries.setData(formattedData);
+
+        const volumeData = rows.map(item => ({
+            time: item.fecha,
+            value: item.volumen,
+            color: item.cierre >= item.apertura ? '#4fff00' : '#ff4976',
+        }));
+
+        volumeSeries.setData(volumeData);
+        console.log("Fechas para bandas de Bollinger:", formattedData.map(result => result.fecha));
+
+        // Calcular las bandas de Bollinger y la media móvil
+        const { bands, movingAverage } = calculateBollingerBands(
+            formattedData.map(result => ({
+                fecha: result.time,
+                cierre: result.close
+            }))
+        );
+
+        // Actualizar las bandas globalmente
+        upperBandData = bands.map(b => ({ time: b.time, value: b.upper }));
+        lowerBandData = bands.map(b => ({ time: b.time, value: b.lower }));
+        movingAverageData = movingAverage;
+
+        // Mostrar u ocultar las bandas de Bollinger según el estado
+        updateBollingerBandsVisibility();
+    })
+    .catch(error => console.error(`Error al cargar los datos del símbolo: ${symbol}.`, error));
+
 
 function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
     const url1 = `/ratios-argy/${symbol1}`;
@@ -270,13 +279,11 @@ function formatVolume(volume) {
 }
 
 
-
 // Función para formatear la fecha
 function formatDate(date) {
-    // Usar solo la fecha en formato "YYYY-MM-DD"
-    return new Date(date).getTime(); // Devuelve el timestamp en milisegundos
+    // Retorna la fecha en formato "YYYY-MM-DD"
+    return date; // Simplemente devuelve la fecha como está
 }
-
 
 // Suscribirse al movimiento del cursor
 chart.subscribeCrosshairMove(function(param) {
