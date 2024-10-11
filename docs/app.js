@@ -93,16 +93,30 @@ function fetchAndUpdateChartData(symbol) {
                     volumen: parseInt(volumen), 
                 };
             });
+            
+             const formattedData = rawData.map(item => {
+                const time = formatDate(item.fecha); // Formatea la fecha
+                const open = parseFloat(item.apertura); // Usa 'apertura' en lugar de 'open'
+                const high = parseFloat(item.maximo); // Usa 'maximo' en lugar de 'high'
+                const low = parseFloat(item.minimo); // Usa 'minimo' en lugar de 'low'
+                const close = parseFloat(item.cierre); // Usa 'cierre' en lugar de 'close'
+                const volume = parseFloat(item.volumen); // Asegúrate de que el volumen también esté bien formateado
+            
+                // Verifica si hay datos no válidos
+                if (isNaN(open) || isNaN(high) || isNaN(low) || isNaN(close) || isNaN(time)) {
+                    console.error("Datos no válidos para:", item);
+                }
+            
+                return {
+                    time: time,
+                    open: open,
+                    high: high,
+                    low: low,
+                    close: close,
+                    volume: volume // Agrega volumen si es necesario
+                };
+            });
 
-            // Actualiza la serie de velas y volumen
-            const formattedData = rows.map(item => ({
-                time: item.fecha,
-                open: item.apertura,
-                high: item.maximo,
-                low: item.minimo,
-                close: item.cierre,
-                volume: item.volumen,
-            }));
             console.log("Datos formateados para candleSeries:", formattedData);
 
             candleSeries.setData(formattedData);
