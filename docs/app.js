@@ -71,7 +71,6 @@ function loadCSV(filePath) {
             return parseCSV(data); // Función para procesar y convertir el CSV a un formato útil
         });
 }
-
 function fetchAndUpdateChartData(symbol) {
     fetch(`/ratios-argy/${symbol}`) // Cambia la URL según la ubicación de tus archivos CSV
         .then(response => {
@@ -82,17 +81,25 @@ function fetchAndUpdateChartData(symbol) {
         })
         .then(data => {
             const rows = data.split('\n').slice(1).map(row => {
-                const [especie, fecha, apertura, maximo, minimo, cierre, volumen] = row.split(',').map(item => item.trim()); // Elimina espacios en blanco
+                const items = row.split(',').map(item => item.trim()); // Elimina espacios en blanco
+                
+                // Verificar que la fila no esté vacía
+                if (items.length < 7 || items.every(item => item === '')) {
+                    console.warn("Fila vacía encontrada:", row);
+                    return null; // Retorna null si la fila es vacía
+                }
 
-                // Verifica si la fecha y especie son válidas y si apertura, maximo, minimo, cierre y volumen son números
-                if (!especie || !fecha || isNaN(apertura) || isNaN(maximo) || isNaN(minimo) || isNaN(cierre) || isNaN(volumen)) {
+                const [especie, fecha, apertura, maximo, minimo, cierre, volumen] = items;
+
+                // Verifica si la especie y la fecha son válidas
+                if (!especie || !fecha || !apertura || !maximo || !minimo || !cierre || !volumen) {
                     console.error("Datos no válidos para:", { especie, fecha, apertura, maximo, minimo, cierre, volumen });
                     return null; // Retorna null si hay datos no válidos
                 }
 
                 return { 
                     especie, 
-                    fecha: fecha.trim(), // Elimina espacios en blanco
+                    fecha, // La fecha ya está limpia de espacios
                     apertura: parseFloat(apertura), 
                     maximo: parseFloat(maximo), 
                     minimo: parseFloat(minimo), 
@@ -119,6 +126,7 @@ function fetchAndUpdateChartData(symbol) {
                 };
             });
 
+            console.log("Datos formateados para candleSeries:", formattedData);
             candleSeries.setData(formattedData);
 
             const volumeData = rows.map(item => ({
@@ -128,6 +136,7 @@ function fetchAndUpdateChartData(symbol) {
             }));
 
             volumeSeries.setData(volumeData);
+            console.log("Fechas para bandas de Bollinger:", formattedData.map(result => result.time));
 
             // Calcular las bandas de Bollinger y la media móvil
             const { bands, movingAverage } = calculateBollingerBands(
