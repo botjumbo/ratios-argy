@@ -71,6 +71,7 @@ function loadCSV(filePath) {
             return parseCSV(data); // Función para procesar y convertir el CSV a un formato útil
         });
 }
+
 function fetchAndUpdateChartData(symbol) {
     fetch(`/ratios-argy/${symbol}`) // Cambia la URL según la ubicación de tus archivos CSV
         .then(response => {
@@ -83,15 +84,14 @@ function fetchAndUpdateChartData(symbol) {
             const rows = data.split('\n').slice(1).map(row => {
                 const items = row.split(',').map(item => item.trim()); // Elimina espacios en blanco
                 
-                // Verificar que la fila no esté vacía
+                // Ignorar filas que no tienen suficientes datos
                 if (items.length < 7 || items.every(item => item === '')) {
-                    console.warn("Fila vacía encontrada:", row);
-                    return null; // Retorna null si la fila es vacía
+                    return null; // Retorna null si la fila es vacía o no tiene suficientes datos
                 }
 
                 const [especie, fecha, apertura, maximo, minimo, cierre, volumen] = items;
 
-                // Verifica si la especie y la fecha son válidas
+                // Verifica si los campos esenciales son válidos
                 if (!especie || !fecha || !apertura || !maximo || !minimo || !cierre || !volumen) {
                     console.error("Datos no válidos para:", { especie, fecha, apertura, maximo, minimo, cierre, volumen });
                     return null; // Retorna null si hay datos no válidos
@@ -107,6 +107,12 @@ function fetchAndUpdateChartData(symbol) {
                     volumen: parseInt(volumen), 
                 };
             }).filter(item => item !== null); // Filtra las filas que son null
+
+            // Continuar con el procesamiento si hay datos válidos
+            if (rows.length === 0) {
+                console.warn("No se encontraron datos válidos.");
+                return; // Salir si no hay datos válidos
+            }
 
             const formattedData = rows.map(item => {
                 const time = formatDate(item.fecha); // Usamos la fecha sin convertir
@@ -126,7 +132,6 @@ function fetchAndUpdateChartData(symbol) {
                 };
             });
 
-            console.log("Datos formateados para candleSeries:", formattedData);
             candleSeries.setData(formattedData);
 
             const volumeData = rows.map(item => ({
@@ -136,7 +141,6 @@ function fetchAndUpdateChartData(symbol) {
             }));
 
             volumeSeries.setData(volumeData);
-            console.log("Fechas para bandas de Bollinger:", formattedData.map(result => result.time));
 
             // Calcular las bandas de Bollinger y la media móvil
             const { bands, movingAverage } = calculateBollingerBands(
@@ -158,8 +162,6 @@ function fetchAndUpdateChartData(symbol) {
             console.error(`Error al cargar los datos del símbolo: ${symbol}.`, error);
         });
 }
-
-
 function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
     const url1 = `/ratios-argy/${symbol1}`;
     const url2 = `/ratios-argy/${symbol2}`;
