@@ -1,5 +1,5 @@
-const symbol = ['AL30.csv', 'AL30D.csv','GD30.csv', 'GD30D.csv','AE38.csv', 'AE38D.csv','AL30C.csv', 'AL35.csv','AL35D.csv', 'GD30C.csv','GD35.csv', 'GD35D.csv','MERVAL.csv', 'TX26.csv','TX28.csv', /* otros archivos */];
-
+const symbols = ['AL30', 'AL30D','GD30', 'GD30D','AE38', 'AE38D','AL30C', 'AL35','AL35D', 'GD30C','GD35', 'GD35D','MERVAL', 'TX26','TX28'];
+const symbol = symbols.map(s => s + '.csv');
 const promises = symbol.map(file => loadCSV(`/ratios-argy/${file}`));
 const legendElement = document.getElementById('legend');
 
@@ -505,7 +505,7 @@ const searchInput = document.getElementById('search-input');
 
 // Selecciona el campo de entrada para actualizar el símbolo actual
 document.getElementById('search-input').addEventListener('blur', function() {
-    const input = event.target.value(); // Usa const o let para variables locales
+    const input = event.target.value; // Usa const o let para variables locales
 
 });
 
