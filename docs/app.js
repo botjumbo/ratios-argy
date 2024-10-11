@@ -119,7 +119,6 @@ function fetchAndUpdateChartData(symbol) {
                 };
             });
 
-            console.log("Datos formateados para candleSeries:", formattedData);
             candleSeries.setData(formattedData);
 
             const volumeData = rows.map(item => ({
@@ -129,7 +128,6 @@ function fetchAndUpdateChartData(symbol) {
             }));
 
             volumeSeries.setData(volumeData);
-            console.log("Fechas para bandas de Bollinger:", formattedData.map(result => result.time));
 
             // Calcular las bandas de Bollinger y la media móvil
             const { bands, movingAverage } = calculateBollingerBands(
