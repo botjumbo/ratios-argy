@@ -85,7 +85,7 @@ function fetchAndUpdateChartData(symbol) {
                 const [especie, fecha, apertura, maximo, minimo, cierre, volumen] = row.split(',');
                 return { 
                     especie, 
-                    fecha: new Date(fecha).getTime() / 1000, // convertir a timestamp
+                    fecha: new Date(fecha).getTime(), 
                     apertura: parseFloat(apertura), 
                     maximo: parseFloat(maximo), 
                     minimo: parseFloat(minimo), 
@@ -134,8 +134,8 @@ function fetchAndUpdateChartData(symbol) {
 }
 
 function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
-    const url1 = `/ratios-argy/${symbol1}.csv`;
-    const url2 = `/ratios-argy/${symbol2}.csv`;
+    const url1 = `/ratios-argy/${symbol1}`;
+    const url2 = `/ratios-argy/${symbol2}`;
 
     Promise.all([
         fetch(url1).then(response => {
