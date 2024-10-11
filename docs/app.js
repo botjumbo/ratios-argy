@@ -906,7 +906,8 @@ document.getElementById('toggle-bands').addEventListener('click', function () {
 
 setInterval(() => {
     
-    const inputUpperCase = selectedInstrument.toUpperCase(); // Convertir la entrada a mayúsculas
+    //const inputUpperCase = selectedInstrument.toUpperCase(); // Convertir la entrada a mayúsculas
+    
 
 
     if (selectedInstrument && !selectedInstrument.includes('/')) { // Comprueba que hay un solo símbolo seleccionado
