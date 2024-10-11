@@ -1,4 +1,14 @@
+const csvFiles = ['AL30.CSV', 'AL30D.CSV', /* otros archivos */];
 
+const promises = csvFiles.map(file => loadCSV(`docs/proyect1/${file}`));
+Promise.all(promises)
+    .then(instrumentsData => {
+        instruments = instrumentsData.flat(); // Combina todos los resultados en un solo array
+        populateInstrumentList(); // Llama a la función para poblar la lista
+    })
+    .catch(error => {
+        console.error('Error al cargar los instrumentos:', error);
+    });
         
 
 //--------------------------------------------------------------------------------------------------------//
