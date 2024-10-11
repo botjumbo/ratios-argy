@@ -665,7 +665,7 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
         // Prevenir el envío del formulario
         e.preventDefault();
 
-        const input = searchInput.value.trim().toUpperCase(); // Convertir a mayúsculas y eliminar espacios
+        const input = searchInput.value.trim(); // Convertir a mayúsculas y eliminar espacios
         suggestions.innerHTML = ''; // Limpiar las sugerencias
         suggestions.style.display = 'none'; // Ocultar las sugerencias
 
