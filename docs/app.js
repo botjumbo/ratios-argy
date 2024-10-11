@@ -675,8 +675,6 @@ function loadChartData(input) {
         movingAverageSeries.setData(movingAverageData);
     }
 }
-
-
 document.getElementById('search-input').addEventListener('keydown', function(e) {
     const suggestions = document.getElementById('suggestions');
     const suggestionDivs = suggestions.querySelectorAll('div');
@@ -684,23 +682,19 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
 
     // Actualizar currentInput en cada tecla para reflejar el texto que el usuario está escribiendo
     if (!firstSuggestionConfirmed) {
-
         currentInput = searchInput.value;
         searchInput.setSelectionRange(searchInput.value.length, searchInput.value.length);
-
     }
 
-
-      // Limpiar el input si el usuario presiona Backspace o Delete
-    if (e.key === 'Backspace' || e.key === 'Delete'|| e.key === 'Enter') {
+    // Limpiar el input si el usuario presiona Backspace o Delete
+    if (e.key === 'Backspace' || e.key === 'Delete') {
         highlightedIndex = -1; // Reiniciar la selección de sugerencias
         firstSuggestionConfirmed = false; // Reiniciar la confirmación de la primera parte
         currentInput = searchInput.value; // Actualizar el currentInput para reflejar lo que queda
     }
 
-
+    // Manejo de las teclas de navegación (ArrowUp, ArrowDown)
     if (e.key === 'ArrowDown') {
-
         // Navegar hacia abajo por las sugerencias
         if (highlightedIndex < suggestionDivs.length - 1) {
             highlightedIndex++;
@@ -708,21 +702,15 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
             const selectedText = suggestionDivs[highlightedIndex].innerText;
 
             if (!firstSuggestionConfirmed) {
-                // Si aún no se ha confirmado la primera sugerencia
                 currentInput = selectedText;
                 searchInput.value = currentInput; // Actualizar el campo con la sugerencia seleccionada
             } else {
-                // Si ya se confirmó la primera sugerencia, modificar la segunda parte después de "/"
                 const parts = searchInput.value.split('/');
-                currentInput = parts[0] + '/' + selectedText; // Actualizar la parte después de "/"
-                searchInput.value = currentInput; // Mostrar el valor actualizado en el campo de búsqueda
+                currentInput = parts[0] + '/' + selectedText;
+                searchInput.value = currentInput;
             }
-
         }
-    
-
     } else if (e.key === 'ArrowUp') {
-
         // Navegar hacia arriba por las sugerencias
         if (highlightedIndex > 0) {
             highlightedIndex--;
@@ -731,68 +719,55 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
 
             if (!firstSuggestionConfirmed) {
                 currentInput = selectedText;
-                searchInput.value = currentInput; // Actualizar el campo con la sugerencia seleccionada
+                searchInput.value = currentInput;
             } else {
                 const parts = searchInput.value.split('/');
-                currentInput = parts[0] + '/' + selectedText; // Actualizar la parte después de "/"
-                searchInput.value = currentInput; // Mostrar el valor actualizado en el campo de búsqueda
+                currentInput = parts[0] + '/' + selectedText;
+                searchInput.value = currentInput;
             }
-
         }
-
     } else if (e.key === 'Enter') {
         // Prevenir el envío del formulario
-        e.preventDefault(); 
-        const input = document.getElementById('search-input').value.trim(); //.toUpperCase();
-    
-        // Limpiar las sugerencias antes de procesar
-        suggestions.innerHTML = ''; // Limpia las sugerencias anteriores
+        e.preventDefault();
+
+        const input = searchInput.value.trim().toUpperCase(); // Convertir a mayúsculas y eliminar espacios
+        suggestions.innerHTML = ''; // Limpiar las sugerencias
         suggestions.style.display = 'none'; // Ocultar las sugerencias
-    
-        // Verificar si hay sugerencias seleccionadas
-        if (highlightedIndex >= 0 && suggestionDivs.length > 0) { // Asegúrate de que haya sugerencias
-            selectedInstrument = suggestionDivs[highlightedIndex].textContent.trim(); // Actualiza la variable global
-            document.getElementById('search-input').value = selectedInstrument; // Establecer el input con la selección
+
+        if (highlightedIndex >= 0 && suggestionDivs.length > 0) {
+            selectedInstrument = suggestionDivs[highlightedIndex].textContent.trim(); // Selección de sugerencia
         } else {
-            // Limpiar el campo de entrada si no hay selección
-            document.getElementById('search-input').value = ''; 
+            selectedInstrument = input; // Usar el input directamente
         }
-    
+
         // Verificar si es un par de símbolos separados por "/"
-        if (input.includes('/')) {
-            const [symbol1, symbol2] = input.split('/').map(s => s.trim());
-    
+        if (selectedInstrument.includes('/')) {
+            const [symbol1, symbol2] = selectedInstrument.split('/').map(s => s.trim());
+
             // Verificar que ambos símbolos existan en la lista de instrumentos
-            if (symbol.includes(symbol1) && symbol.includes(symbol2)) { // Cambio a 'symbol'
-                selectedInstrument = `${symbol1}/${symbol2}`; // Actualiza la variable global
-                loadChartData(selectedInstrument); // Cargar el gráfico del instrumento seleccionado
+            if (symbol.includes(symbol1) && symbol.includes(symbol2)) {
+                selectedInstrument = `${symbol1}/${symbol2}`;
+                loadChartData(selectedInstrument); // Cargar el gráfico del instrumento
             } else {
                 console.error('Uno o ambos símbolos no existen en la lista de instrumentos.');
             }
-    
         } else {
-            // Si es un solo símbolo, cargar sus datos normalmente
-            selectedInstrument = input.toUpperCase();
-            console.log({selectedInstrument});
-
-            // Verificar si el símbolo existe antes de cargar datos
-            if (symbol.includes(selectedInstrument)) { // Cambio a 'symbol'
-                loadChartData(selectedInstrument);
+            // Verificar si el símbolo existe antes de cargar los datos
+            if (symbol.includes(selectedInstrument)) {
+                loadChartData(selectedInstrument); // Cargar datos del gráfico
             } else {
                 console.error('El símbolo no existe en la lista de instrumentos.');
             }
         }
-    
-        // Reiniciar el índice destacado tras la selección
-        highlightedIndex = -1; 
-    
-    
+
+        // Reiniciar el índice destacado
+        highlightedIndex = -1;
     } else if (e.key === 'Escape') {
         // Cerrar las sugerencias al presionar "Escape"
         suggestions.style.display = 'none';
         tooltip.style.display = 'none';
         suggestions.innerHTML = ''; // Limpiar contenido de sugerencias
-        highlightedIndex = -1; // Reiniciar el índice destacado
+        highlightedIndex = -1;
     }
 });
 
