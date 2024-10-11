@@ -56,7 +56,7 @@ let isShiftPressed = false;
 let highlightedIndex = -1; // Índice de la sugerencia resaltada
 let currentInput = ''; // Variable para guardar el valor actual
 let firstSuggestionConfirmed = false;
-//let cursorPosition = searchInput.value.length;
+
 
 
 // Carga un archivo CSV desde una ruta
