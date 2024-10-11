@@ -275,55 +275,6 @@ function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
 }
 
 
-// Evento de entrada en el campo de búsqueda
-document.getElementById('search-input').addEventListener('keydown', function(e) {
-    const suggestions = document.getElementById('suggestions');
-    const suggestionDivs = suggestions.querySelectorAll('div');
-    const searchInput = document.getElementById('search-input');
-
-    // Actualizar el valor actual en cada pulsación de tecla
-    if (!firstSuggestionConfirmed) {
-        currentInput = searchInput.value;
-        searchInput.setSelectionRange(searchInput.value.length, searchInput.value.length);
-    }
-
-    // Limpiar el input en caso de retroceso o borrado
-    if (['Backspace', 'Delete', 'Enter'].includes(e.key)) {
-        highlightedIndex = -1; // Reiniciar la selección de sugerencias
-        firstSuggestionConfirmed = false; // Reiniciar la confirmación
-        currentInput = searchInput.value;
-    }
-
-    // Navegar hacia abajo en las sugerencias
-    if (e.key === 'ArrowDown' && highlightedIndex < suggestionDivs.length - 1) {
-        highlightedIndex++;
-        highlightSuggestion(suggestions, highlightedIndex);
-        const selectedText = suggestionDivs[highlightedIndex].innerText;
-        updateSearchInput(selectedText, searchInput, firstSuggestionConfirmed);
-
-    } else if (e.key === 'ArrowUp' && highlightedIndex > 0) {
-        // Navegar hacia arriba en las sugerencias
-        highlightedIndex--;
-        highlightSuggestion(suggestions, highlightedIndex);
-        const selectedText = suggestionDivs[highlightedIndex].innerText;
-        updateSearchInput(selectedText, searchInput, firstSuggestionConfirmed);
-
-    } else if (e.key === '/') {
-        // Confirmar la primera parte de la sugerencia
-        confirmFirstSuggestion(searchInput);
-
-    } else if (e.key === 'Enter') {
-        // Procesar el input y cargar datos
-        e.preventDefault(); // Evitar el envío del formulario
-        processSearchInput(searchInput, suggestions);
-        
-    } else if (e.key === 'Escape') {
-        // Cerrar las sugerencias
-        suggestions.style.display = 'none';
-        suggestions.innerHTML = '';
-        highlightedIndex = -1;
-    }
-});
 
 // Funciones auxiliares para modular el código
 function updateSearchInput(selectedText, searchInput, firstSuggestionConfirmed) {
@@ -681,51 +632,33 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
     const suggestionDivs = suggestions.querySelectorAll('div');
     const searchInput = document.getElementById('search-input');
 
-    // Actualizar currentInput en cada tecla para reflejar el texto que el usuario está escribiendo
+    // Actualizar el valor actual en cada pulsación de tecla
     if (!firstSuggestionConfirmed) {
         currentInput = searchInput.value;
         searchInput.setSelectionRange(searchInput.value.length, searchInput.value.length);
     }
 
-    // Limpiar el input si el usuario presiona Backspace o Delete
-    if (e.key === 'Backspace' || e.key === 'Delete') {
+    // Limpiar el input en caso de retroceso o borrado
+    if (['Backspace', 'Delete'].includes(e.key)) {
         highlightedIndex = -1; // Reiniciar la selección de sugerencias
-        firstSuggestionConfirmed = false; // Reiniciar la confirmación de la primera parte
-        currentInput = searchInput.value; // Actualizar el currentInput para reflejar lo que queda
+        firstSuggestionConfirmed = false; // Reiniciar la confirmación
+        currentInput = searchInput.value;
     }
 
-    // Manejo de las teclas de navegación (ArrowUp, ArrowDown)
+    // Navegar hacia abajo o hacia arriba en las sugerencias
     if (e.key === 'ArrowDown') {
-        // Navegar hacia abajo por las sugerencias
         if (highlightedIndex < suggestionDivs.length - 1) {
             highlightedIndex++;
             highlightSuggestion(suggestions, highlightedIndex);
             const selectedText = suggestionDivs[highlightedIndex].innerText;
-
-            if (!firstSuggestionConfirmed) {
-                currentInput = selectedText;
-                searchInput.value = currentInput; // Actualizar el campo con la sugerencia seleccionada
-            } else {
-                const parts = searchInput.value.split('/');
-                currentInput = parts[0] + '/' + selectedText;
-                searchInput.value = currentInput;
-            }
+            updateSearchInput(selectedText, searchInput);
         }
     } else if (e.key === 'ArrowUp') {
-        // Navegar hacia arriba por las sugerencias
         if (highlightedIndex > 0) {
             highlightedIndex--;
             highlightSuggestion(suggestions, highlightedIndex);
             const selectedText = suggestionDivs[highlightedIndex].innerText;
-
-            if (!firstSuggestionConfirmed) {
-                currentInput = selectedText;
-                searchInput.value = currentInput;
-            } else {
-                const parts = searchInput.value.split('/');
-                currentInput = parts[0] + '/' + selectedText;
-                searchInput.value = currentInput;
-            }
+            updateSearchInput(selectedText, searchInput);
         }
     } else if (e.key === 'Enter') {
         // Prevenir el envío del formulario
@@ -754,7 +687,7 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
             }
         } else {
             // Verificar si el símbolo existe antes de cargar los datos
-            if (input.includes(selectedInstrument)) {
+            if (symbol.includes(selectedInstrument)) {
                 loadChartData(selectedInstrument); // Cargar datos del gráfico
             } else {
                 console.error('El símbolo no existe en la lista de instrumentos.');
@@ -764,9 +697,8 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
         // Reiniciar el índice destacado
         highlightedIndex = -1;
     } else if (e.key === 'Escape') {
-        // Cerrar las sugerencias al presionar "Escape"
+        // Cerrar las sugerencias
         suggestions.style.display = 'none';
-        tooltip.style.display = 'none';
         suggestions.innerHTML = ''; // Limpiar contenido de sugerencias
         highlightedIndex = -1;
     }
