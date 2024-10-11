@@ -1,6 +1,6 @@
-const csvFiles = ['AL30.csv', 'AL30D.csv','GD30.csv', 'GD30D.csv','AE38.csv', 'AE38D.csv','AL30C.csv', 'AL35.csv','AL35D.csv', 'GD30C.csv','GD35.csv', 'GD35D.csv','MERVAL.csv', 'TX26.csv','TX28.csv', /* otros archivos */];
+const symbol = ['AL30.csv', 'AL30D.csv','GD30.csv', 'GD30D.csv','AE38.csv', 'AE38D.csv','AL30C.csv', 'AL35.csv','AL35D.csv', 'GD30C.csv','GD35.csv', 'GD35D.csv','MERVAL.csv', 'TX26.csv','TX28.csv', /* otros archivos */];
 
-const promises = csvFiles.map(file => loadCSV(`/ratios-argy/${file}`));
+const promises = symbol.map(file => loadCSV(`/ratios-argy/${file}`));
 const legendElement = document.getElementById('legend');
 
 // Inicialización del gráfico y series
@@ -72,41 +72,47 @@ function loadCSV(filePath) {
         });
 }
 
-function fetchAndUpdateChartData(symbol, file) {
-    const url = `https://botjumbo.github.io/ratios-argy/${file}`; // Construcción de la URL
-    console.log(`Fetching data from: ${url}`); // Para depuración
-
-    fetch(url)
+function fetchAndUpdateChartData(symbol) {
+    fetch(`/ratios-argy/${symbol}.csv`) // Cambia la URL según la ubicación de tus archivos CSV
         .then(response => {
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                throw new Error(`Error al cargar los datos del símbolo: ${symbol}. Respuesta del servidor: ${response.statusText}`);
             }
-            return response.text(); // Obtener el contenido como texto
+            return response.text(); // Cambia a text() ya que vamos a leer un CSV
         })
-        .then(csvText => {
-            // Usar PapaParse para convertir el CSV a un objeto JavaScript
-            const data = Papa.parse(csvText, {
-                header: true, // Usa la primera fila como encabezados
-                skipEmptyLines: true // Ignora líneas vacías
-            }).data;
+        .then(data => {
+            const rows = data.split('\n').slice(1).map(row => {
+                const [especie, fecha, apertura, maximo, minimo, cierre, volumen] = row.split(',');
+                return { 
+                    especie, 
+                    fecha: new Date(fecha).getTime() / 1000, // convertir a timestamp
+                    apertura: parseFloat(apertura), 
+                    maximo: parseFloat(maximo), 
+                    minimo: parseFloat(minimo), 
+                    cierre: parseFloat(cierre), 
+                    volumen: parseInt(volumen), 
+                };
+            });
 
-            // Actualizar la serie de velas
-            const formattedData = data.map(item => ({
+            // Actualiza la serie de velas y volumen
+            const formattedData = rows.map(item => ({
                 time: item.fecha,
-                open: parseFloat(item.apertura),
-                high: parseFloat(item.maximo),
-                low: parseFloat(item.minimo),
-                close: parseFloat(item.cierre),
-                volume: parseFloat(item.volumen),
+                open: item.apertura,
+                high: item.maximo,
+                low: item.minimo,
+                close: item.cierre,
+                volume: item.volumen,
             }));
 
             candleSeries.setData(formattedData);
 
-            volumeSeries.setData(data.map(item => ({
+            const volumeData = rows.map(item => ({
                 time: item.fecha,
-                value: parseFloat(item.volumen),
-                color: parseFloat(item.cierre) >= parseFloat(item.apertura) ? '#4fff00' : '#ff4976',
-            })));
+                value: item.volumen,
+                color: item.cierre >= item.apertura ? '#4fff00' : '#ff4976',
+            }));
+
+            volumeSeries.setData(volumeData);
 
             // Calcular las bandas de Bollinger y la media móvil
             const { bands, movingAverage } = calculateBollingerBands(
@@ -124,7 +130,7 @@ function fetchAndUpdateChartData(symbol, file) {
             // Mostrar u ocultar las bandas de Bollinger según el estado
             updateBollingerBandsVisibility();
         })
-        .catch(error => console.error('Error al cargar los datos del símbolo:', error, `Ruta: ${url}`));
+        .catch(error => console.error(`Error al cargar los datos del símbolo: ${symbol}.`, error));
 }
 
 function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
@@ -390,7 +396,7 @@ document.getElementById('search-input').addEventListener('blur', function() {
 
 });
 
-
+//esto es para ver la lista de instrumentos 
 Promise.all(csvFiles.map(file => fetch(`/ratios-argy/${file}`) // Reemplaza con la ruta correcta
     .then(response => {
         if (!response.ok) {
