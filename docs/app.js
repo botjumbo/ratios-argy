@@ -1,56 +1,6 @@
 const csvFiles = ['AL30.csv', 'AL30D.csv','GD30.csv', 'GD30D.csv','AE38.csv', 'AE38D.csv','AL30C.csv', 'AL35.csv','AL35D.csv', 'GD30C.csv','GD35.csv', 'GD35D.csv','MERVAL.csv', 'TX26.csv','TX28.csv', /* otros archivos */];
 
 const promises = csvFiles.map(file => loadCSV(`/ratios-argy/${file}`));
-
-Promise.all(promises)
-    .then(instrumentsData => {
-        const instruments = instrumentsData.flat(); // Combina todos los resultados en un solo array
-        populateInstrumentList(instruments); // Pasa los instrumentos a la función
-    })
-    .catch(error => {
-        console.error('Error al cargar los instrumentos:', error);
-    });
-
-function populateInstrumentList(instruments) {
-    const instrumentList = document.getElementById('instrument-list');
-    
-    // Limpiar la lista existente antes de cargar nuevos instrumentos
-    instrumentList.innerHTML = '';
-
-    // Recorrer los instrumentos y crear un botón para cada uno
-    instruments.forEach(instrument => {
-        const listItem = document.createElement('li');
-        const button = document.createElement('button');
-        button.textContent = instrument;
-        
-        button.onclick = () => {
-            selectedInstrument = instrument; // Actualiza el instrumento seleccionado
-            loadChartData(selectedInstrument); // Carga los datos en el gráfico
-            fetchAndUpdateChartData(selectedInstrument); // Actualiza el gráfico
-            document.getElementById('instrument-title').textContent = `Análisis de ${selectedInstrument}`;
-        };
-
-        listItem.appendChild(button);
-        instrumentList.appendChild(listItem);
-    });
-}
-function loadCSV(file) {
-    return fetch(file)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`Error al cargar ${file}`);
-            }
-            return response.text(); // O utiliza .json() si el contenido está en formato JSON
-        })
-        .then(csvText => {
-            // Procesa el texto CSV aquí y conviértelo a un formato usable
-            return Papa.parse(csvText, { header: true }).data; // Asumiendo que deseas convertirlo a un objeto
-        });
-}
-
-
-
-//--------------------------------------------------------------------------------------------------------//
 const legendElement = document.getElementById('legend');
 
 // Inicialización del gráfico y series
@@ -876,5 +826,5 @@ setInterval(() => {
 
 
     }
-}, 1000);
+}, 10000);
 
