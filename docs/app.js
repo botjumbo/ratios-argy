@@ -389,7 +389,7 @@ const searchInput = document.getElementById('search-input');
 
 // Selecciona el campo de entrada para actualizar el símbolo actual
 document.getElementById('search-input').addEventListener('blur', function() {
-    const input = event.target.value.toUpperCase(); // Usa const o let para variables locales
+    const input = event.target.value(); // Usa const o let para variables locales
 
 });
 
