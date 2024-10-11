@@ -256,11 +256,6 @@ function formatVolume(volume) {
     }
 }
 
-// Función para formatear la fecha
-function formatDate(date) {
-    // Usar solo la fecha en formato "YYYY-MM-DD"
-    return new Date(date).toISOString().split('T')[0];
-}
 
 
 // Función para formatear la fecha
