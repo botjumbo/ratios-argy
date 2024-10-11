@@ -675,6 +675,7 @@ function loadChartData(input) {
         movingAverageSeries.setData(movingAverageData);
     }
 }
+
 document.getElementById('search-input').addEventListener('keydown', function(e) {
     const suggestions = document.getElementById('suggestions');
     const suggestionDivs = suggestions.querySelectorAll('div');
@@ -753,7 +754,7 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
             }
         } else {
             // Verificar si el símbolo existe antes de cargar los datos
-            if (symbol.includes(selectedInstrument)) {
+            if (input.includes(selectedInstrument)) {
                 loadChartData(selectedInstrument); // Cargar datos del gráfico
             } else {
                 console.error('El símbolo no existe en la lista de instrumentos.');
