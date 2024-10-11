@@ -639,7 +639,7 @@ function loadChartData(input) {
     // Actualizar el estado del botón de bandas de Bollinger
     document.getElementById('toggle-bands').textContent = bandsVisible ? 'Ocultar Bandas de Bollinger' : 'Mostrar Bandas de Bollinger';
 
-    const inputUpperCase = input //.toUpperCase(); // Convertir la entrada a mayúsculas
+    const inputUpperCase = input.toUpperCase(); // Convertir la entrada a mayúsculas
 
     // Actualizar el título del gráfico
     document.getElementById('instrument-title').textContent = `Análisis de ${inputUpperCase}`;
@@ -812,38 +812,37 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
 });
 
 function filterInstruments() {
-    const input = document.getElementById('search-input').value;
+    const input = document.getElementById('search-input').value.toUpperCase();
     const suggestions = document.getElementById('suggestions');
     suggestions.innerHTML = ''; // Limpiar las sugerencias
-    highlightedIndex = -1; // Reiniciar el índice destacado
+    let highlightedIndex = -1; // Reiniciar el índice destacado
 
     // Dividir el input si contiene un "/"
     const inputs = input.includes('/') ? input.split('/').map(s => s.trim()) : [input];
 
     // Si hay una barra '/', filtra el primer símbolo y muestra todos los demás
     if (inputs.length > 1) {
-        const firstSymbol = inputs[0]; // Símbolo antes de "/"
-        const secondSymbol = inputs[1]; // Símbolo después de "/"
-        
-        // Filtrar todos los instrumentos que contienen el primer símbolo
-        const filteredInstruments = instruments.filter(instrument => 
+        const firstSymbol = inputs[0];
+        const secondSymbol = inputs[1];
+
+        const filteredSymbols = symbol.filter(instrument =>
             instrument.toUpperCase().includes(firstSymbol) || 
             instrument.toUpperCase().includes(secondSymbol)
         );
 
-        if (filteredInstruments.length > 0) {
+        if (filteredSymbols.length > 0) {
             suggestions.style.display = 'block';
-            filteredInstruments.forEach((instrument, index) => {
+            filteredSymbols.forEach((instrument, index) => {
                 const suggestionDiv = document.createElement('div');
                 suggestionDiv.textContent = instrument;
-                suggestionDiv.tabIndex = 0; // Hacer que la sugerencia sea enfocada
+                suggestionDiv.tabIndex = 0;
                 suggestionDiv.onclick = () => {
                     document.getElementById('search-input').value = instrument;
-                    loadChartData(instrument);
-                    suggestions.style.display = 'none'; // Ocultar las sugerencias
+                    // Aquí llamas a tu función para cargar los datos del instrumento
+                    suggestions.style.display = 'none';
                 };
                 suggestionDiv.onmouseover = () => {
-                    highlightedIndex = index; // Resaltar el índice al pasar el mouse
+                    highlightedIndex = index;
                     highlightSuggestion(suggestions, highlightedIndex);
                 };
                 suggestions.appendChild(suggestionDiv);
@@ -855,24 +854,23 @@ function filterInstruments() {
             suggestions.appendChild(noSuggestionsDiv);
         }
     } else {
-        // Filtrar normalmente si no hay "/"
-        const filteredInstruments = instruments.filter(instrument => 
+        const filteredSymbols = symbol.filter(instrument => 
             instrument.toUpperCase().includes(input)
         );
 
-        if (filteredInstruments.length > 0) {
+        if (filteredSymbols.length > 0) {
             suggestions.style.display = 'block';
-            filteredInstruments.forEach((instrument, index) => {
+            filteredSymbols.forEach((instrument, index) => {
                 const suggestionDiv = document.createElement('div');
                 suggestionDiv.textContent = instrument;
-                suggestionDiv.tabIndex = 0; // Hacer que la sugerencia sea enfocada
+                suggestionDiv.tabIndex = 0;
                 suggestionDiv.onclick = () => {
                     document.getElementById('search-input').value = instrument;
-                    loadChartData(instrument);
-                    suggestions.style.display = 'none'; // Ocultar las sugerencias
+                    // Aquí llamas a tu función para cargar los datos del instrumento
+                    suggestions.style.display = 'none';
                 };
                 suggestionDiv.onmouseover = () => {
-                    highlightedIndex = index; // Resaltar el índice al pasar el mouse
+                    highlightedIndex = index;
                     highlightSuggestion(suggestions, highlightedIndex);
                 };
                 suggestions.appendChild(suggestionDiv);
