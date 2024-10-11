@@ -1,6 +1,6 @@
 const csvFiles = ['AL30.CSV', 'AL30D.CSV', /* otros archivos */];
 
-const promises = csvFiles.map(file => loadCSV(`/${file}`));
+const promises = csvFiles.map(file => loadCSV(`/ratios-argy/${file}`)); //https://botjumbo.github.io/ratios-argy/AL30D.csv
 Promise.all(promises)
     .then(instrumentsData => {
         instruments = instrumentsData.flat(); // Combina todos los resultados en un solo array
