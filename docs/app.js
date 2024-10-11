@@ -163,26 +163,30 @@ function fetchAndUpdateChartData(symbol) {
 }
 
 async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
-    
     const url1 = `/ratios-argy/${symbol1}`;
     const url2 = `/ratios-argy/${symbol2}`;
 
-    
-    Promise.all([
-        fetch(url1).then(response => {
-            if (!response.ok) {
-                throw new Error(`Error al cargar ${url1}`);
-            }
-            return response.text(); // Obtener el contenido como texto
-        }).then(csvText => Papa.parse(csvText, { header: true, skipEmptyLines: true }).data),
-        
-        fetch(url2).then(response => {
-            if (!response.ok) {
-                throw new Error(`Error al cargar ${url2}`);
-            }
-            return response.text(); // Obtener el contenido como texto
-        }).then(csvText => Papa.parse(csvText, { header: true, skipEmptyLines: true }).data)
-    ]).then(([data1, data2]) => {
+    try {
+        // Cargar ambos archivos CSV de manera asíncrona
+        const [csvText1, csvText2] = await Promise.all([
+            fetch(url1).then(response => {
+                if (!response.ok) {
+                    throw new Error(`Error al cargar ${url1}`);
+                }
+                return response.text(); // Obtener el contenido como texto
+            }),
+            fetch(url2).then(response => {
+                if (!response.ok) {
+                    throw new Error(`Error al cargar ${url2}`);
+                }
+                return response.text(); // Obtener el contenido como texto
+            })
+        ]);
+
+        // Procesar los CSV usando PapaParse
+        const data1 = Papa.parse(csvText1, { header: true, skipEmptyLines: true }).data;
+        const data2 = Papa.parse(csvText2, { header: true, skipEmptyLines: true }).data;
+
         if (Array.isArray(data1) && Array.isArray(data2)) {
             // Filtrar y formatear los datos de data1 (ej. AL30)
             const formattedData1 = data1.filter(item => item.fecha && item.apertura && item.maximo && item.minimo && item.cierre && item.volumen)
@@ -271,8 +275,9 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
         } else {
             console.error('data1 o data2 no son arreglos', { data1, data2 });
         }
-    })
-    .catch(error => console.error('Error al cargar los datos del símbolo:', error));
+    } catch (error) {
+        console.error('Error al cargar los datos del símbolo:', error);
+    }
 }
 
 
@@ -600,7 +605,7 @@ function loadChartData(input) {
     // Verificar si el input es un ratio (par de símbolos separados por '/')
     if (inputUpperCase.includes('/')) {
         // Llamar a la función que procesa ratios
-        fetchAndUpdateChartDataRatio(inputUpperCase);
+        fetchAndUpdateChartDataRatio(symbol1 + '.csv', symbol2 + '.csv'); // Asegúrate de añadir la extensión .csv
     } else {
         // Cargar datos del símbolo individual
         fetchAndUpdateChartData(inputUpperCase);
@@ -685,7 +690,7 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
             // Verificar que ambos símbolos existan en la lista de instrumentos
             if (symbol.includes(symbol1) && symbol.includes(symbol2)) {
                 selectedInstrument = `${symbol1}/${symbol2}`;
-                loadChartData(selectedInstrument); // Cargar el gráfico del instrumento
+                fetchAndUpdateChartDataRatio(symbol1 + '.csv', symbol2 + '.csv'); // Cargar el gráfico de la relación
             } else {
                 console.error('Uno o ambos símbolos no existen en la lista de instrumentos.');
             }
