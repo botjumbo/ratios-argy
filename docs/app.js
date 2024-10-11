@@ -809,19 +809,20 @@ function filterInstruments() {
         const firstSymbol = inputs[0];
         const secondSymbol = inputs[1];
 
-        const filteredSymbols = symbol.filter(instrument =>
-            instrument.toUpperCase().includes(firstSymbol) || 
-            instrument.toUpperCase().includes(secondSymbol)
+        // Filtrar los símbolos que coincidan con cualquiera de los dos
+        const filteredSymbols = symbol.filter(symb =>
+            symb.toUpperCase().includes(firstSymbol) || 
+            symb.toUpperCase().includes(secondSymbol)
         );
 
         if (filteredSymbols.length > 0) {
             suggestions.style.display = 'block';
-            filteredSymbols.forEach((instrument, index) => {
+            filteredSymbols.forEach((symb, index) => {
                 const suggestionDiv = document.createElement('div');
-                suggestionDiv.textContent = instrument;
+                suggestionDiv.textContent = symb;
                 suggestionDiv.tabIndex = 0;
                 suggestionDiv.onclick = () => {
-                    document.getElementById('search-input').value = instrument;
+                    document.getElementById('search-input').value = symb;
                     // Aquí llamas a tu función para cargar los datos del instrumento
                     suggestions.style.display = 'none';
                 };
@@ -838,18 +839,19 @@ function filterInstruments() {
             suggestions.appendChild(noSuggestionsDiv);
         }
     } else {
-        const filteredSymbols = symbol.filter(instrument => 
-            instrument.toUpperCase().includes(input)
+        // Filtrar los símbolos que coincidan con el input
+        const filteredSymbols = symbol.filter(symb => 
+            symb.toUpperCase().includes(input)
         );
 
         if (filteredSymbols.length > 0) {
             suggestions.style.display = 'block';
-            filteredSymbols.forEach((instrument, index) => {
+            filteredSymbols.forEach((symb, index) => {
                 const suggestionDiv = document.createElement('div');
-                suggestionDiv.textContent = instrument;
+                suggestionDiv.textContent = symb;
                 suggestionDiv.tabIndex = 0;
                 suggestionDiv.onclick = () => {
-                    document.getElementById('search-input').value = instrument;
+                    document.getElementById('search-input').value = symb;
                     // Aquí llamas a tu función para cargar los datos del instrumento
                     suggestions.style.display = 'none';
                 };
@@ -867,6 +869,7 @@ function filterInstruments() {
         }
     }
 }
+
 
 function highlightSuggestion(suggestions, index) {
     const suggestionDivs = suggestions.querySelectorAll('div');
