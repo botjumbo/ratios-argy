@@ -94,7 +94,7 @@ function fetchAndUpdateChartData(symbol) {
                 };
             });
             
-             const formattedData = rawData.map(item => {
+             const formattedData = data.map(item => {
                 const time = formatDate(item.fecha); // Formatea la fecha
                 const open = parseFloat(item.apertura); // Usa 'apertura' en lugar de 'open'
                 const high = parseFloat(item.maximo); // Usa 'maximo' en lugar de 'high'
