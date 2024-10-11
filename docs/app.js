@@ -9,7 +9,21 @@ Promise.all(promises)
     .catch(error => {
         console.error('Error al cargar los instrumentos:', error);
     });
-        
+
+function loadCSV(file) {
+    return fetch(file)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Error al cargar ${file}`);
+            }
+            return response.text(); // O utiliza .json() si el contenido está en formato JSON
+        })
+        .then(csvText => {
+            // Procesa el texto CSV aquí y conviértelo a un formato usable
+            return Papa.parse(csvText, { header: true }).data; // Asumiendo que deseas convertirlo a un objeto
+        });
+}
+
 
 //--------------------------------------------------------------------------------------------------------//
 const legendElement = document.getElementById('legend');
