@@ -102,10 +102,7 @@ function fetchAndUpdateChartData(symbol) {
                 const close = parseFloat(item.cierre); // Usa 'cierre' en lugar de 'close'
                 const volume = parseFloat(item.volumen); // Asegúrate de que el volumen también esté bien formateado
             
-                // Verifica si hay datos no válidos
-                if (isNaN(open) || isNaN(high) || isNaN(low) || isNaN(close) || isNaN(time)) {
-                    console.error("Datos no válidos para:", item);
-                }
+                
             
                 return {
                     time: time,
