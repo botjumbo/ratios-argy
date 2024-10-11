@@ -45,7 +45,6 @@ const tooltip = document.getElementById('tooltip');
 
 
 
-let instruments = [];
 let bandsVisible = false;
 let upperBandData = [];
 let lowerBandData = [];
@@ -907,7 +906,7 @@ document.getElementById('toggle-bands').addEventListener('click', function () {
 
 setInterval(() => {
     
-    //const inputUpperCase = selectedInstrument.toUpperCase(); // Convertir la entrada a mayúsculas
+    const inputUpperCase = selectedInstrument.toUpperCase(); // Convertir la entrada a mayúsculas
 
 
     if (selectedInstrument && !selectedInstrument.includes('/')) { // Comprueba que hay un solo símbolo seleccionado
