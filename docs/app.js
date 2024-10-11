@@ -73,7 +73,7 @@ function loadCSV(filePath) {
 }
 
 function fetchAndUpdateChartData(symbol, file) {
-    const url = `/ratios-argy/${file}`; // Construcción de la URL
+    const url = `https://botjumbo.github.io/ratios-argy/${file}`; // Construcción de la URL
     console.log(`Fetching data from: ${url}`); // Para depuración
 
     fetch(url)
