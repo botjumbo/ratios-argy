@@ -368,8 +368,13 @@ document.getElementById('search-input').addEventListener('blur', function() {
 // Solicitar la lista de instrumentos
 
 fetch('/ratios-argy')
-    .then(response => response.json())
-    .then(data => {
+        .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta del servidor');
+                }
+                return response.json(); // Convertir la respuesta a JSON
+        })
+        .then(data => {
         instruments = data; // Guarda los instrumentos globalmente
         const instrumentList = document.getElementById('instrument-list');
         
