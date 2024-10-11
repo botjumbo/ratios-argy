@@ -162,10 +162,12 @@ function fetchAndUpdateChartData(symbol) {
             console.error(`Error al cargar los datos del símbolo: ${symbol}.`, error);
         });
 }
+
 function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
     const url1 = `/ratios-argy/${symbol1}`;
     const url2 = `/ratios-argy/${symbol2}`;
 
+    
     Promise.all([
         fetch(url1).then(response => {
             if (!response.ok) {
@@ -274,6 +276,55 @@ function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
 }
 
 
+// Evento de entrada en el campo de búsqueda
+document.getElementById('search-input').addEventListener('keydown', function(e) {
+    const suggestions = document.getElementById('suggestions');
+    const suggestionDivs = suggestions.querySelectorAll('div');
+    const searchInput = document.getElementById('search-input');
+
+    // Actualizar el valor actual en cada pulsación de tecla
+    if (!firstSuggestionConfirmed) {
+        currentInput = searchInput.value;
+        searchInput.setSelectionRange(searchInput.value.length, searchInput.value.length);
+    }
+
+    // Limpiar el input en caso de retroceso o borrado
+    if (['Backspace', 'Delete', 'Enter'].includes(e.key)) {
+        highlightedIndex = -1; // Reiniciar la selección de sugerencias
+        firstSuggestionConfirmed = false; // Reiniciar la confirmación
+        currentInput = searchInput.value;
+    }
+
+    // Navegar hacia abajo en las sugerencias
+    if (e.key === 'ArrowDown' && highlightedIndex < suggestionDivs.length - 1) {
+        highlightedIndex++;
+        highlightSuggestion(suggestions, highlightedIndex);
+        const selectedText = suggestionDivs[highlightedIndex].innerText;
+        updateSearchInput(selectedText, searchInput, firstSuggestionConfirmed);
+
+    } else if (e.key === 'ArrowUp' && highlightedIndex > 0) {
+        // Navegar hacia arriba en las sugerencias
+        highlightedIndex--;
+        highlightSuggestion(suggestions, highlightedIndex);
+        const selectedText = suggestionDivs[highlightedIndex].innerText;
+        updateSearchInput(selectedText, searchInput, firstSuggestionConfirmed);
+
+    } else if (e.key === '/') {
+        // Confirmar la primera parte de la sugerencia
+        confirmFirstSuggestion(searchInput);
+
+    } else if (e.key === 'Enter') {
+        // Procesar el input y cargar datos
+        e.preventDefault(); // Evitar el envío del formulario
+        processSearchInput(searchInput, suggestions);
+        
+    } else if (e.key === 'Escape') {
+        // Cerrar las sugerencias
+        suggestions.style.display = 'none';
+        suggestions.innerHTML = '';
+        highlightedIndex = -1;
+    }
+});
 // Función para formatear el volumen
 function formatVolume(volume) {
     if (volume >= 1e6) {
@@ -529,6 +580,7 @@ function calculateRatio(data1, data2) {
 
     return divisionValues;
 }
+
 function loadChartData(input) {
     // Limpiar los datos previos del gráfico
     lineSeries.setData([]);
@@ -546,7 +598,7 @@ function loadChartData(input) {
     // Actualizar el estado del botón de bandas de Bollinger
     document.getElementById('toggle-bands').textContent = bandsVisible ? 'Ocultar Bandas de Bollinger' : 'Mostrar Bandas de Bollinger';
 
-    const inputUpperCase = input.toUpperCase(); // Convertir la entrada a mayúsculas
+    //const inputUpperCase = input.toUpperCase(); // Convertir la entrada a mayúsculas
 
     // Actualizar el título del gráfico
     document.getElementById('instrument-title').textContent = `Análisis de ${inputUpperCase}`;
