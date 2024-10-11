@@ -1,4 +1,4 @@
-const csvFiles = ['AL30.csv', 'AL30D.csv', /* otros archivos */];
+const csvFiles = ['AL30.csv', 'AL30D.csv','GD30.csv', 'GD30D.csv','AE38.csv', 'AE38D.csv','AL30C.csv', 'AL35.csv','AL35D.csv', 'GD30C.csv','GD35.csv', 'GD35D.csv','MERVAL.csv', 'TX26.csv','TX28.csv', /* otros archivos */];
 
 const promises = csvFiles.map(file => loadCSV(`/ratios-argy/${file}`));
 Promise.all(promises)
