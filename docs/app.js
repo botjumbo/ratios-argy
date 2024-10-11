@@ -82,29 +82,31 @@ function fetchAndUpdateChartData(symbol) {
         .then(data => {
             const rows = data.split('\n').slice(1).map(row => {
                 const [especie, fecha, apertura, maximo, minimo, cierre, volumen] = row.split(',');
+
+                // Verifica si la fecha y especie son válidas y si apertura, maximo, minimo, cierre y volumen son números
+                if (!especie || !fecha || isNaN(apertura) || isNaN(maximo) || isNaN(minimo) || isNaN(cierre) || isNaN(volumen)) {
+                    console.error("Datos no válidos para:", { especie, fecha, apertura, maximo, minimo, cierre, volumen });
+                    return null; // Retorna null si hay datos no válidos
+                }
+
                 return { 
                     especie, 
-                    fecha, // Mantiene la fecha en el formato "YYYY-MM-DD"
+                    fecha: fecha.trim(), // Elimina espacios en blanco
                     apertura: parseFloat(apertura), 
                     maximo: parseFloat(maximo), 
                     minimo: parseFloat(minimo), 
                     cierre: parseFloat(cierre), 
                     volumen: parseInt(volumen), 
                 };
-            });
-            
+            }).filter(item => item !== null); // Filtra las filas que son null
+
             const formattedData = rows.map(item => {
                 const time = formatDate(item.fecha); // Usamos la fecha sin convertir
-                const open = parseFloat(item.apertura);
-                const high = parseFloat(item.maximo);
-                const low = parseFloat(item.minimo);
-                const close = parseFloat(item.cierre);
-                const volume = parseFloat(item.volumen);
-
-                // Verifica si hay datos no válidos
-                if (isNaN(open) || isNaN(high) || isNaN(low) || isNaN(close)) {
-                    console.error("Datos no válidos para:", item);
-                }
+                const open = item.apertura;
+                const high = item.maximo;
+                const low = item.minimo;
+                const close = item.cierre;
+                const volume = item.volumen;
 
                 return {
                     time: time, // La fecha en formato "YYYY-MM-DD"
@@ -120,13 +122,13 @@ function fetchAndUpdateChartData(symbol) {
             candleSeries.setData(formattedData);
 
             const volumeData = rows.map(item => ({
-                time: item.fecha, // Mantiene la fecha
+                time: item.fecha,
                 value: item.volumen,
                 color: item.cierre >= item.apertura ? '#4fff00' : '#ff4976',
             }));
 
             volumeSeries.setData(volumeData);
-            console.log("Fechas para bandas de Bollinger:", formattedData.map(result => result.fecha));
+            console.log("Fechas para bandas de Bollinger:", formattedData.map(result => result.time));
 
             // Calcular las bandas de Bollinger y la media móvil
             const { bands, movingAverage } = calculateBollingerBands(
@@ -148,7 +150,6 @@ function fetchAndUpdateChartData(symbol) {
             console.error(`Error al cargar los datos del símbolo: ${symbol}.`, error);
         });
 }
-
 
 
 function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
