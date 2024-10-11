@@ -182,25 +182,27 @@ function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
         }).then(csvText => Papa.parse(csvText, { header: true, skipEmptyLines: true }).data)
     ]).then(([data1, data2]) => {
         if (Array.isArray(data1) && Array.isArray(data2)) {
-            // Formatear los datos de data1 (ej. AL30)
-            const formattedData1 = data1.map(item => ({
-                time: item.fecha,
-                open: parseFloat(item.apertura),
-                high: parseFloat(item.maximo),
-                low: parseFloat(item.minimo),
-                close: parseFloat(item.cierre),
-                volume: parseFloat(item.volumen)
-            }));
+            // Filtrar y formatear los datos de data1 (ej. AL30)
+            const formattedData1 = data1.filter(item => item.fecha && item.apertura && item.maximo && item.minimo && item.cierre && item.volumen)
+                .map(item => ({
+                    time: item.fecha,
+                    open: parseFloat(item.apertura),
+                    high: parseFloat(item.maximo),
+                    low: parseFloat(item.minimo),
+                    close: parseFloat(item.cierre),
+                    volume: parseFloat(item.volumen)
+                }));
 
-            // Formatear los datos de data2 (ej. AL30D)
-            const formattedData2 = data2.map(item => ({
-                time: item.fecha,
-                open: parseFloat(item.apertura),
-                high: parseFloat(item.maximo),
-                low: parseFloat(item.minimo),
-                close: parseFloat(item.cierre),
-                volume: parseFloat(item.volumen)
-            }));
+            // Filtrar y formatear los datos de data2 (ej. AL30D)
+            const formattedData2 = data2.filter(item => item.fecha && item.apertura && item.maximo && item.minimo && item.cierre && item.volumen)
+                .map(item => ({
+                    time: item.fecha,
+                    open: parseFloat(item.apertura),
+                    high: parseFloat(item.maximo),
+                    low: parseFloat(item.minimo),
+                    close: parseFloat(item.cierre),
+                    volume: parseFloat(item.volumen)
+                }));
 
             // Crear la serie de datos para el ratio
             const ratioData = formattedData1.map(item1 => {
@@ -222,7 +224,6 @@ function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
             // Crear una nueva serie para los volúmenes sumados
             const combinedVolumeData = formattedData1.map(item1 => {
                 const item2 = formattedData2.find(item2 => item2.time === item1.time);
-
                 if (item2) {
                     const combinedVolume = item1.volume + item2.volume;
                     const useItem1Color = item1.volume >= item2.volume;
@@ -236,7 +237,6 @@ function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
                         color: color
                     };
                 }
-
                 return null; // Si no hay coincidencia en las fechas, ignoramos el dato
             }).filter(Boolean);
 
