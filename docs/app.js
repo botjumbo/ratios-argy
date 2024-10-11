@@ -396,53 +396,42 @@ document.getElementById('search-input').addEventListener('blur', function() {
 
 });
 
-//esto es para ver la lista de instrumentos 
-Promise.all(csvFiles.map(file => fetch(`/ratios-argy/${file}`) // Reemplaza con la ruta correcta
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Error al cargar el archivo CSV: ' + response.statusText);
-        }
-        return response.text(); // Obtener el contenido como texto
-    })
-    .then(data => {
-        // Solo parseamos si necesitas los datos para otras cosas, pero no para la lista
-        // Si no los necesitas, puedes eliminar esta parte
-        return { fileName: file.replace('.csv', ''), data: parseCSV(data) }; // Solo guarda el nombre y los datos
-    })
-))
-.then(results => {
-    // Aquí solo necesitas los nombres de los archivos para la lista
-    const instrumentList = document.getElementById('instrument-list');
-    
-    // Limpiar la lista existente antes de cargar nuevos instrumentos
-    instrumentList.innerHTML = ''; // Limpia los elementos anteriores
+// Carga todos los archivos CSV y actualiza la lista de instrumentos
+Promise.all(symbols.map(file => loadCSV(`/ratios-argy/${file}`))) // Reemplaza con la ruta correcta
+    .then(results => {
+        const instrumentList = document.getElementById('instrument-list');
+        
+        // Limpiar la lista existente antes de cargar nuevos instrumentos
+        instrumentList.innerHTML = ''; // Limpia los elementos anteriores
 
-    results.forEach(result => {
-        const listItem = document.createElement('li');
-        const button = document.createElement('button');
-        button.textContent = result.fileName; // Solo mostrar el nombre del archivo
-        button.onclick = () => {
-            selectedInstrument = result.fileName; // Almacena el archivo seleccionado globalmente
-            loadChartData(result.fileName); // Carga los datos del gráfico para el archivo
-            fetchAndUpdateChartData(result.fileName); // Actualiza el gráfico inmediatamente
+        results.forEach((data, index) => {
+            const listItem = document.createElement('li');
+            const button = document.createElement('button');
+            const fileName = symbols[index].replace('.csv', ''); // Obtener el nombre del archivo sin extensión
             
+            button.textContent = fileName; // Solo mostrar el nombre del archivo
+            button.onclick = () => {
+                selectedInstrument = symbols[index]; // Almacena el archivo seleccionado globalmente
+                loadChartData(selectedInstrument); // Carga los datos del gráfico para el archivo
+                fetchAndUpdateChartData(selectedInstrument); // Actualiza el gráfico inmediatamente
+                
+                document.getElementById('instrument-title').textContent = `Análisis de ${selectedInstrument}`;
+            };
+            listItem.appendChild(button);
+            instrumentList.appendChild(listItem);
+        });
+
+        // Establece el primer archivo como el seleccionado por defecto, si hay alguno
+        if (results.length > 0) {
+            selectedInstrument = symbols[0]; // Asigna el primer archivo como seleccionado por defecto
+            loadChartData(selectedInstrument); // Cargar datos del gráfico para el primer archivo
+            fetchAndUpdateChartData(selectedInstrument); // Actualizar el gráfico para el primer archivo
             document.getElementById('instrument-title').textContent = `Análisis de ${selectedInstrument}`;
-        };
-        listItem.appendChild(button);
-        instrumentList.appendChild(listItem);
-    });
+        }
 
-    // Establece el primer archivo como el seleccionado por defecto, si hay alguno
-    if (results.length > 0) {
-        selectedInstrument = results[0].fileName; // Asigna el primer archivo como seleccionado por defecto
-        loadChartData(selectedInstrument); // Cargar datos del gráfico para el primer archivo
-        fetchAndUpdateChartData(selectedInstrument); // Actualizar el gráfico para el primer archivo
-        document.getElementById('instrument-title').textContent = `Análisis de ${selectedInstrument}`;
-    }
-
-    document.getElementById('search-input').value = ''; // Limpiar el campo de búsqueda
-})
-.catch(error => console.error('Error al cargar la lista de instrumentos:', error));
+        document.getElementById('search-input').value = ''; // Limpiar el campo de búsqueda
+    })
+    .catch(error => console.error('Error al cargar la lista de instrumentos:', error));
 
 // Función para parsear el CSV (puedes usarla si la necesitas más adelante)
 function parseCSV(data) {
