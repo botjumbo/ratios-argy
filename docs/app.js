@@ -107,11 +107,11 @@ function fetchAndUpdateChartData(symbol) {
                 };
             }).filter(item => item !== null); // Filtra las filas que son null
 
-            // Continuar con el procesamiento si hay datos válidos
             if (rows.length === 0) {
                 console.warn("No se encontraron datos válidos.");
                 return; // Salir si no hay datos válidos
             }
+            // Continuar con el procesamiento si hay datos válidos
 
             const formattedData = rows.map(item => {
                 const time = formatDate(item.fecha); // Usamos la fecha sin convertir
