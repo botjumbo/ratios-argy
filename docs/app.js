@@ -1,4 +1,4 @@
-const symbol = ['AL30', 'AL30D.csv','GD30.csv', 'GD30D.csv','AE38.csv', 'AE38D.csv','AL30C.csv', 'AL35.csv','AL35D.csv', 'GD30C.csv','GD35.csv', 'GD35D.csv','MERVAL.csv', 'TX26.csv','TX28.csv', /* otros archivos */];
+const symbol = ['AL30.csv', 'AL30D.csv','GD30.csv', 'GD30D.csv','AE38.csv', 'AE38D.csv','AL30C.csv', 'AL35.csv','AL35D.csv', 'GD30C.csv','GD35.csv', 'GD35D.csv','MERVAL.csv', 'TX26.csv','TX28.csv', /* otros archivos */];
 
 const promises = symbol.map(file => loadCSV(`/ratios-argy/${file}`));
 const legendElement = document.getElementById('legend');
@@ -113,6 +113,7 @@ function fetchAndUpdateChartData(symbol) {
             }));
 
             volumeSeries.setData(volumeData);
+            console.log("Fechas para bandas de Bollinger:", formattedData.map(result => result.fecha));
 
             // Calcular las bandas de Bollinger y la media móvil
             const { bands, movingAverage } = calculateBollingerBands(
