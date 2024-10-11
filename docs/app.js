@@ -605,7 +605,7 @@ function loadChartData(input) {
     // Verificar si el input es un ratio (par de símbolos separados por '/')
     if (inputUpperCase.includes('/')) {
         // Llamar a la función que procesa ratios
-        fetchAndUpdateChartDataRatio(symbol1 + '.csv', symbol2 + '.csv'); // Asegúrate de añadir la extensión .csv
+        fetchAndUpdateChartDataRatio(symbol1 , symbol2); // Asegúrate de añadir la extensión .csv
     } else {
         // Cargar datos del símbolo individual
         fetchAndUpdateChartData(inputUpperCase);
