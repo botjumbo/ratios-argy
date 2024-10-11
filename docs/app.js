@@ -812,7 +812,7 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
 });
 
 function filterInstruments() {
-    const input = document.getElementById('search-input').value.toUpperCase();
+    const input = document.getElementById('search-input').value;
     const suggestions = document.getElementById('suggestions');
     suggestions.innerHTML = ''; // Limpiar las sugerencias
     highlightedIndex = -1; // Reiniciar el índice destacado
