@@ -367,7 +367,7 @@ document.getElementById('search-input').addEventListener('blur', function() {
 //Aca gestionar todo lo de la lista de instrumentos
 // Solicitar la lista de instrumentos
 
-fetch('/instruments')
+fetch('/docs')
     .then(response => response.json())
     .then(data => {
         instruments = data; // Guarda los instrumentos globalmente
