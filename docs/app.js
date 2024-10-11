@@ -779,6 +779,7 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
                 loadChartData(selectedInstrument);
             } else {
                 console.error('El símbolo no existe en la lista de instrumentos.');
+                console.log('selectedInstrument');
             }
         }
     
