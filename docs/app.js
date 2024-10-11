@@ -25,17 +25,6 @@ function loadCSV(file) {
         });
 }
 
-function populateInstrumentList(instruments) {
-    const instrumentList = document.getElementById('instrument-list');
-    instrumentList.innerHTML = ''; // Limpiar la lista existente
-
-    instruments.forEach(instrument => {
-        const li = document.createElement('li');
-        li.textContent = instrument.nombre; // Cambia 'nombre' por la propiedad correcta según tu CSV
-        instrumentList.appendChild(li);
-    });
-}
-
 
 
 //--------------------------------------------------------------------------------------------------------//
