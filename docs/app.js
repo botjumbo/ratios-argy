@@ -673,6 +673,9 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
             selectedInstrument = suggestionDivs[highlightedIndex].textContent.trim(); // Selección de sugerencia
         } else {
             selectedInstrument = input; // Usar el input directamente
+            console.log({selectedInstrument});
+            loadChartData(selectedInstrument); // Cargar el gráfico del instrumento
+
         }
 
         // Verificar si es un par de símbolos separados por "/"
