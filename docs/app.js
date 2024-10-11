@@ -690,7 +690,7 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
             // Verificar que ambos símbolos existan en la lista de instrumentos
             if (symbol.includes(symbol1) && symbol.includes(symbol2)) {
                 selectedInstrument = `${symbol1}/${symbol2}`;
-                fetchAndUpdateChartDataRatio(symbol1 + '.csv', symbol2 + '.csv'); // Cargar el gráfico de la relación
+                fetchAndUpdateChartDataRatio(symbol1 , symbol2); // Cargar el gráfico de la relación symbol1 + '.csv', symbol2 + '.csv');
             } else {
                 console.error('Uno o ambos símbolos no existen en la lista de instrumentos.');
             }
