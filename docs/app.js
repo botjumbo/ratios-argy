@@ -415,6 +415,7 @@ document.getElementById('search-input').addEventListener('blur', function() {
 
 });
 
+
 Promise.all(csvFiles.map(file => fetch(`/ratios-argy/${file}`) // Reemplaza con la ruta correcta
     .then(response => {
         if (!response.ok) {
@@ -422,24 +423,27 @@ Promise.all(csvFiles.map(file => fetch(`/ratios-argy/${file}`) // Reemplaza con 
         }
         return response.text(); // Obtener el contenido como texto
     })
-    .then(data => parseCSV(data)) // Parsear cada archivo CSV
+    .then(data => {
+        // Solo parseamos si necesitas los datos para otras cosas, pero no para la lista
+        // Si no los necesitas, puedes eliminar esta parte
+        return { fileName: file.replace('.csv', ''), data: parseCSV(data) }; // Solo guarda el nombre y los datos
+    })
 ))
 .then(results => {
-    // Aplanar el array de resultados (cada resultado es un arreglo de instrumentos)
-    instruments = [].concat(...results); // Combina todos los instrumentos en un solo array
+    // Aquí solo necesitas los nombres de los archivos para la lista
     const instrumentList = document.getElementById('instrument-list');
     
     // Limpiar la lista existente antes de cargar nuevos instrumentos
     instrumentList.innerHTML = ''; // Limpia los elementos anteriores
 
-    instruments.forEach(instrument => {
+    results.forEach(result => {
         const listItem = document.createElement('li');
         const button = document.createElement('button');
-        button.textContent = instrument;
+        button.textContent = result.fileName; // Solo mostrar el nombre del archivo
         button.onclick = () => {
-            selectedInstrument = instrument; // Almacena el instrumento seleccionado globalmente
-            loadChartData(selectedInstrument); // Carga los datos del gráfico
-            fetchAndUpdateChartData(selectedInstrument); // Actualiza el gráfico inmediatamente
+            selectedInstrument = result.fileName; // Almacena el archivo seleccionado globalmente
+            loadChartData(result.fileName); // Carga los datos del gráfico para el archivo
+            fetchAndUpdateChartData(result.fileName); // Actualiza el gráfico inmediatamente
             
             document.getElementById('instrument-title').textContent = `Análisis de ${selectedInstrument}`;
         };
@@ -447,25 +451,23 @@ Promise.all(csvFiles.map(file => fetch(`/ratios-argy/${file}`) // Reemplaza con 
         instrumentList.appendChild(listItem);
     });
 
-    // Establece el primer instrumento como el seleccionado por defecto, si hay alguno
-    if (instruments.length > 0) {
-        selectedInstrument = instruments[0]; // Asigna el primer instrumento como seleccionado por defecto
-        loadChartData(selectedInstrument); // Cargar datos del gráfico para el primer instrumento
-        fetchAndUpdateChartData(selectedInstrument); // Actualizar el gráfico para el primer instrumento
+    // Establece el primer archivo como el seleccionado por defecto, si hay alguno
+    if (results.length > 0) {
+        selectedInstrument = results[0].fileName; // Asigna el primer archivo como seleccionado por defecto
+        loadChartData(selectedInstrument); // Cargar datos del gráfico para el primer archivo
+        fetchAndUpdateChartData(selectedInstrument); // Actualizar el gráfico para el primer archivo
         document.getElementById('instrument-title').textContent = `Análisis de ${selectedInstrument}`;
     }
 
     document.getElementById('search-input').value = ''; // Limpiar el campo de búsqueda
-
 })
 .catch(error => console.error('Error al cargar la lista de instrumentos:', error));
 
-// Función para parsear el CSV a un arreglo de instrumentos
+// Función para parsear el CSV (puedes usarla si la necesitas más adelante)
 function parseCSV(data) {
     const lines = data.split('\n');
     return lines.map(line => line.trim()).filter(line => line.length > 0); // Eliminar líneas vacías
 }
-
 
 function calculateBollingerBands(data, period = 20, multiplier = 2) {
     const bands = [];
