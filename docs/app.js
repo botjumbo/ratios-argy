@@ -309,6 +309,7 @@ function processSearchInput(searchInput, suggestions) {
         }
     } else if (symbol.includes(input)) { // Cambio a 'symbol'
         loadChartData(input);
+        
     } else {
         console.error('El símbolo no existe en la lista de instrumentos.');
     }
@@ -685,14 +686,7 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
             } else {
                 console.error('Uno o ambos símbolos no existen en la lista de instrumentos.');
             }
-        } else {
-            // Verificar si el símbolo existe antes de cargar los datos
-            selectedInstrument = input.toUpperCase(); // Convertir a mayúsculas
-            if (symbol.includes(selectedInstrument)) {
-                loadChartData(selectedInstrument); // Cargar datos del gráfico
-            } else {
-                console.error('El símbolo no existe en la lista de instrumentos.');
-            }
+
         }
 
         // Reiniciar el índice destacado
