@@ -407,11 +407,11 @@ Promise.all(symbol.map(file => loadCSV(`/ratios-argy/${file}`))) // Reemplaza co
         results.forEach((data, index) => {
             const listItem = document.createElement('li');
             const button = document.createElement('button');
-            const fileName = symbols[index].replace('.csv', ''); // Obtener el nombre del archivo sin extensión
+            const fileName = symbol[index].replace('.csv', ''); // Obtener el nombre del archivo sin extensión
             
             button.textContent = fileName; // Solo mostrar el nombre del archivo
             button.onclick = () => {
-                selectedInstrument = symbols[index]; // Almacena el archivo seleccionado globalmente
+                selectedInstrument = symbol[index]; // Almacena el archivo seleccionado globalmente
                 loadChartData(selectedInstrument); // Carga los datos del gráfico para el archivo
                 fetchAndUpdateChartData(selectedInstrument); // Actualiza el gráfico inmediatamente
                 
@@ -423,7 +423,7 @@ Promise.all(symbol.map(file => loadCSV(`/ratios-argy/${file}`))) // Reemplaza co
 
         // Establece el primer archivo como el seleccionado por defecto, si hay alguno
         if (results.length > 0) {
-            selectedInstrument = symbols[0]; // Asigna el primer archivo como seleccionado por defecto
+            selectedInstrument = symbol[0]; // Asigna el primer archivo como seleccionado por defecto
             loadChartData(selectedInstrument); // Cargar datos del gráfico para el primer archivo
             fetchAndUpdateChartData(selectedInstrument); // Actualizar el gráfico para el primer archivo
             document.getElementById('instrument-title').textContent = `Análisis de ${selectedInstrument}`;
