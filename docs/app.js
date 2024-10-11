@@ -397,7 +397,7 @@ document.getElementById('search-input').addEventListener('blur', function() {
 });
 
 // Carga todos los archivos CSV y actualiza la lista de instrumentos
-Promise.all(symbols.map(file => loadCSV(`/ratios-argy/${file}`))) // Reemplaza con la ruta correcta
+Promise.all(symbol.map(file => loadCSV(`/ratios-argy/${file}`))) // Reemplaza con la ruta correcta
     .then(results => {
         const instrumentList = document.getElementById('instrument-list');
         
