@@ -366,78 +366,9 @@ document.getElementById('search-input').addEventListener('blur', function() {
 
 //Aca gestionar todo lo de la lista de instrumentos
 // Solicitar la lista de instrumentos
-// Función para cargar un archivo CSV
-function loadCSV(url) {
-    return new Promise((resolve, reject) => {
-        Papa.parse(url, {
-            download: true,
-            header: true,
-            complete: (results) => {
-                resolve(results.data);
-            },
-            error: (error) => {
-                reject('Error al procesar el archivo CSV: ' + error.message);
-            }
-        });
-    });
-}
 
-// Función para gestionar la carga de instrumentos
-async function loadInstruments() {
-    const csvFiles = [
-        'docs/AL30.CSV',
-        'docs/AL30D.CSV',
-        // Agrega más nombres de archivo aquí
-    ];
-
-    try {
-        const promises = csvFiles.map(file => loadCSV(file));
-        const results = await Promise.all(promises);
-
-        // Combinar los resultados en una sola lista de instrumentos
-        instruments = results.flat(); // Combina todos los resultados en un solo array
-        populateInstrumentList();
-    } catch (error) {
-        console.error('Error al cargar los instrumentos:', error);
-    }
-}
-
-// Función para poblar la lista de instrumentos en la interfaz
-function populateInstrumentList() {
-    const instrumentList = document.getElementById('instrument-list');
-    instrumentList.innerHTML = ''; // Limpiar la lista existente
-
-    instruments.forEach(instrument => {
-        const listItem = document.createElement('li');
-        const button = document.createElement('button');
-        button.textContent = instrument.name; // Ajustar según el nombre de la propiedad en tu CSV
-        button.onclick = () => {
-            selectedInstrument = instrument.name; // Almacena el instrumento seleccionado
-            loadChartData(selectedInstrument); // Carga los datos del gráfico
-            fetchAndUpdateChartData(selectedInstrument); // Actualiza el gráfico inmediatamente
-            
-            document.getElementById('instrument-title').textContent = `Análisis de ${selectedInstrument}`;
-        };
-        listItem.appendChild(button);
-        instrumentList.appendChild(listItem);
-    });
-
-    // Establece el primer instrumento como el seleccionado por defecto, si hay alguno
-    if (instruments.length > 0) {
-        selectedInstrument = instruments[0].name; // Asigna el primer instrumento como seleccionado por defecto
-        loadChartData(selectedInstrument); // Cargar datos del gráfico para el primer instrumento
-        fetchAndUpdateChartData(selectedInstrument); // Actualizar el gráfico para el primer instrumento
-        document.getElementById('instrument-title').textContent = `Análisis de ${selectedInstrument}`;
-    }
-
-    document.getElementById('search-input').value = ''; // Limpiar el campo de búsqueda
-}
-
-
-// Llamar a la función para cargar los instrumentos al iniciar
-loadInstruments();
-
-fetch('/ratios-argy') // ---->aca estan los archivos csv !!!
+fetch('/ratios-argy')
+    .then(response => response.json())
     .then(data => {
         instruments = data; // Guarda los instrumentos globalmente
         const instrumentList = document.getElementById('instrument-list');
