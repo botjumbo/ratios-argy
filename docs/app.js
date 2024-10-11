@@ -71,6 +71,7 @@ function loadCSV(filePath) {
             return parseCSV(data); // Función para procesar y convertir el CSV a un formato útil
         });
 }
+
 function fetchAndUpdateChartData(symbol) {
     fetch(`/ratios-argy/${symbol}`) // Cambia la URL según la ubicación de tus archivos CSV
         .then(response => {
@@ -81,7 +82,7 @@ function fetchAndUpdateChartData(symbol) {
         })
         .then(data => {
             const rows = data.split('\n').slice(1).map(row => {
-                const [especie, fecha, apertura, maximo, minimo, cierre, volumen] = row.split(',');
+                const [especie, fecha, apertura, maximo, minimo, cierre, volumen] = row.split(',').map(item => item.trim()); // Elimina espacios en blanco
 
                 // Verifica si la fecha y especie son válidas y si apertura, maximo, minimo, cierre y volumen son números
                 if (!especie || !fecha || isNaN(apertura) || isNaN(maximo) || isNaN(minimo) || isNaN(cierre) || isNaN(volumen)) {
