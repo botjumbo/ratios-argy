@@ -71,7 +71,6 @@ function loadCSV(filePath) {
             return parseCSV(data); // Función para procesar y convertir el CSV a un formato útil
         });
 }
-
 function fetchAndUpdateChartData(symbol) {
     fetch(`/ratios-argy/${symbol}`) // Cambia la URL según la ubicación de tus archivos CSV
         .then(response => {
@@ -119,40 +118,37 @@ function fetchAndUpdateChartData(symbol) {
 
             console.log("Datos formateados para candleSeries:", formattedData);
             candleSeries.setData(formattedData);
+
+            const volumeData = rows.map(item => ({
+                time: item.fecha, // Mantiene la fecha
+                value: item.volumen,
+                color: item.cierre >= item.apertura ? '#4fff00' : '#ff4976',
+            }));
+
+            volumeSeries.setData(volumeData);
+            console.log("Fechas para bandas de Bollinger:", formattedData.map(result => result.fecha));
+
+            // Calcular las bandas de Bollinger y la media móvil
+            const { bands, movingAverage } = calculateBollingerBands(
+                formattedData.map(result => ({
+                    fecha: result.time,
+                    cierre: result.close
+                }))
+            );
+
+            // Actualizar las bandas globalmente
+            upperBandData = bands.map(b => ({ time: b.time, value: b.upper }));
+            lowerBandData = bands.map(b => ({ time: b.time, value: b.lower }));
+            movingAverageData = movingAverage;
+
+            // Mostrar u ocultar las bandas de Bollinger según el estado
+            updateBollingerBandsVisibility();
         })
         .catch(error => {
-            console.error(error);
+            console.error(`Error al cargar los datos del símbolo: ${symbol}.`, error);
         });
+}
 
-
-        candleSeries.setData(formattedData);
-
-        const volumeData = rows.map(item => ({
-            time: item.fecha,
-            value: item.volumen,
-            color: item.cierre >= item.apertura ? '#4fff00' : '#ff4976',
-        }));
-
-        volumeSeries.setData(volumeData);
-        console.log("Fechas para bandas de Bollinger:", formattedData.map(result => result.fecha));
-
-        // Calcular las bandas de Bollinger y la media móvil
-        const { bands, movingAverage } = calculateBollingerBands(
-            formattedData.map(result => ({
-                fecha: result.time,
-                cierre: result.close
-            }))
-        );
-
-        // Actualizar las bandas globalmente
-        upperBandData = bands.map(b => ({ time: b.time, value: b.upper }));
-        lowerBandData = bands.map(b => ({ time: b.time, value: b.lower }));
-        movingAverageData = movingAverage;
-
-        // Mostrar u ocultar las bandas de Bollinger según el estado
-        updateBollingerBandsVisibility();
-    }
-    .catch(error => console.error(`Error al cargar los datos del símbolo: ${symbol}.`, error));
 
 
 function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
