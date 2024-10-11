@@ -437,7 +437,7 @@ function populateInstrumentList() {
 // Llamar a la función para cargar los instrumentos al iniciar
 loadInstruments();
 
-fetch('docs') // ---->aca estan los archivos csv !!!
+fetch('/docs') // ---->aca estan los archivos csv !!!
     .then(data => {
         instruments = data; // Guarda los instrumentos globalmente
         const instrumentList = document.getElementById('instrument-list');
