@@ -103,6 +103,7 @@ function fetchAndUpdateChartData(symbol) {
                 close: item.cierre,
                 volume: item.volumen,
             }));
+            console.log("Datos formateados para candleSeries:", formattedData);
 
             candleSeries.setData(formattedData);
 
