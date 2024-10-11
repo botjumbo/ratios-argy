@@ -162,7 +162,8 @@ function fetchAndUpdateChartData(symbol) {
         });
 }
 
-function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
+async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
+    
     const url1 = `/ratios-argy/${symbol1}`;
     const url2 = `/ratios-argy/${symbol2}`;
 
