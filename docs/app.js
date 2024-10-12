@@ -768,7 +768,6 @@ function filterInstruments() {
                         document.getElementById('search-input').value = `${firstSymbol}/${symb}`; 
                     } else {
                         document.getElementById('search-input').value = symb;
-                        document.getElementById('search-input').value = ''; // Limpiar el campo de búsqueda
 
                     }
                     
@@ -809,12 +808,16 @@ function filterInstruments() {
                     document.getElementById('search-input').value = symb;
                     selectedInstrument = symb; // Actualizar la variable global
                     suggestions.style.display = 'none'; // Ocultar las sugerencias
+                    
                 };
+                document.getElementById('search-input').value = ''; // Limpiar el campo de búsqueda
+
                 suggestionDiv.onmouseover = () => {
                     highlightedIndex = index;
                     highlightSuggestion(suggestions, highlightedIndex);
                 };
                 suggestions.appendChild(suggestionDiv);
+
             });
         } else {
             suggestions.style.display = 'block';
