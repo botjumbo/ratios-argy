@@ -712,8 +712,7 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
             if (symbol.includes(symbol1) && symbol.includes(symbol2)) {
                 selectedInstrument = `${symbol1}/${symbol2}`;
                 fetchAndUpdateChartDataRatio(symbol1, symbol2); 
-                loadChartData(); // Cargar el gráfico del instrumento
-
+                loadChartData(`${symbol1}/${symbol2}`);
                 
             } else {
                 console.error('Uno o ambos símbolos no existen en la lista de instrumentos.');
