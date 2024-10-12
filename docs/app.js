@@ -774,7 +774,8 @@ function filterInstruments() {
                     // Actualizar la variable global selectedInstrument
                     selectedInstrument = document.getElementById('search-input').value; 
                     suggestions.style.display = 'none'; // Ocultar las sugerencias
-                    document.getElementById('search-input').value = ''; // Limpiar el campo de búsqueda
+                    //document.getElementById('search-input').value = ''; // Limpiar el campo de búsqueda
+                    document.getElementById('instrument-title').textContent = `Análisis de ${selectedInstrument.replace('.csv', '')}`;
 
                     
                 };
