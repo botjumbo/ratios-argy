@@ -280,7 +280,6 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
         console.error('Error al cargar los datos del símbolo:', error);
     }
 }
-
 function updateSearchInput(selectedText, searchInput) {
     const parts = searchInput.value.split('/');
 
@@ -299,8 +298,15 @@ function updateSearchInput(selectedText, searchInput) {
             currentInput = parts[0] + '/' + selectedText; // Mantener el primer símbolo y agregar el segundo
         }
     }
+
+    // Agregar la extensión .csv si no está presente
+    if (!currentInput.endsWith('.csv')) {
+        currentInput += '.csv';
+    }
+
     searchInput.value = currentInput;
 }
+
 
 function confirmFirstSuggestion(searchInput) {
     if (!firstSuggestionConfirmed) {
