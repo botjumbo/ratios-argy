@@ -830,7 +830,7 @@ document.getElementById('toggle-bands').addEventListener('click', function () {
 
 });
 
-
+console.log(selectedInstrument); 
 setInterval(() => {
     const inputUpperCase = selectedInstrument; // Convertir la entrada a mayúsculas
 
