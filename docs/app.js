@@ -602,7 +602,7 @@ function loadChartData(input) {
 
     // Actualizar el estado del botón de bandas de Bollinger
     document.getElementById('toggle-bands').textContent = bandsVisible ? 'Ocultar Bandas de Bollinger' : 'Mostrar Bandas de Bollinger';
-
+    const input = document.getElementById('search-input').value;
     const inputUpperCase = input; // 
 
     // Actualizar el título del gráfico
