@@ -684,7 +684,7 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
         suggestions.innerHTML = ''; // Limpiar las sugerencias
         suggestions.style.display = 'none'; // Ocultar las sugerencias
 
-        let selectedInstrument;
+        //let selectedInstrument;
         if (highlightedIndex >= 0 && suggestionDivs.length > 0) {
             selectedInstrument = suggestionDivs[highlightedIndex].textContent.trim(); // Selección de sugerencia
         } else {
