@@ -823,7 +823,7 @@ function highlightSuggestion(suggestions, index) {
 }
 // Función para ocultar las sugerencias
 function hideSuggestions() {
-    const suggestionContainer = document.getElementById('suggestion-container'); // Cambia esto por el ID correcto de tu contenedor
+    const suggestionContainer = document.getElementById('suggestions'); // Cambia esto por el ID correcto de tu contenedor
     suggestionContainer.style.display = 'none'; // Oculta el contenedor de sugerencias
 }
 
