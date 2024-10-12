@@ -684,13 +684,16 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
         suggestions.innerHTML = ''; // Limpiar las sugerencias
         suggestions.style.display = 'none'; // Ocultar las sugerencias
 
-        //let selectedInstrument;
+        let selectedText;
         if (highlightedIndex >= 0 && suggestionDivs.length > 0) {
-            selectedInstrument = suggestionDivs[highlightedIndex].textContent.trim(); // Selección de sugerencia
+            selectedText = suggestionDivs[highlightedIndex].textContent.trim(); // Selección de sugerencia
         } else {
-            selectedInstrument = input; // Usar el input directamente
+            selectedText = input; // Usar el input directamente
         }
 
+        // Actualizar selectedInstrument aquí
+        selectedInstrument = selectedText; // Actualizar la variable global
+        
         // Verificar si es un par de símbolos separados por "/"
         if (selectedInstrument.includes('/')) {
             const parts = selectedInstrument.split('/').map(s => s.trim());
