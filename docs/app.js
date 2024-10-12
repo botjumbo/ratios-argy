@@ -833,7 +833,7 @@ setInterval(() => {
     
     } else if (inputUpperCase && inputUpperCase.includes('/')) {
 
-        const [symbol1, symbol2] = inputUpperCase.split('/').map(s => s.toUpperCase());
+        const [symbol1, symbol2] = inputUpperCase.split('/').map(s => s);
         
 
         // Verificar si ambos símbolos existen en la lista de instrumentos
