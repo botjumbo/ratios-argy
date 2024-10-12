@@ -722,7 +722,6 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
     }
 });
 
-
 function filterInstruments() {
     const input = document.getElementById('search-input').value.toUpperCase();
     const suggestions = document.getElementById('suggestions');
@@ -750,9 +749,18 @@ function filterInstruments() {
                 suggestionDiv.textContent = symb;
                 suggestionDiv.tabIndex = 0;
                 suggestionDiv.onclick = () => {
-                    document.getElementById('search-input').value = symb;
-                    // Aquí llamas a tu función para cargar los datos del instrumento
-                    suggestions.style.display = 'none';
+                    // Aquí debes asegurarte de que se seleccione correctamente el ratio
+                    if (firstSymbol && secondSymbol) {
+                        // Asegúrate de que seleccionas el ratio completo
+                        document.getElementById('search-input').value = `${firstSymbol}/${symb}`; 
+                    } else {
+                        document.getElementById('search-input').value = symb;
+                    }
+                    
+                    // Actualizar la variable global selectedInstrument
+                    selectedInstrument = document.getElementById('search-input').value; 
+                    
+                    suggestions.style.display = 'none'; // Ocultar las sugerencias
                 };
                 suggestionDiv.onmouseover = () => {
                     highlightedIndex = index;
@@ -779,9 +787,10 @@ function filterInstruments() {
                 suggestionDiv.textContent = symb;
                 suggestionDiv.tabIndex = 0;
                 suggestionDiv.onclick = () => {
+                    // Aquí también actualizamos el selectedInstrument correctamente
                     document.getElementById('search-input').value = symb;
-                    // Aquí llamas a tu función para cargar los datos del instrumento
-                    suggestions.style.display = 'none';
+                    selectedInstrument = symb; // Actualizar la variable global
+                    suggestions.style.display = 'none'; // Ocultar las sugerencias
                 };
                 suggestionDiv.onmouseover = () => {
                     highlightedIndex = index;
