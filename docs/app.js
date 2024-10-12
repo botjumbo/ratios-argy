@@ -607,7 +607,7 @@ function loadChartData(input) {
     // Actualizar el título del gráfico
     document.getElementById('instrument-title').textContent = `Análisis de ${inputUpperCase.replace('.CSV', '')}`;
 
-    console.log(`Instrumento actual: ${inputUpperCase.replace('.CSV', '')}`); // Verifica el valor sin '.CSV'
+    console.log(`Instrumento actual: ${inputUpperCase.replace('.csv', '')}`); // Verifica el valor sin '.CSV'
 
     // Verificar si el input es un ratio (par de símbolos separados por '/')
     if (inputUpperCase.includes('/')) {
