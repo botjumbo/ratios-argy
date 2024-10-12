@@ -605,7 +605,7 @@ function loadChartData(input) {
     // Actualizar el estado del botón de bandas de Bollinger
     document.getElementById('toggle-bands').textContent = bandsVisible ? 'Ocultar Bandas de Bollinger' : 'Mostrar Bandas de Bollinger';
 
-    const inputUpperCase = input.toUpperCase(); // Convertir la entrada a mayúsculas
+    const inputUpperCase = input; // Convertir la entrada a mayúsculas
 
     // Actualizar el título del gráfico
     document.getElementById('instrument-title').textContent = `Análisis de ${inputUpperCase}`;
