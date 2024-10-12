@@ -484,6 +484,19 @@ document.getElementById('search-input').addEventListener('blur', function() {
 
 });
 
+function searchAndLoad() {
+    const searchInput = document.getElementById('search-input').value;
+    if (!searchInput) {
+        alert('Por favor, ingresa un símbolo o un ratio.');
+        return; // Salir si no hay entrada
+    }
+    
+    loadChartData(searchInput); // Cargar datos del gráfico
+    suggestionDiv.style.display = 'none'; // Ocultar el div de sugerencias
+    document.getElementById('search-input').value = ''; // Limpiar el campo de búsqueda
+}
+
+
 // Carga todos los archivos CSV y actualiza la lista de instrumentos
 Promise.all(symbol.map(file => loadCSV(`/ratios-argy/${file}`))) // Reemplaza con la ruta correcta
     .then(results => {
@@ -593,6 +606,7 @@ function calculateRatio(data1, data2) {
 
     return divisionValues;
 }
+
 function loadChartData(input) {
     // Limpiar los datos previos del gráfico
     lineSeries.setData([]);
@@ -766,6 +780,7 @@ function filterInstruments() {
                     // Actualizar el input con el nombre completo del archivo (incluyendo .csv)
                     if (firstSymbol && secondSymbol) {
                         document.getElementById('search-input').value = `${firstSymbol}/${symb}`; 
+                        
                     } else {
                         document.getElementById('search-input').value = symb;
 
