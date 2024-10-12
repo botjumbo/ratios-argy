@@ -830,16 +830,15 @@ document.getElementById('toggle-bands').addEventListener('click', function () {
 
 });
 
-console.log(selectedInstrument); 
-setInterval(() => {
-    const inputUpperCase = selectedInstrument; // Convertir la entrada a mayúsculas
-
+function updateChart() {
+    console.log({selectedInstrument});
+    
     // Si hay un símbolo seleccionado
-    if (inputUpperCase) {
-        if (!inputUpperCase.includes('/')) { // Comprueba que hay un solo símbolo
-            fetchAndUpdateChartData(inputUpperCase); // Llama a la función con el símbolo seleccionado
+    if (selectedInstrument) {
+        if (!selectedInstrument.includes('/')) { // Comprueba que hay un solo símbolo
+            fetchAndUpdateChartData(selectedInstrument); // Llama a la función con el símbolo seleccionado
         } else {
-            const [symbol1, symbol2] = inputUpperCase.split('/').map(s => s.trim());
+            const [symbol1, symbol2] = selectedInstrument.split('/').map(s => s.trim());
 
             // Verificar si ambos símbolos existen en la lista de instrumentos
             if (symbol.includes(symbol1) && symbol.includes(symbol2)) {
@@ -854,5 +853,9 @@ setInterval(() => {
             }
         }
     }
-}, 1000);
+}
+
+// Llamar a updateChart cada segundo
+setInterval(updateChart, 1000);
+
 
