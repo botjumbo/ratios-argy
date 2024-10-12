@@ -670,7 +670,6 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
             highlightSuggestion(suggestions, highlightedIndex);
             const selectedText = suggestionDivs[highlightedIndex].innerText;
             updateSearchInput(selectedText, searchInput);
-            hideSuggestions(); // Ocultar las sugerencias aquí
 
         }
     } else if (e.key === 'ArrowUp') {
@@ -679,14 +678,13 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
             highlightSuggestion(suggestions, highlightedIndex);
             const selectedText = suggestionDivs[highlightedIndex].innerText;
             updateSearchInput(selectedText, searchInput);
-            hideSuggestions(); // Ocultar las sugerencias aquí
 
         }
     } else if (e.key === 'Enter') {
-        hideSuggestions(); // Ocultar el cuadro de sugerencias
 
         // Prevenir el envío del formulario
         e.preventDefault();
+        highlightedIndex = -1;
 
         const input = searchInput.value.trim(); // Convertir a mayúsculas y eliminar espacios
         suggestions.innerHTML = ''; // Limpiar las sugerencias
