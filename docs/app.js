@@ -614,7 +614,7 @@ function loadChartData(input) {
 
         // Llamar a la función que procesa ratios
         fetchAndUpdateChartDataRatio(symbol1, symbol2); // Usar symbol1 y symbol2
-        document.getElementById('instrument-title').textContent = `Análisis de ${symbol1.replace('.CSV', '')}/${symbol2.replace('.CSV', '')}`;
+        document.getElementById('instrument-title').textContent = `Análisis de ${symbol1.replace('.csv', '')}/${symbol2.replace('.csv', '')}`;
 
 
     } else {
@@ -712,7 +712,7 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
             if (symbol.includes(symbol1) && symbol.includes(symbol2)) {
                 selectedInstrument = `${symbol1}/${symbol2}`;
                 fetchAndUpdateChartDataRatio(symbol1, symbol2); 
-                loadChartData(`${symbol1}/${symbol2}`);
+                loadChartData(selectedInstrument);
                 
             } else {
                 console.error('Uno o ambos símbolos no existen en la lista de instrumentos.');
