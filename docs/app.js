@@ -595,6 +595,7 @@ function calculateRatio(data1, data2) {
 
     return divisionValues;
 }
+
 function loadChartData(input) {
     // Limpiar los datos previos del gráfico
     lineSeries.setData([]);
@@ -613,7 +614,7 @@ function loadChartData(input) {
     document.getElementById('toggle-bands').textContent = bandsVisible ? 'Ocultar Bandas de Bollinger' : 'Mostrar Bandas de Bollinger';
     
     const instrumentToLoad = input.trim().toUpperCase();
-    const inputUpperCase = instrumentToLoad.endsWith('.CSV') ? instrumentToLoad : `${instrumentToLoad}.CSV`;
+    const inputUpperCase = instrumentToLoad.endsWith('.csv') ? instrumentToLoad : `${instrumentToLoad}.csv`;
 
     // Verificar si el input es un ratio (par de símbolos separados por '/')
     if (inputUpperCase.includes('/')) {
