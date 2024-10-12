@@ -174,7 +174,7 @@
                 <input type="text" id="search-input" placeholder="Buscar instrumento o cálculo..." 
                     oninput="filterInstruments()" 
                 />
-                <button class="search-button" aria-label="Buscar" onclick="searchAndLoad()">
+                <button class="search-button" aria-label="Buscar" onclick="loadChartData(document.getElementById('search-input').value)">
                     🔍
                 </button>
             </div>
