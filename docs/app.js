@@ -280,6 +280,7 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
         console.error('Error al cargar los datos del símbolo:', error);
     }
 }
+
 function updateSearchInput(selectedText, searchInput) {
     const parts = searchInput.value.split('/');
 
@@ -484,18 +485,6 @@ document.getElementById('search-input').addEventListener('blur', function() {
 
 });
 
-function searchAndLoad() {
-    const searchInput = document.getElementById('search-input').value;
-    if (!searchInput) {
-        alert('Por favor, ingresa un símbolo o un ratio.');
-        return; // Salir si no hay entrada
-    }
-    
-    loadChartData(searchInput); // Cargar datos del gráfico
-    suggestionDiv.style.display = 'none'; // Ocultar el div de sugerencias
-    document.getElementById('search-input').value = ''; // Limpiar el campo de búsqueda
-}
-
 
 // Carga todos los archivos CSV y actualiza la lista de instrumentos
 Promise.all(symbol.map(file => loadCSV(`/ratios-argy/${file}`))) // Reemplaza con la ruta correcta
@@ -667,6 +656,40 @@ function loadChartData(input) {
     }
 }
 
+function search() {
+    const searchInput = document.getElementById('search-input');
+    const input = searchInput.value.trim(); // Obtener el valor del campo de búsqueda
+    if (!input) {
+        console.error("El campo de búsqueda está vacío.");
+        return; // Salir si no hay valor
+    }
+
+    // Actualizar selectedInstrument aquí
+    selectedInstrument = input; // Actualizar la variable global
+
+    // Verificar si es un par de símbolos separados por "/"
+    if (selectedInstrument.includes('/')) {
+        const parts = selectedInstrument.split('/').map(s => s.trim());
+        const symbol1 = parts[0];
+        const symbol2 = parts[1];
+
+        // Verificar que ambos símbolos existan en la lista de instrumentos
+        if (symbol.includes(symbol1) && symbol.includes(symbol2)) {
+            selectedInstrument = `${symbol1}/${symbol2}`;
+            fetchAndUpdateChartDataRatio(symbol1, symbol2);
+            loadChartData(selectedInstrument);
+        } else {
+            console.error('Uno o ambos símbolos no existen en la lista de instrumentos.');
+        }
+    } else {
+        loadChartData(selectedInstrument); // Cargar el gráfico del instrumento
+    }
+
+    // Limpiar el campo de búsqueda
+    searchInput.value = '';
+}
+
+// Manejo del evento de teclado
 document.getElementById('search-input').addEventListener('keydown', function(e) {
     const suggestions = document.getElementById('suggestions');
     const suggestionDivs = suggestions.querySelectorAll('div');
@@ -692,7 +715,6 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
             highlightSuggestion(suggestions, highlightedIndex);
             const selectedText = suggestionDivs[highlightedIndex].innerText;
             updateSearchInput(`${selectedText}.csv`, searchInput);
-            
         }
     } else if (e.key === 'ArrowUp') {
         if (highlightedIndex > 0) {
@@ -706,40 +728,8 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
         e.preventDefault();
         highlightedIndex = -1;
 
-        const input = searchInput.value.trim(); // Convertir a mayúsculas y eliminar espacios
-        suggestions.innerHTML = ''; // Limpiar las sugerencias
-        suggestions.style.display = 'none'; // Ocultar las sugerencias
-
-        let selectedText;
-        if (highlightedIndex >= 0 && suggestionDivs.length > 0) {
-            selectedText = suggestionDivs[highlightedIndex].textContent.trim(); // Selección de sugerencia
-        } else {
-            selectedText = input; // Usar el input directamente
-        }
-
-        // Actualizar selectedInstrument aquí
-        selectedInstrument = selectedText; // Actualizar la variable global
-
-        // Verificar si es un par de símbolos separados por "/"
-        if (selectedInstrument.includes('/')) {
-            const parts = selectedInstrument.split('/').map(s => s.trim());
-            const symbol1 = parts[0];
-            const symbol2 = parts[1];
-
-            // Verificar que ambos símbolos existan en la lista de instrumentos
-            if (symbol.includes(symbol1) && symbol.includes(symbol2)) {
-                selectedInstrument = `${symbol1}/${symbol2}`;
-                fetchAndUpdateChartDataRatio(symbol1, symbol2); 
-                loadChartData(selectedInstrument);
-            } else {
-                console.error('Uno o ambos símbolos no existen en la lista de instrumentos.');
-            }
-        } else {
-            loadChartData(selectedInstrument); // Cargar el gráfico del instrumento
-        }
-
-        // Reiniciar el índice destacado
-        highlightedIndex = -1;
+        // Llamar a la función search para procesar el input
+        search();
     } else if (e.key === 'Escape') {
         // Cerrar las sugerencias
         suggestions.style.display = 'none';
@@ -747,6 +737,7 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
         highlightedIndex = -1;
     }
 });
+
 
 function filterInstruments() {
     const input = document.getElementById('search-input').value.toUpperCase();
