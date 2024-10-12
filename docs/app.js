@@ -613,7 +613,7 @@ function loadChartData(input) {
 
         // Llamar a la función que procesa ratios
         fetchAndUpdateChartDataRatio(symbol1, symbol2); // Usar symbol1 y symbol2
-        document.getElementById('instrument-title').textContent = `Análisis de ${symbol1.replace('.csv', '')}/${symbol2.replace('.csv', '')}`;
+        document.getElementById('instrument-title').textContent = `Ratio ${symbol1.replace('.csv', '')}/${symbol2.replace('.csv', '')}`;
 
 
     } else {
