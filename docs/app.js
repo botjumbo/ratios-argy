@@ -496,7 +496,6 @@ Promise.all(symbol.map(file => loadCSV(`/ratios-argy/${file}`))) // Reemplaza co
                 loadChartData(selectedInstrument); // Carga los datos del gráfico para el archivo
                 fetchAndUpdateChartData(selectedInstrument); // Actualiza el gráfico inmediatamente
                 
-                document.getElementById('instrument-title').textContent = `Análisis de ${selectedInstrument}`;
             };
             listItem.appendChild(button);
             instrumentList.appendChild(listItem);
@@ -507,7 +506,6 @@ Promise.all(symbol.map(file => loadCSV(`/ratios-argy/${file}`))) // Reemplaza co
             selectedInstrument = symbol[0]; // Asigna el primer archivo como seleccionado por defecto
             loadChartData(selectedInstrument); // Cargar datos del gráfico para el primer archivo
             fetchAndUpdateChartData(selectedInstrument); // Actualizar el gráfico para el primer archivo
-            document.getElementById('instrument-title').textContent = `Análisis de ${selectedInstrument}`;
         }
 
         document.getElementById('search-input').value = ''; // Limpiar el campo de búsqueda
@@ -617,6 +615,8 @@ function loadChartData(input) {
 
         // Llamar a la función que procesa ratios
         fetchAndUpdateChartDataRatio(symbol1, symbol2); // Usar symbol1 y symbol2
+        document.getElementById('instrument-title').textContent = `Análisis de ${symbol1}/${symbol2}`;
+
     } else {
         // Cargar datos del símbolo individual
         fetchAndUpdateChartData(inputUpperCase);
