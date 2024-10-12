@@ -73,14 +73,15 @@
             transition: border-color 0.3s;
             width: 100%; /* Ajustar al 100% del contenedor */
         }
+        
         .search-button {
-            position: absolute;
-            right: 10px;
-            border: none;
-            background: transparent;
-            cursor: pointer;
-            font-size: 16px;
-            color: #2196F3;
+            background-color: transparent; /* Fondo transparente */
+            border: none; /* Sin borde */
+            cursor: pointer; /* Cambiar el cursor al pasar sobre el botón */
+            padding: 12px; /* Aumentar el área de clic */
+            display: flex; /* Alinear el icono en el centro */
+            align-items: center; /* Centrar verticalmente */
+            justify-content: center; /* Centrar horizontalmente */
         }
 
         #search-input:focus {
