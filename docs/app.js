@@ -705,7 +705,7 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
                 console.error('Uno o ambos símbolos no existen en la lista de instrumentos.');
             }
         } else {
-            //loadChartData(selectedInstrument); // Cargar el gráfico del instrumento
+            loadChartData(selectedInstrument); // Cargar el gráfico del instrumento
             console.log({selectedInstrument});
         }
 
