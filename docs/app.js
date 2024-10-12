@@ -281,13 +281,19 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
 }
 
 
-
 // Funciones auxiliares para modular el código
-function updateSearchInput(selectedText, searchInput, firstSuggestionConfirmed) {
+function updateSearchInput(selectedText, searchInput) {
+    const parts = searchInput.value.split('/');
+
     if (!firstSuggestionConfirmed) {
-        currentInput = selectedText;
+        // Mantener la parte antes de la barra fija si ya existe
+        if (parts.length > 1) {
+            currentInput = parts[0] + '/' + selectedText; // Agregar la sugerencia como segundo símbolo
+        } else {
+            currentInput = selectedText; // Solo actualizar el primer símbolo si no hay barra
+        }
     } else {
-        const parts = searchInput.value.split('/');
+        // Si ya se confirmó la primera sugerencia, concatenar el segundo símbolo
         currentInput = parts[0] + '/' + selectedText;
     }
     searchInput.value = currentInput;
@@ -301,6 +307,8 @@ function confirmFirstSuggestion(searchInput) {
         showSuggestions(''); // Mostrar nuevas sugerencias
     }
 }
+
+
 function processSearchInput(searchInput, suggestions) {
     const input = searchInput.value.trim();
     suggestions.innerHTML = ''; // Limpiar sugerencias anteriores
@@ -308,20 +316,20 @@ function processSearchInput(searchInput, suggestions) {
 
     if (input.includes('/')) {
         const [symbol1, symbol2] = input.split('/').map(s => s.trim());
-        if (symbol.includes(symbol1) && symbol.includes(symbol2)) { // Cambio a 'symbol'
+        if (symbol.includes(symbol1) && symbol.includes(symbol2)) { // Verifica ambos símbolos
             loadChartData(`${symbol1}/${symbol2}`);
         } else {
             console.error('Uno o ambos símbolos no existen en la lista de instrumentos.');
         }
-    } else if (symbol.includes(input)) { // Cambio a 'symbol'
+    } else if (symbol.includes(input)) { // Solo un símbolo
         loadChartData(input);
-        
     } else {
         console.error('El símbolo no existe en la lista de instrumentos.');
     }
 
     highlightedIndex = -1; // Reiniciar el índice destacado
 }
+
 
 // Función para formatear el volumen
 function formatVolume(volume) {
@@ -634,6 +642,7 @@ function loadChartData(input) {
     }
 }
 
+
 document.getElementById('search-input').addEventListener('keydown', function(e) {
     const suggestions = document.getElementById('suggestions');
     const suggestionDivs = suggestions.querySelectorAll('div');
@@ -675,26 +684,26 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
         suggestions.innerHTML = ''; // Limpiar las sugerencias
         suggestions.style.display = 'none'; // Ocultar las sugerencias
 
+        let selectedInstrument;
         if (highlightedIndex >= 0 && suggestionDivs.length > 0) {
             selectedInstrument = suggestionDivs[highlightedIndex].textContent.trim(); // Selección de sugerencia
         } else {
             selectedInstrument = input; // Usar el input directamente
-            
-
         }
 
         // Verificar si es un par de símbolos separados por "/"
         if (selectedInstrument.includes('/')) {
-            const [symbol1, symbol2] = selectedInstrument.split('/').map(s => s.trim());
+            const parts = selectedInstrument.split('/').map(s => s.trim());
+            const symbol1 = parts[0];
+            const symbol2 = parts[1];
 
             // Verificar que ambos símbolos existan en la lista de instrumentos
             if (symbol.includes(symbol1) && symbol.includes(symbol2)) {
                 selectedInstrument = `${symbol1}/${symbol2}`;
-                fetchAndUpdateChartDataRatio(symbol1 , symbol2); // Cargar el gráfico de la relación symbol1 + '.csv', symbol2 + '.csv');
+                fetchAndUpdateChartDataRatio(symbol1, symbol2); // Cargar el gráfico de la relación symbol1 + '.csv', symbol2 + '.csv');
             } else {
                 console.error('Uno o ambos símbolos no existen en la lista de instrumentos.');
             }
-
         } else {
             loadChartData(selectedInstrument); // Cargar el gráfico del instrumento
             console.log({selectedInstrument});
@@ -709,6 +718,7 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
         highlightedIndex = -1;
     }
 });
+
 
 function filterInstruments() {
     const input = document.getElementById('search-input').value.toUpperCase();
