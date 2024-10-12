@@ -808,9 +808,10 @@ function filterInstruments() {
                     document.getElementById('search-input').value = symb;
                     selectedInstrument = symb; // Actualizar la variable global
                     suggestions.style.display = 'none'; // Ocultar las sugerencias
+                    document.getElementById('search-input').value = ''; // Limpiar el campo de búsqueda
+
                     
                 };
-                document.getElementById('search-input').value = ''; // Limpiar el campo de búsqueda
 
                 suggestionDiv.onmouseover = () => {
                     highlightedIndex = index;
