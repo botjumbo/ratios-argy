@@ -615,7 +615,7 @@ function loadChartData(input) {
     const instrumentToLoad = input.trim().toUpperCase();
     
     // Verificar si el input ya tiene la extensión .csv
-    const inputUpperCase = instrumentToLoad.endsWith('.CSV') ? instrumentToLoad : `${instrumentToLoad}.csv`; // Asegurarse de que sea .csv en minúsculas
+    const inputUpperCase = instrumentToLoad.endsWith('.csv') ? instrumentToLoad : `${instrumentToLoad}.csv`; // Asegurarse de que sea .csv en minúsculas
 
     // Verificar si el input es un ratio (par de símbolos separados por '/')
     if (inputUpperCase.includes('/')) {
