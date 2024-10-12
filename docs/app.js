@@ -671,14 +671,15 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
             highlightedIndex++;
             highlightSuggestion(suggestions, highlightedIndex);
             const selectedText = suggestionDivs[highlightedIndex].innerText;
-            updateSearchInput(selectedText, searchInput);
+            updateSearchInput(`${selectedText}.csv`, searchInput);
+            
         }
     } else if (e.key === 'ArrowUp') {
         if (highlightedIndex > 0) {
             highlightedIndex--;
             highlightSuggestion(suggestions, highlightedIndex);
             const selectedText = suggestionDivs[highlightedIndex].innerText;
-            updateSearchInput(selectedText, searchInput);
+            updateSearchInput(`${selectedText}.csv`, searchInput);
         }
     } else if (e.key === 'Enter') {
         // Prevenir el envío del formulario
