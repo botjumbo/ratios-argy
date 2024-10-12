@@ -672,7 +672,6 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
             highlightSuggestion(suggestions, highlightedIndex);
             const selectedText = suggestionDivs[highlightedIndex].innerText;
             updateSearchInput(selectedText, searchInput);
-
         }
     } else if (e.key === 'ArrowUp') {
         if (highlightedIndex > 0) {
@@ -680,10 +679,8 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
             highlightSuggestion(suggestions, highlightedIndex);
             const selectedText = suggestionDivs[highlightedIndex].innerText;
             updateSearchInput(selectedText, searchInput);
-
         }
     } else if (e.key === 'Enter') {
-
         // Prevenir el envío del formulario
         e.preventDefault();
         highlightedIndex = -1;
@@ -701,7 +698,7 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
 
         // Actualizar selectedInstrument aquí
         selectedInstrument = selectedText; // Actualizar la variable global
-        
+
         // Verificar si es un par de símbolos separados por "/"
         if (selectedInstrument.includes('/')) {
             const parts = selectedInstrument.split('/').map(s => s.trim());
@@ -713,7 +710,6 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
                 selectedInstrument = `${symbol1}/${symbol2}`;
                 fetchAndUpdateChartDataRatio(symbol1, symbol2); 
                 loadChartData(selectedInstrument);
-                
             } else {
                 console.error('Uno o ambos símbolos no existen en la lista de instrumentos.');
             }
@@ -755,12 +751,12 @@ function filterInstruments() {
             suggestions.style.display = 'block';
             filteredSymbols.forEach((symb, index) => {
                 const suggestionDiv = document.createElement('div');
-                suggestionDiv.textContent = symb;
+                // Eliminar la extensión .csv de la visualización
+                suggestionDiv.textContent = symb.replace('.csv', '');
                 suggestionDiv.tabIndex = 0;
                 suggestionDiv.onclick = () => {
-                    // Aquí debes asegurarte de que se seleccione correctamente el ratio
+                    // Actualizar el input con el nombre completo del archivo (incluyendo .csv)
                     if (firstSymbol && secondSymbol) {
-                        // Asegúrate de que seleccionas el ratio completo
                         document.getElementById('search-input').value = `${firstSymbol}/${symb}`; 
                     } else {
                         document.getElementById('search-input').value = symb;
@@ -793,7 +789,8 @@ function filterInstruments() {
             suggestions.style.display = 'block';
             filteredSymbols.forEach((symb, index) => {
                 const suggestionDiv = document.createElement('div');
-                suggestionDiv.textContent = symb;
+                // Eliminar la extensión .csv de la visualización
+                suggestionDiv.textContent = symb.replace('.csv', '');
                 suggestionDiv.tabIndex = 0;
                 suggestionDiv.onclick = () => {
                     // Aquí también actualizamos el selectedInstrument correctamente
@@ -816,7 +813,6 @@ function filterInstruments() {
     }
 }
 
-
 function highlightSuggestion(suggestions, index) {
     const suggestionDivs = suggestions.querySelectorAll('div');
     suggestionDivs.forEach((div, idx) => {
@@ -831,8 +827,6 @@ function hideSuggestions() {
     const suggestionContainer = document.getElementById('suggestions'); // Cambia esto por el ID correcto de tu contenedor
     suggestionContainer.style.display = 'none'; // Oculta el contenedor de sugerencias
 }
-
-
 // Función para actualizar la visibilidad de las bandas de Bollinger
 function updateBollingerBandsVisibility() {
     if (bandsVisible) {
