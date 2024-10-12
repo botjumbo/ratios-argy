@@ -603,10 +603,10 @@ function loadChartData(input) {
     // Actualizar el estado del botón de bandas de Bollinger
     document.getElementById('toggle-bands').textContent = bandsVisible ? 'Ocultar Bandas de Bollinger' : 'Mostrar Bandas de Bollinger';
 
-    const inputUpperCase = input; // Convertir la entrada a mayúsculas
+    const inputUpperCase = input; // 
 
     // Actualizar el título del gráfico
-    document.getElementById('instrument-title').textContent = `Análisis de ${inputUpperCase}`;
+    document.getElementById('instrument-title').textContent = `Análisis de ${inputUpperCase.replace('.CSV', '')}`;
     console.log(`Instrumento actual: ${inputUpperCase}`); // Verifica el valor
 
     // Verificar si el input es un ratio (par de símbolos separados por '/')
