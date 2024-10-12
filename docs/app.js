@@ -586,7 +586,6 @@ function calculateRatio(data1, data2) {
 
     return divisionValues;
 }
-
 function loadChartData(input) {
     // Limpiar los datos previos del gráfico
     lineSeries.setData([]);
@@ -604,7 +603,7 @@ function loadChartData(input) {
     // Actualizar el estado del botón de bandas de Bollinger
     document.getElementById('toggle-bands').textContent = bandsVisible ? 'Ocultar Bandas de Bollinger' : 'Mostrar Bandas de Bollinger';
 
-    const inputUpperCase = input; //.toUpperCase(); // Convertir la entrada a mayúsculas
+    const inputUpperCase = input.toUpperCase(); // Convertir la entrada a mayúsculas
 
     // Actualizar el título del gráfico
     document.getElementById('instrument-title').textContent = `Análisis de ${inputUpperCase}`;
@@ -612,8 +611,10 @@ function loadChartData(input) {
 
     // Verificar si el input es un ratio (par de símbolos separados por '/')
     if (inputUpperCase.includes('/')) {
+        const [symbol1, symbol2] = inputUpperCase.split('/').map(s => s.trim()); // Extraer los símbolos
+
         // Llamar a la función que procesa ratios
-        fetchAndUpdateChartDataRatio(symbol1 , symbol2); // Asegúrate de añadir la extensión .csv
+        fetchAndUpdateChartDataRatio(symbol1, symbol2); // Usar symbol1 y symbol2
     } else {
         // Cargar datos del símbolo individual
         fetchAndUpdateChartData(inputUpperCase);
@@ -641,7 +642,6 @@ function loadChartData(input) {
         movingAverageSeries.setData(movingAverageData);
     }
 }
-
 
 document.getElementById('search-input').addEventListener('keydown', function(e) {
     const suggestions = document.getElementById('suggestions');
