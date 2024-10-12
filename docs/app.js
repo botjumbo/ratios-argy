@@ -1,5 +1,5 @@
-const symbols = ['AL30', 'AL30D','GD30', 'GD30D','AE38', 'AE38D','AL30C', 'AL35','AL35D', 'GD30C','GD35', 'GD35D','MERVAL', 'TX26','TX28'];
-const symbol = symbols.map(s => s + '.csv');
+const symbol = ['AL30', 'AL30D','GD30', 'GD30D','AE38', 'AE38D','AL30C', 'AL35','AL35D', 'GD30C','GD35', 'GD35D','MERVAL', 'TX26','TX28'];
+//const symbol = symbols.map(s => s + '.csv');
 const promises = symbol.map(file => loadCSV(`/ratios-argy/${file}`));
 const legendElement = document.getElementById('legend');
 const suggestions = document.getElementById('suggestions');
