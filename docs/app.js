@@ -670,6 +670,8 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
             highlightSuggestion(suggestions, highlightedIndex);
             const selectedText = suggestionDivs[highlightedIndex].innerText;
             updateSearchInput(selectedText, searchInput);
+            hideSuggestions(); // Ocultar las sugerencias aquí
+
         }
     } else if (e.key === 'ArrowUp') {
         if (highlightedIndex > 0) {
@@ -677,6 +679,8 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
             highlightSuggestion(suggestions, highlightedIndex);
             const selectedText = suggestionDivs[highlightedIndex].innerText;
             updateSearchInput(selectedText, searchInput);
+            hideSuggestions(); // Ocultar las sugerencias aquí
+
         }
     } else if (e.key === 'Enter') {
         hideSuggestions(); // Ocultar el cuadro de sugerencias
