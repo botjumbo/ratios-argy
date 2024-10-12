@@ -606,7 +606,6 @@ function loadChartData(input) {
 
     // Actualizar el título del gráfico
 
-    console.log(`Instrumento actual: ${inputUpperCase.replace('.csv', '')}`); // Verifica el valor sin '.CSV'
 
     // Verificar si el input es un ratio (par de símbolos separados por '/')
     if (inputUpperCase.includes('/')) {
@@ -719,7 +718,6 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
             }
         } else {
             loadChartData(selectedInstrument); // Cargar el gráfico del instrumento
-            console.log({selectedInstrument});
         }
 
         // Reiniciar el índice destacado
@@ -859,7 +857,6 @@ document.getElementById('toggle-bands').addEventListener('click', function () {
 });
 
 function updateChart() {
-    console.log({selectedInstrument});
     
     // Si hay un símbolo seleccionado
     if (selectedInstrument) {
