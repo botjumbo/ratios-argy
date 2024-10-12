@@ -762,16 +762,18 @@ function filterInstruments() {
                 suggestionDiv.textContent = symb.replace('.csv', '');
                 suggestionDiv.tabIndex = 0;
                 suggestionDiv.onclick = () => {
+
                     // Actualizar el input con el nombre completo del archivo (incluyendo .csv)
                     if (firstSymbol && secondSymbol) {
                         document.getElementById('search-input').value = `${firstSymbol}/${symb}`; 
                     } else {
                         document.getElementById('search-input').value = symb;
+                        document.getElementById('search-input').value = ''; // Limpiar el campo de búsqueda
+
                     }
                     
                     // Actualizar la variable global selectedInstrument
                     selectedInstrument = document.getElementById('search-input').value; 
-                    
                     suggestions.style.display = 'none'; // Ocultar las sugerencias
                     document.getElementById('search-input').value = ''; // Limpiar el campo de búsqueda
 
