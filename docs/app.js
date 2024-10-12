@@ -773,6 +773,9 @@ function filterInstruments() {
                     selectedInstrument = document.getElementById('search-input').value; 
                     
                     suggestions.style.display = 'none'; // Ocultar las sugerencias
+                    document.getElementById('search-input').value = ''; // Limpiar el campo de búsqueda
+
+                    
                 };
                 suggestionDiv.onmouseover = () => {
                     highlightedIndex = index;
