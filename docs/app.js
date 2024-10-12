@@ -711,7 +711,7 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
             if (symbol.includes(symbol1) && symbol.includes(symbol2)) {
                 selectedInstrument = `${symbol1}/${symbol2}`;
                 fetchAndUpdateChartDataRatio(symbol1, symbol2); 
-                loadChartData(selectedInstrument); // Cargar el gráfico del instrumento
+                loadChartData(); // Cargar el gráfico del instrumento
 
                 
             } else {
