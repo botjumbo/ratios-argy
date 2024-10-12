@@ -658,6 +658,11 @@ function loadChartData(input) {
 
 function search() {
     const searchInput = document.getElementById('search-input');
+    const suggestions = document.getElementById('suggestions');
+    // Ocultar las sugerencias al hacer clic en el botón de búsqueda
+    suggestions.style.display = 'none';
+    suggestions.innerHTML = ''; // Limpiar contenido de sugerencias
+    
     const input = searchInput.value.trim(); // Obtener el valor del campo de búsqueda
     if (!input) {
         console.error("El campo de búsqueda está vacío.");
