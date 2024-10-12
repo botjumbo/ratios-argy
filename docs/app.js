@@ -831,37 +831,28 @@ document.getElementById('toggle-bands').addEventListener('click', function () {
 });
 
 
-
 setInterval(() => {
-    
     const inputUpperCase = selectedInstrument; // Convertir la entrada a mayúsculas
-    
 
-
-    if (selectedInstrument && !selectedInstrument.includes('/')) { // Comprueba que hay un solo símbolo seleccionado
-        fetchAndUpdateChartData(selectedInstrument); // Llama a la función con el símbolo seleccionado
-    
-    } else if (inputUpperCase && inputUpperCase.includes('/')) {
-
-        const [symbol1, symbol2] = inputUpperCase.split('/').map(s => s);
-        
-
-        // Verificar si ambos símbolos existen en la lista de instrumentos
-        if (symbol.includes(symbol1) && symbol.includes(symbol2)) {
-
-            if (!symbol1 || !symbol2) {
-                console.error('Ambos símbolos deben estar definidos antes de hacer la solicitud.');
-                return; // Detener ejecución si hay un símbolo indefinido
-            }
-            
-            fetchAndUpdateChartDataRatio(symbol1, symbol2);
-               
-
+    // Si hay un símbolo seleccionado
+    if (inputUpperCase) {
+        if (!inputUpperCase.includes('/')) { // Comprueba que hay un solo símbolo
+            fetchAndUpdateChartData(inputUpperCase); // Llama a la función con el símbolo seleccionado
         } else {
-            console.error(`${symbol1}/${symbol2} no existe en la lista de instrumentos.`);
+            const [symbol1, symbol2] = inputUpperCase.split('/').map(s => s.trim());
+
+            // Verificar si ambos símbolos existen en la lista de instrumentos
+            if (symbol.includes(symbol1) && symbol.includes(symbol2)) {
+                if (!symbol1 || !symbol2) {
+                    console.error('Ambos símbolos deben estar definidos antes de hacer la solicitud.');
+                    return; // Detener ejecución si hay un símbolo indefinido
+                }
+                
+                fetchAndUpdateChartDataRatio(symbol1, symbol2);
+            } else {
+                console.error(`${symbol1}/${symbol2} no existe en la lista de instrumentos.`);
+            }
         }
-
-
     }
 }, 1000);
 
