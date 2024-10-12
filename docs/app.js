@@ -837,7 +837,7 @@ setInterval(() => {
         
 
         // Verificar si ambos símbolos existen en la lista de instrumentos
-        if (instruments.includes(symbol1) && instruments.includes(symbol2)) {
+        if (symbol.includes(symbol1) && symbol.includes(symbol2)) {
 
             if (!symbol1 || !symbol2) {
                 console.error('Ambos símbolos deben estar definidos antes de hacer la solicitud.');
@@ -853,5 +853,5 @@ setInterval(() => {
 
 
     }
-}, 60000);
+}, 1000);
 
