@@ -280,21 +280,23 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
     }
 }
 
-
-// Funciones auxiliares para modular el código
 function updateSearchInput(selectedText, searchInput) {
     const parts = searchInput.value.split('/');
 
     if (!firstSuggestionConfirmed) {
-        // Mantener la parte antes de la barra fija si ya existe
+        // Si ya hay un primer símbolo, solo agregar el segundo símbolo
         if (parts.length > 1) {
-            currentInput = parts[0] + '/' + selectedText; // Agregar la sugerencia como segundo símbolo
+            currentInput = parts[0] + '/' + selectedText; // Mantener el primer símbolo
         } else {
-            currentInput = selectedText; // Solo actualizar el primer símbolo si no hay barra
+            currentInput = selectedText; // Solo actualizar el primer símbolo
         }
     } else {
-        // Si ya se confirmó la primera sugerencia, concatenar el segundo símbolo
-        currentInput = parts[0] + '/' + selectedText;
+        // Si ya se confirmó el primer símbolo, asegurarse de que se actualice correctamente
+        if (parts.length > 1) {
+            currentInput = parts[0] + '/' + selectedText; // Actualizar el segundo símbolo
+        } else {
+            currentInput = parts[0] + '/' + selectedText; // Mantener el primer símbolo y agregar el segundo
+        }
     }
     searchInput.value = currentInput;
 }
@@ -677,6 +679,7 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
             updateSearchInput(selectedText, searchInput);
         }
     } else if (e.key === 'Enter') {
+        
         // Prevenir el envío del formulario
         e.preventDefault();
 
