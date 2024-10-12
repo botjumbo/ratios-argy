@@ -679,7 +679,8 @@ document.getElementById('search-input').addEventListener('keydown', function(e) 
             updateSearchInput(selectedText, searchInput);
         }
     } else if (e.key === 'Enter') {
-        
+        hideSuggestions(); // Ocultar el cuadro de sugerencias
+
         // Prevenir el envío del formulario
         e.preventDefault();
 
@@ -820,6 +821,12 @@ function highlightSuggestion(suggestions, index) {
         }
     });
 }
+// Función para ocultar las sugerencias
+function hideSuggestions() {
+    const suggestionContainer = document.getElementById('suggestion-container'); // Cambia esto por el ID correcto de tu contenedor
+    suggestionContainer.style.display = 'none'; // Oculta el contenedor de sugerencias
+}
+
 
 // Función para actualizar la visibilidad de las bandas de Bollinger
 function updateBollingerBandsVisibility() {
