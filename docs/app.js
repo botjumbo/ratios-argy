@@ -59,6 +59,7 @@ let currentInput = ''; // Variable para guardar el valor actual
 let firstSuggestionConfirmed = false;
 let isLineChart = false; // Variable para rastrear el tipo de gráfico actual
 let formattedData = []; // Definición global
+let ratioData = []; // Definición global
 
 
 
@@ -931,6 +932,23 @@ function toggleChartType() {
     isLineChart = !isLineChart; // Alternar el estado del gráfico
 }
 
+// Función para alternar el tipo de gráfico
+function toggleChartTypeRatio() {
+    if (isLineChart) {
+        // Cambiar a gráfico de velas
+        candleSeries.setData(ratioData); // Restablecer a datos de velas
+        lineSeries.setData([]); // Limpiar datos de línea
+        document.getElementById('toggle-chart').innerText = "Mostrar Gráfico de Línea"; // Actualizar texto del botón
+    } else {
+        // Cambiar a gráfico de línea
+        const lineData = convertCandleToLineSeries(ratioData); // Convertir datos
+        lineSeries.setData(lineData); // Establecer datos de línea
+        candleSeries.setData([]); // Limpiar datos de velas
+        document.getElementById('toggle-chart').innerText = "Mostrar Gráfico de Velas"; // Actualizar texto del botón
+        
+    }
+    isLineChart = !isLineChart; // Alternar el estado del gráfico
+}
 
 function updateChart() {
     
