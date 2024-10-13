@@ -57,6 +57,7 @@ let isShiftPressed = false;
 let highlightedIndex = -1; // Índice de la sugerencia resaltada
 let currentInput = ''; // Variable para guardar el valor actual
 let firstSuggestionConfirmed = false;
+let isCandlestickChartVisible = true; // Variable para controlar el tipo de gráfico
 
 
 
@@ -882,6 +883,27 @@ document.getElementById('toggle-bands').addEventListener('click', function () {
     bandsVisible = !bandsVisible; // Cambiar el estado de las bandas de Bollinger
     updateBollingerBandsVisibility(); // Actualizar la visibilidad según el estado
 
+});
+
+
+function updateChartVisibility() {
+    if (isCandlestickChartVisible) {
+        // Mostrar gráfico de velas
+        candlestickSeries.setData(candlestickData);
+        lineSeries.setData([]); // Limpiar los datos de la serie de líneas
+        document.getElementById('toggle-chart').textContent = 'Mostrar Gráfico de Línea'; // Cambiar texto del botón
+    } else {
+        // Mostrar gráfico de línea
+        lineSeries.setData(lineData); // Asignar los datos de la línea
+        candlestickSeries.setData([]); // Limpiar los datos de la serie de velas
+        document.getElementById('toggle-chart').textContent = 'Mostrar Gráfico de Velas'; // Cambiar texto del botón
+    }
+}
+
+// Botón para alternar entre gráfico de velas y gráfico de líneas
+document.getElementById('toggle-chart').addEventListener('click', function () {
+    isCandlestickChartVisible = !isCandlestickChartVisible; // Cambiar el estado del gráfico
+    updateChartVisibility(); // Actualizar la visibilidad del gráfico
 });
 
 function updateChart() {
