@@ -247,7 +247,7 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
                 candleSeries.setData(ratioData); // Solo si es gráfico de velas
             } else {
                 const lineData = convertCandleToLineSeries(ratioData);
-                lineSeries.setData(ratioData); // Actualiza línea si ya es gráfico de línea
+                lineSeries.setData(lineData); // Actualiza línea si ya es gráfico de línea
             }
 
             // Crear una nueva serie para los volúmenes sumados
