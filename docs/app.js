@@ -913,7 +913,7 @@ function toggleChartType(isRatio = false) {
     console.log("Formatted Data:", formattedData);
 
     // Verificar si hay datos
-    if (!dataToUse || dataToUse.length === 0) {
+    if (!Array.isArray(dataToUse) || dataToUse.length === 0) {
         console.warn("No hay datos para mostrar."); // Asegúrate de que esto se imprima solo si realmente no hay datos
         return; // Salir si no hay datos
     }
