@@ -54,40 +54,47 @@
 
 
         .search-container {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
+          
+            margin: 20px; /* Espacio alrededor del contenedor */
         }
 
         .search-wrapper {
-            display: flex;
-            align-items: center;
-            position: relative;
-        }
-    
-        #search-input {
-            padding: 10px 40px 10px 10px; /* Agregar espacio a la izquierda para el ícono */
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 14px;
-            transition: border-color 0.3s;
-            width: 100%; /* Ajustar al 100% del contenedor */
-        }
-        
-        .search-button {
-            background-color: transparent; /* Fondo transparente */
-            border: none; /* Sin borde */
-            cursor: pointer; /* Cambiar el cursor al pasar sobre el botón */
-            padding: 12px; /* Aumentar el área de clic */
-            display: flex; /* Alinear el icono en el centro */
-            align-items: center; /* Centrar verticalmente */
-            justify-content: center; /* Centrar horizontalmente */
+            position: relative; /* Permite el posicionamiento absoluto del botón */
+            display: flex; /* Para alinear el input y el botón en una fila */
         }
 
-        #search-input:focus {
-            border-color: #2196F3;
-            outline: none;
+    
+        #search-input {
+            padding: 10px 40px 10px 20px; /* Espacio interno: arriba, derecha, abajo, izquierda */
+            border: 1px solid #aaa; /* Borde del input */
+            border-radius: 25px; /* Bordes redondeados */
+            outline: none; /* Sin contorno en el foco */
+            width: 100%; /* Ajusta el ancho al contenedor */
+            font-size: 16px; /* Tamaño de fuente */
+            transition: border-color 0.3s; /* Efecto de transición para el borde */
         }
+        #search-input:focus {
+            border-color: #007bff; /* Color del borde al enfocarse */
+        }
+
+        .search-button {
+            position: absolute; /* Permite que el botón esté sobre el input */
+            right: 10px; /* Alineado a la derecha */
+            top: 50%; /* Centramos verticalmente */
+            transform: translateY(-50%); /* Ajuste para centrar exactamente */
+            background-color: #007bff; /* Color de fondo del botón */
+            color: white; /* Color del texto */
+            border: none; /* Sin borde */
+            border-radius: 25px; /* Bordes redondeados */
+            padding: 8px 12px; /* Espaciado interior */
+            cursor: pointer; /* Cambia el cursor al pasar por encima */
+            transition: background-color 0.3s, transform 0.3s; /* Efectos de transición */
+        }
+        .search-button:hover {
+            background-color: #0056b3; /* Color más oscuro al pasar el ratón */
+            transform: scale(1.05); /* Efecto de aumento al pasar el ratón */
+        }
+
 
         #suggestions {
             position: absolute;
