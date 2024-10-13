@@ -454,7 +454,7 @@ chart.subscribeCrosshairMove(function(param) {
         // Preparar el contenido de la leyenda
         const ratioLegendContent = `
             <strong>Fecha:</strong> ${formatDate(param.time)} <br>
-            <strong>Ratio Cierre:</strong> ${ratioValue.toFixed(3)} <br>
+            <strong>Ratio Cierre:</strong> ${ratioValue)} <br>
             <strong>Volumen Total:</strong> ${(totalVolume / 1000000).toFixed(2)}M <br>
         `;
 
