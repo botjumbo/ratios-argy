@@ -626,7 +626,7 @@ function calculateRatio(data1, data2) {
     return divisionValues;
 }
 
-function loadChartData(input) {
+async function loadChartData(input) {
     // Limpiar los datos previos del gráfico
     lineSeries.setData([]);
     divisionSeries.setData([]);
@@ -652,14 +652,15 @@ function loadChartData(input) {
 
         // Llamar a la función que procesa ratios
         
-        fetchAndUpdateChartDataRatio(symbol1, symbol2); // Usar symbol1 y symbol2
+        await fetchAndUpdateChartDataRatio(symbol1, symbol2);
         document.getElementById('instrument-title').textContent = `Ratio ${symbol1.replace('.csv', '')}/${symbol2.replace('.csv', '')}`;
 
 
     } else {
         // Cargar datos del símbolo individual
-        fetchAndUpdateChartData(inputUpperCase);
-        
+        //fetchAndUpdateChartData(inputUpperCase);
+        await fetchAndUpdateChartData(input);
+
         document.getElementById('instrument-title').textContent = `Análisis de ${inputUpperCase.replace('.csv', '')}`;
 
     }
