@@ -612,50 +612,34 @@ function loadChartData(input) {
 
     // Actualizar el estado del botón de bandas de Bollinger
     document.getElementById('toggle-bands').textContent = bandsVisible ? 'Ocultar Bandas de Bollinger' : 'Mostrar Bandas de Bollinger';
-    const inputUpperCase = input; // 
 
-    // Actualizar el título del gráfico
-
+    const instrumentToLoad = input.trim().toUpperCase(); // Convertir a mayúsculas
 
     // Verificar si el input es un ratio (par de símbolos separados por '/')
-    if (inputUpperCase.includes('/')) {
-        const [symbol1, symbol2] = inputUpperCase.split('/').map(s => s.trim()); // Extraer los símbolos
-
-        // Llamar a la función que procesa ratios
-        fetchAndUpdateChartDataRatio(symbol1, symbol2); // Usar symbol1 y symbol2
-        document.getElementById('instrument-title').textContent = `Ratio ${symbol1.replace('.csv', '')}/${symbol2.replace('.csv', '')}`;
-
-
+    if (instrumentToLoad.includes('/')) {
+        const [symbol1, symbol2] = instrumentToLoad.split('/').map(s => s.trim().toUpperCase());
+        
+        // Comprobar si ambos símbolos existen en la lista
+        if (symbols.includes(symbol1) && symbols.includes(symbol2)) {
+            fetchAndUpdateChartDataRatio(`${symbol1}.csv`, `${symbol2}.csv`);
+            document.getElementById('instrument-title').textContent = `Ratio ${symbol1}/${symbol2}`;
+        } else {
+            console.error('Uno o ambos símbolos no existen en la lista de instrumentos.');
+        }
     } else {
-        // Cargar datos del símbolo individual
-        fetchAndUpdateChartData(inputUpperCase);
-        document.getElementById('instrument-title').textContent = `Análisis de ${inputUpperCase.replace('.csv', '')}`;
-
+        // Comprobar si el símbolo existe en la lista
+        if (symbols.includes(instrumentToLoad)) {
+            const inputUpperCase = `${instrumentToLoad}.csv`; // Añadir la extensión
+            fetchAndUpdateChartData(inputUpperCase); // Cargar el gráfico del instrumento
+            document.getElementById('instrument-title').textContent = `Análisis de ${inputUpperCase}`;
+        } else {
+            console.error('El símbolo no existe en la lista de instrumentos.');
+        }
     }
 
     // Limpiar el campo de búsqueda
     document.getElementById('search-input').value = '';
-
-    // Si las bandas de Bollinger están activadas, cargarlas
-    if (bandsVisible) {
-        const filteredResults = candleSeries.getData(); // Obtener los datos actuales del gráfico
-
-        // Calcular las bandas de Bollinger y medias móviles
-        const { bands, movingAverage } = calculateBollingerBands(filteredResults.map(result => ({
-            fecha: result.time,
-            cierre: result.close
-        })));
-
-        upperBandData = bands.map(b => ({ time: b.time, value: b.upper }));
-        lowerBandData = bands.map(b => ({ time: b.time, value: b.lower }));
-        movingAverageData = movingAverage;
-
-        upperBandSeries.setData(upperBandData);
-        lowerBandSeries.setData(lowerBandData);
-        movingAverageSeries.setData(movingAverageData);
-    }
 }
-
 function search() {
     const searchInput = document.getElementById('search-input');
     const suggestions = document.getElementById('suggestions');
