@@ -246,8 +246,8 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
             if (!isLineChart) {
                 candleSeries.setData(ratioData); // Solo si es gráfico de velas
             } else {
-                const lineData = convertCandleToLineSeries(ratioData);
-                lineSeries.setData(lineData); // Actualiza línea si ya es gráfico de línea
+                const lineDataRatio = convertCandleToLineSeries(ratioData);
+                lineSeries.setData(lineDataRatio); // Actualiza línea si ya es gráfico de línea
             }
 
             // Crear una nueva serie para los volúmenes sumados
@@ -940,8 +940,8 @@ function toggleChartTypeRatio() {
         document.getElementById('toggle-chart').innerText = "Mostrar Gráfico de Línea"; // Actualizar texto del botón
     } else {
         // Cambiar a gráfico de línea
-        const lineData = convertCandleToLineSeries(ratioData); // Convertir datos
-        lineSeries.setData(lineData); // Establecer datos de línea
+        const lineDataRatio = convertCandleToLineSeries(ratioData); // Convertir datos
+        lineSeries.setData(lineDataRatio); // Establecer datos de línea
         candleSeries.setData([]); // Limpiar datos de velas
         document.getElementById('toggle-chart').innerText = "Mostrar Gráfico de Velas"; // Actualizar texto del botón
         
