@@ -294,7 +294,7 @@ function processInput(input) {
         return `${symbol1}/${symbol2}`;
     } else {
         // Si no es un ratio, simplemente agregar la extensión .csv al símbolo
-        return `${instrumentToLoad}`;
+        return `${instrumentToLoad}.csv`;
     }
 }
 
