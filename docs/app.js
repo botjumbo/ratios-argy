@@ -302,9 +302,13 @@ function updateLC(){
     // Aquí solo actualiza los datos sin restablecer el gráfico
     if (!isLineChart) {
         candleSeries.setData(ratioData); // Solo si es gráfico de velas
+        lineSeries.setData([]); // Limpiar datos de línea
+
     } else {
         const lineDataRatio = convertCandleToLineSeries(ratioData);
         lineSeries.setData(lineDataRatio); // Actualiza línea si ya es gráfico de línea
+        candleSeries.setData([]); // Limpiar datos de velas
+
     }
 }
 function processInput(input) {
