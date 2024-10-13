@@ -628,7 +628,7 @@ function loadChartData(input) {
         }
     } else {
         // Comprobar si el símbolo sin extensión existe
-        if (symbol.includes(instrumentToLoad)) {
+        if (symbols.includes(instrumentToLoad)) {
             inputUpperCase = `${instrumentToLoad}.csv`;
             fetchAndUpdateChartData(inputUpperCase);
             document.getElementById('instrument-title').textContent = `Análisis de ${inputUpperCase}`;
