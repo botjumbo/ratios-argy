@@ -319,7 +319,7 @@ function updateSearchInput(selectedText, searchInput) {
 
     // Agregar la extensión .csv si no está presente
     if (!currentInput.endsWith('.csv')) {
-        currentInput += '.csv';
+        currentInput += '';
     }
 
     searchInput.value = currentInput;
