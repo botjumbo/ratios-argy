@@ -891,6 +891,12 @@ document.getElementById('toggle-bands').addEventListener('click', function () {
 
 });
 
+function convertCandleToLineSeries(candleData) {
+    return candleData.map(item => ({
+        time: item.time,
+        value: item.close // Usamos el cierre como valor de la línea
+    }));
+}
 
 // Función para alternar el tipo de gráfico
 function toggleChartType() {
