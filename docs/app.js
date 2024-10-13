@@ -892,31 +892,22 @@ document.getElementById('toggle-bands').addEventListener('click', function () {
 });
 
 
+function toggleChartType() {
+    const candleData = SelectedInstrument.candleData; // Obtener los datos de velas del instrumento
 
-function toggleChartType(symbol1, symbol2) {
     if (currentChartType === 'candlestick') {
-        // Cambiar a LineSeriesData
-        fetchAndUpdateChartDataRatio(symbol1, symbol2)
-            .then(() => {
-                const lineData = convertCandleToLineSeries(selectedInstrument);
-                lineSeries.setData(lineData); // Establecer datos de línea
-                candleSeries.setData([]); // Limpiar los datos de candlestick
-                currentChartType = 'line'; // Actualiza el estado del tipo de gráfico
-            })
-            .catch(error => {
-                console.error("Error al alternar a LineSeries:", error);
-            });
+        // Cambiar a LineSeries
+        const lineData = convertCandleToLineSeries(candleData); // Convertir datos de velas a datos de línea
+        lineSeries.setData(lineData); // Establecer datos de línea
+        candleSeries.setData([]); // Limpiar datos de candlestick
+        currentChartType = 'line'; // Actualiza el estado del tipo de gráfico
+        document.getElementById('toggle-chart').innerText = 'Mostrar Gráfico de Velas'; // Cambiar texto del botón
     } else {
-        // Cambiar a CandleSeriesData
-        fetchAndUpdateChartDataRatio(symbol1, symbol2)
-            .then(() => {
-                candleSeries.setData(selectedInstrument); // Establecer datos de candlestick
-                lineSeries.setData([]); // Limpiar los datos de línea
-                currentChartType = 'candlestick'; // Actualiza el estado del tipo de gráfico
-            })
-            .catch(error => {
-                console.error("Error al alternar a CandleSeries:", error);
-            });
+        // Cambiar a CandleSeries
+        candleSeries.setData(candleData); // Establecer datos de candlestick
+        lineSeries.setData([]); // Limpiar datos de línea
+        currentChartType = 'candlestick'; // Actualiza el estado del tipo de gráfico
+        document.getElementById('toggle-chart').innerText = 'Mostrar Gráfico de Línea'; // Cambiar texto del botón
     }
 }
 
@@ -928,6 +919,8 @@ function convertCandleToLineSeries(candleData) {
         value: item.close // Solo necesitas el cierre para la serie de líneas
     }));
 }
+
+
 
 function updateChart() {
     
