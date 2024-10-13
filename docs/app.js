@@ -658,8 +658,8 @@ async function loadChartData(input) {
 
     } else {
         // Cargar datos del símbolo individual
-        //fetchAndUpdateChartData(inputUpperCase);
-        await fetchAndUpdateChartData(input);
+        await fetchAndUpdateChartData(inputUpperCase);
+        //await fetchAndUpdateChartData(input);
 
         document.getElementById('instrument-title').textContent = `Análisis de ${inputUpperCase.replace('.csv', '')}`;
 
