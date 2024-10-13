@@ -922,8 +922,8 @@ function convertCandleToLineSeries(candleData) {
 function toggleChartType() {
     if (isLineChart) {
         // Cambiar a gráfico de velas
-        candleSeries.setData(formattedData); // Restablecer a datos de velas
         lineSeries.setData([]); // Limpiar datos de línea
+        candleSeries.setData(formattedData); // Restablecer a datos de velas
         document.getElementById('toggle-chart').innerText = "Mostrar Gráfico de Línea"; // Actualizar texto del botón
     } else {
         // Cambiar a gráfico de línea
@@ -973,7 +973,7 @@ function updateChart() {
                 }
                 
                 fetchAndUpdateChartDataRatio(symbol1, symbol2);
-                toggleChartTypeRatio();
+                
             } else {
                 console.error(`${symbol1}/${symbol2} no existe en la lista de instrumentos.`);
             }
