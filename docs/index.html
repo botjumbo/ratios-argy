@@ -98,13 +98,19 @@
             display: none;
             max-height: 20px;
             overflow-y: auto;
-            width: 29.5%; /* Cambiar a 100% para que coincida con el ancho del input */
+            width: 29.5%;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            min-height: 130px; /* Altura mínima para que no tape el input */
-            margin-top: 40px; /* Espacio entre el input y el cuadro de sugerencias */
-            pointer-events: auto; /* Asegura que el cursor sea visible */
+            min-height: 130px;
+            margin-top: 40px;
+            pointer-events: auto;
             cursor: default;
- 
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        /* Efecto cuando se hace clic */
+        #suggestions:active {
+            transform: scale(0.98); /* Efecto de "apretar" */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Cambia la sombra al hacer clic */
         }
 
 
