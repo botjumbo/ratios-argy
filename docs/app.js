@@ -595,6 +595,7 @@ function calculateRatio(data1, data2) {
 
     return divisionValues;
 }
+
 function loadChartData(input) {
     // Limpiar los datos previos del gráfico
     lineSeries.setData([]);
@@ -611,40 +612,53 @@ function loadChartData(input) {
 
     // Actualizar el estado del botón de bandas de Bollinger
     document.getElementById('toggle-bands').textContent = bandsVisible ? 'Ocultar Bandas de Bollinger' : 'Mostrar Bandas de Bollinger';
-    
-    const instrumentToLoad = input.trim().toUpperCase();
-    let inputUpperCase;
+    const inputUpperCase = input; // 
+
+    // Actualizar el título del gráfico
+
 
     // Verificar si el input es un ratio (par de símbolos separados por '/')
-    if (instrumentToLoad.includes('/')) {
-        const [symbol1, symbol2] = instrumentToLoad.split('/').map(s => s.trim());
-        
+    if (inputUpperCase.includes('/')) {
+        const [symbol1, symbol2] = inputUpperCase.split('/').map(s => s.trim()); // Extraer los símbolos
+
         // Llamar a la función que procesa ratios
-        if (symbol.includes(symbol1) && symbol.includes(symbol2)) {
-            fetchAndUpdateChartDataRatio(symbol1, symbol2);
-            document.getElementById('instrument-title').textContent = `Ratio ${symbol1}/${symbol2}`;
-        } else {
-            console.error('Uno o ambos símbolos no existen en la lista de instrumentos.');
-        }
+        fetchAndUpdateChartDataRatio(symbol1, symbol2); // Usar symbol1 y symbol2
+        document.getElementById('instrument-title').textContent = `Ratio ${symbol1.replace('.csv', '')}/${symbol2.replace('.csv', '')}`;
+
+
     } else {
-        // Comprobar si el símbolo sin extensión existe
-        if (symbols.includes(instrumentToLoad)) {
-            inputUpperCase = `${instrumentToLoad.toUpperCase()}.csv`;
-            fetchAndUpdateChartData(inputUpperCase);
-            document.getElementById('instrument-title').textContent = `Análisis de ${inputUpperCase}`;
-        } else {
-            console.error('El símbolo no existe en la lista de instrumentos.');
-        }
+        // Cargar datos del símbolo individual
+        fetchAndUpdateChartData(inputUpperCase);
+        document.getElementById('instrument-title').textContent = `Análisis de ${inputUpperCase.replace('.csv', '')}`;
+
     }
 
     // Limpiar el campo de búsqueda
     document.getElementById('search-input').value = '';
+
+    // Si las bandas de Bollinger están activadas, cargarlas
+    if (bandsVisible) {
+        const filteredResults = candleSeries.getData(); // Obtener los datos actuales del gráfico
+
+        // Calcular las bandas de Bollinger y medias móviles
+        const { bands, movingAverage } = calculateBollingerBands(filteredResults.map(result => ({
+            fecha: result.time,
+            cierre: result.close
+        })));
+
+        upperBandData = bands.map(b => ({ time: b.time, value: b.upper }));
+        lowerBandData = bands.map(b => ({ time: b.time, value: b.lower }));
+        movingAverageData = movingAverage;
+
+        upperBandSeries.setData(upperBandData);
+        lowerBandSeries.setData(lowerBandData);
+        movingAverageSeries.setData(movingAverageData);
+    }
 }
 
 function search() {
     const searchInput = document.getElementById('search-input');
     const suggestions = document.getElementById('suggestions');
-    
     // Ocultar las sugerencias al hacer clic en el botón de búsqueda
     suggestions.style.display = 'none';
     suggestions.innerHTML = ''; // Limpiar contenido de sugerencias
@@ -658,11 +672,28 @@ function search() {
     // Actualizar selectedInstrument aquí
     selectedInstrument = input; // Actualizar la variable global
 
-    loadChartData(selectedInstrument); // Cargar el gráfico del instrumento
+    // Verificar si es un par de símbolos separados por "/"
+    if (selectedInstrument.includes('/')) {
+        const parts = selectedInstrument.split('/').map(s => s.trim());
+        const symbol1 = parts[0];
+        const symbol2 = parts[1];
+
+        // Verificar que ambos símbolos existan en la lista de instrumentos
+        if (symbol.includes(symbol1) && symbol.includes(symbol2)) {
+            selectedInstrument = `${symbol1}/${symbol2}`;
+            fetchAndUpdateChartDataRatio(symbol1, symbol2);
+            loadChartData(selectedInstrument);
+        } else {
+            console.error('Uno o ambos símbolos no existen en la lista de instrumentos.');
+        }
+    } else {
+        loadChartData(selectedInstrument); // Cargar el gráfico del instrumento
+    }
 
     // Limpiar el campo de búsqueda
-    searchInput.value = ''; // Limpiar el campo de búsqueda
+    searchInput.value = '';
 }
+
 
 // Manejo del evento de teclado
 document.getElementById('search-input').addEventListener('keydown', function(e) {
