@@ -79,103 +79,101 @@ function loadCSV(filePath) {
             return parseCSV(data); // Función para procesar y convertir el CSV a un formato útil
         });
 }
+async function fetchAndUpdateChartData(symbol) {
+    try {
+        const response = await fetch(`/ratios-argy/${symbol}`); // Cambia la URL según la ubicación de tus archivos CSV
+        
+        if (!response.ok) {
+            throw new Error(`Error al cargar los datos del símbolo: ${symbol}. Respuesta del servidor: ${response.statusText}`);
+        }
 
-function fetchAndUpdateChartData(symbol) {
-    fetch(`/ratios-argy/${symbol}`) // Cambia la URL según la ubicación de tus archivos CSV
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`Error al cargar los datos del símbolo: ${symbol}. Respuesta del servidor: ${response.statusText}`);
-            }
-            return response.text(); // Cambia a text() ya que vamos a leer un CSV
-        })
-        .then(data => {
-            const rows = data.split('\n').slice(1).map(row => {
-                const items = row.split(',').map(item => item.trim()); // Elimina espacios en blanco
-                
-                // Ignorar filas que no tienen suficientes datos
-                if (items.length < 7 || items.every(item => item === '')) {
-                    return null; // Retorna null si la fila es vacía o no tiene suficientes datos
-                }
-
-                const [especie, fecha, apertura, maximo, minimo, cierre, volumen] = items;
-
-                // Verifica si los campos esenciales son válidos
-                if (!especie || !fecha || !apertura || !maximo || !minimo || !cierre || !volumen) {
-                    console.error("Datos no válidos para:", { especie, fecha, apertura, maximo, minimo, cierre, volumen });
-                    return null; // Retorna null si hay datos no válidos
-                }
-
-                return { 
-                    especie, 
-                    fecha, // La fecha ya está limpia de espacios
-                    apertura: parseFloat(apertura), 
-                    maximo: parseFloat(maximo), 
-                    minimo: parseFloat(minimo), 
-                    cierre: parseFloat(cierre), 
-                    volumen: parseInt(volumen), 
-                };
-            }).filter(item => item !== null); // Filtra las filas que son null
-
-            if (rows.length === 0) {
-                console.warn("No se encontraron datos válidos.");
-                return; // Salir si no hay datos válidos
-            }
-            // Continuar con el procesamiento si hay datos válidos
-
-             formattedData = rows.map(item => {
-                const time = formatDate(item.fecha); // Usamos la fecha sin convertir
-                const open = item.apertura;
-                const high = item.maximo;
-                const low = item.minimo;
-                const close = item.cierre;
-                const volume = item.volumen;
-
-                return {
-                    time: time, // La fecha en formato "YYYY-MM-DD"
-                    open: open,
-                    high: high,
-                    low: low,
-                    close: close,
-                    volume: volume // Agrega volumen si es necesario
-                };
-            });
-
-
-            // Aquí solo actualiza los datos sin restablecer el gráfico
-            if (!isLineChart) {
-                candleSeries.setData(formattedData); // Solo si es gráfico de velas
-            } else {
-                const lineData = convertCandleToLineSeries(formattedData);
-                lineSeries.setData(lineData); // Actualiza línea si ya es gráfico de línea
-            }
+        const data = await response.text(); // Cambia a text() ya que vamos a leer un CSV
+        const rows = data.split('\n').slice(1).map(row => {
+            const items = row.split(',').map(item => item.trim()); // Elimina espacios en blanco
             
-            const volumeData = rows.map(item => ({
-                time: item.fecha,
-                value: item.volumen,
-                color: item.cierre >= item.apertura ? '#4fff00' : '#ff4976',
-            }));
+            // Ignorar filas que no tienen suficientes datos
+            if (items.length < 7 || items.every(item => item === '')) {
+                return null; // Retorna null si la fila es vacía o no tiene suficientes datos
+            }
 
-            volumeSeries.setData(volumeData);
+            const [especie, fecha, apertura, maximo, minimo, cierre, volumen] = items;
 
-            // Calcular las bandas de Bollinger y la media móvil
-            const { bands, movingAverage } = calculateBollingerBands(
-                formattedData.map(result => ({
-                    fecha: result.time,
-                    cierre: result.close
-                }))
-            );
+            // Verifica si los campos esenciales son válidos
+            if (!especie || !fecha || !apertura || !maximo || !minimo || !cierre || !volumen) {
+                console.error("Datos no válidos para:", { especie, fecha, apertura, maximo, minimo, cierre, volumen });
+                return null; // Retorna null si hay datos no válidos
+            }
 
-            // Actualizar las bandas globalmente
-            upperBandData = bands.map(b => ({ time: b.time, value: b.upper }));
-            lowerBandData = bands.map(b => ({ time: b.time, value: b.lower }));
-            movingAverageData = movingAverage;
+            return { 
+                especie, 
+                fecha, // La fecha ya está limpia de espacios
+                apertura: parseFloat(apertura), 
+                maximo: parseFloat(maximo), 
+                minimo: parseFloat(minimo), 
+                cierre: parseFloat(cierre), 
+                volumen: parseInt(volumen), 
+            };
+        }).filter(item => item !== null); // Filtra las filas que son null
 
-            // Mostrar u ocultar las bandas de Bollinger según el estado
-            updateBollingerBandsVisibility();
-        })
-        .catch(error => {
-            console.error(`Error al cargar los datos del símbolo: ${symbol}.`, error);
+        if (rows.length === 0) {
+            console.warn("No se encontraron datos válidos.");
+            return; // Salir si no hay datos válidos
+        }
+        
+        // Continuar con el procesamiento si hay datos válidos
+        formattedData = rows.map(item => {
+            const time = formatDate(item.fecha); // Usamos la fecha sin convertir
+            const open = item.apertura;
+            const high = item.maximo;
+            const low = item.minimo;
+            const close = item.cierre;
+            const volume = item.volumen;
+
+            return {
+                time: time, // La fecha en formato "YYYY-MM-DD"
+                open: open,
+                high: high,
+                low: low,
+                close: close,
+                volume: volume // Agrega volumen si es necesario
+            };
         });
+
+        // Aquí solo actualiza los datos sin restablecer el gráfico
+        if (!isLineChart) {
+            candleSeries.setData(formattedData); // Solo si es gráfico de velas
+        } else {
+            const lineData = convertCandleToLineSeries(formattedData);
+            lineSeries.setData(lineData); // Actualiza línea si ya es gráfico de línea
+        }
+        
+        const volumeData = rows.map(item => ({
+            time: item.fecha,
+            value: item.volumen,
+            color: item.cierre >= item.apertura ? '#4fff00' : '#ff4976',
+        }));
+
+        volumeSeries.setData(volumeData);
+
+        // Calcular las bandas de Bollinger y la media móvil
+        const { bands, movingAverage } = calculateBollingerBands(
+            formattedData.map(result => ({
+                fecha: result.time,
+                cierre: result.close
+            }))
+        );
+
+        // Actualizar las bandas globalmente
+        upperBandData = bands.map(b => ({ time: b.time, value: b.upper }));
+        lowerBandData = bands.map(b => ({ time: b.time, value: b.lower }));
+        movingAverageData = movingAverage;
+
+        // Mostrar u ocultar las bandas de Bollinger según el estado
+        updateBollingerBandsVisibility();
+
+    } catch (error) {
+        console.error(`Error al cargar los datos del símbolo: ${symbol}.`, error);
+    }
 }
 
 async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
