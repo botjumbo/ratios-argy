@@ -631,7 +631,6 @@ function loadChartData(input) {
     document.getElementById('toggle-bands').textContent = bandsVisible ? 'Ocultar Bandas de Bollinger' : 'Mostrar Bandas de Bollinger';
     const inputUpperCase = input; // 
 
-    // Actualizar el título del gráfico
 
 
     // Verificar si el input es un ratio (par de símbolos separados por '/')
@@ -639,6 +638,7 @@ function loadChartData(input) {
         const [symbol1, symbol2] = inputUpperCase.split('/').map(s => s.trim()); // Extraer los símbolos
 
         // Llamar a la función que procesa ratios
+        
         fetchAndUpdateChartDataRatio(symbol1, symbol2); // Usar symbol1 y symbol2
         document.getElementById('instrument-title').textContent = `Ratio ${symbol1.replace('.csv', '')}/${symbol2.replace('.csv', '')}`;
 
@@ -646,6 +646,7 @@ function loadChartData(input) {
     } else {
         // Cargar datos del símbolo individual
         fetchAndUpdateChartData(inputUpperCase);
+        
         document.getElementById('instrument-title').textContent = `Análisis de ${inputUpperCase.replace('.csv', '')}`;
 
     }
@@ -685,6 +686,7 @@ function search() {
 
     // Cargar los datos del gráfico usando la entrada procesada
     loadChartData(processedInput); 
+    selectedInstrument = processedInput;
 
     // Limpiar el campo de búsqueda
     document.getElementById('search-input').value = '';
