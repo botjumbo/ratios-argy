@@ -119,7 +119,7 @@ function fetchAndUpdateChartData(symbol) {
             }
             // Continuar con el procesamiento si hay datos válidos
 
-            const formattedData = rows.map(item => {
+             formattedData = rows.map(item => {
                 const time = formatDate(item.fecha); // Usamos la fecha sin convertir
                 const open = item.apertura;
                 const high = item.maximo;
