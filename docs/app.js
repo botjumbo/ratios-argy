@@ -435,7 +435,7 @@ chart.subscribeCrosshairMove(function(param) {
 
     // Obtener los datos de las series
     const price = param.seriesData.get(candleSeries);
-    const ratioData = param.seriesData.get(divisionSeries); 
+    const ratioData = param.seriesData.get(lineSeries); 
     const volumeData = param.seriesData.get(volumeSeries);
     let totalVolume = 0; // Para almacenar volumen total en caso de comparar
 
@@ -456,7 +456,6 @@ chart.subscribeCrosshairMove(function(param) {
             <strong>Fecha:</strong> ${formatDate(param.time)} <br>
             <strong>Ratio Cierre:</strong> ${ratioValue.toFixed(3)} <br>
             <strong>Volumen Total:</strong> ${(totalVolume / 1000000).toFixed(2)}M <br>
-            ${percentageChange}
         `;
 
 
