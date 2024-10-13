@@ -344,10 +344,6 @@ function updateSearchInput(selectedText, searchInput) {
         }
     }
 
-    // Agregar la extensión .csv si no está presente
-    if (!currentInput.endsWith('.csv')) {
-        currentInput += '.csv';
-    }
 
     searchInput.value = currentInput;
 }
@@ -807,6 +803,8 @@ function filterInstruments() {
                     selectedInstrument = document.getElementById('search-input').value; 
                     suggestions.style.display = 'none'; // Ocultar las sugerencias
                     document.getElementById('instrument-title').textContent = `Análisis de ${selectedInstrument.replace('.csv', '')}`;
+                    search();
+
                 };
                 suggestionDiv.onmouseover = () => {
                     highlightedIndex = index;
