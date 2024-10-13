@@ -892,7 +892,7 @@ function toggleChartType(symbol1, symbol2) {
         // Cambiar a LineSeriesData
         fetchAndUpdateChartDataRatio(symbol1, symbol2)
             .then(() => {
-                const lineData = convertCandleToLineSeries(ratioData);
+                const lineData = convertCandleToLineSeries(SelectedInstrument);
                 lineSeries.setData(lineData); // Establecer datos de línea
                 candleSeries.setData([]); // Limpiar los datos de candlestick
                 currentChartType = 'line'; // Actualiza el estado del tipo de gráfico
@@ -904,7 +904,7 @@ function toggleChartType(symbol1, symbol2) {
         // Cambiar a CandleSeriesData
         fetchAndUpdateChartDataRatio(symbol1, symbol2)
             .then(() => {
-                candleSeries.setData(ratioData); // Establecer datos de candlestick
+                candleSeries.setData(SelectedInstrument); // Establecer datos de candlestick
                 lineSeries.setData([]); // Limpiar los datos de línea
                 currentChartType = 'candlestick'; // Actualiza el estado del tipo de gráfico
             })
