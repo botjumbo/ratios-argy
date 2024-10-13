@@ -227,7 +227,7 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
                 }));
 
             // Crear la serie de datos para el ratio
-            const ratioData = formattedData1.map(item1 => {
+            ratioData = formattedData1.map(item1 => {
                 const item2 = formattedData2.find(item2 => item2.time === item1.time);
                 if (item2) {
                     return {
@@ -241,7 +241,6 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
                 return null; // Si no hay coincidencia, devolver null
             }).filter(Boolean);
 
-            candleSeries.setData(ratioData);
             
             // Aquí solo actualiza los datos sin restablecer el gráfico
             if (!isLineChart) {
