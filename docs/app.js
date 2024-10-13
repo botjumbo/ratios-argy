@@ -291,10 +291,10 @@ function processInput(input) {
         const [symbol1, symbol2] = instrumentToLoad.split('/').map(s => s.trim());
 
         // Retornar los símbolos como archivos con extensión .csv
-        return `${symbol1}.csv/${symbol2}.csv`;
+        return `${symbol1}/${symbol2}`;
     } else {
         // Si no es un ratio, simplemente agregar la extensión .csv al símbolo
-        return `${instrumentToLoad}.csv`;
+        return `${instrumentToLoad}`;
     }
 }
 
