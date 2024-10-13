@@ -60,6 +60,12 @@ let firstSuggestionConfirmed = false;
 let currentChartType = 'candlestick'; // Estado inicial del tipo de gráfico
 
 
+// Escuchar el evento de clic en el botón
+document.getElementById('toggle-chart').addEventListener('click', function() {
+    toggleChartType();
+});
+
+
 
 // Carga un archivo CSV desde una ruta
 function loadCSV(filePath) {
