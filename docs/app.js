@@ -402,15 +402,15 @@ function formatDate(date) {
     // Retorna la fecha en formato "YYYY-MM-DD"
     return date; // Simplemente devuelve la fecha como está
 }
-
 // Suscribirse al movimiento del cursor
 chart.subscribeCrosshairMove(function(param) {
+    // Comprobar si hay datos válidos
     if (!param || !param.seriesData || param.seriesData.size === 0) {
         // Mantener el último dato mostrado si no hay interacción
         legendElement.innerHTML = lastValidData;
-        //tooltip.style.display = 'none'; // Ocultar si no hay datos
+        // tooltip.style.display = 'none'; // Ocultar si no hay datos
         return;
-    }     
+    }
 
     const currentPrice = candleSeries.coordinateToPrice(param.point.y);
 
@@ -418,7 +418,7 @@ chart.subscribeCrosshairMove(function(param) {
     if (isMeasuring && initialPrice !== null) {
         // Calcular el cambio porcentual
         const percentageChange = ((currentPrice - initialPrice) / initialPrice) * 100;
-        
+
         // Mostrar y actualizar la etiqueta
         tooltip.style.display = 'block';
         tooltip.innerHTML = `
@@ -430,39 +430,28 @@ chart.subscribeCrosshairMove(function(param) {
         // Posicionar la etiqueta cerca del cursor
         tooltip.style.left = param.point.x + 'px';
         tooltip.style.top = param.point.y + 'px';
-
     }
 
     // Obtener los datos de las series
     const price = param.seriesData.get(candleSeries);
-    const ratioData = param.seriesData.get(lineSeries); 
+    const ratioData = param.seriesData.get(lineSeries);
     const volumeData = param.seriesData.get(volumeSeries);
-    let totalVolume = 0; // Para almacenar volumen total en caso de comparar
+    let totalVolume = volumeData ? volumeData.value : 0; // Almacenar volumen total
 
     // Manejar solo los datos del ratio
     if (ratioData) {
-        const ratioValue = param.seriesData.get(lineSeries)?.value || null;
+        const ratioValue = ratioData.value || null;
 
-
-        // Para el volumen
-        const volumeValue = volumeData ? volumeData.value : 0;
-        totalVolume += volumeValue; // Sumar el volumen al total
-
-        let percentageChange = '';
-        
-
-        // Preparar el contenido de la leyenda
+        // Preparar el contenido de la leyenda para el ratio
         const ratioLegendContent = `
             <strong>Fecha:</strong> ${formatDate(param.time)} <br>
             <strong>Ratio Cierre:</strong> ${ratioValue} <br>
             <strong>Volumen Total:</strong> ${(totalVolume / 1000000).toFixed(2)}M <br>
         `;
 
-
         // Actualizar la leyenda
         legendElement.innerHTML = ratioLegendContent;
         lastValidData = ratioLegendContent; // Guardar el último dato válido
-
 
     } else if (price) {
         // Si no hay ratio, mostrar datos del precio
@@ -471,9 +460,10 @@ chart.subscribeCrosshairMove(function(param) {
             <strong>Apertura:</strong> ${price.open.toFixed(2)} <br>
             <strong>Máximo:</strong> ${price.high.toFixed(2)} <br>
             <strong>Mínimo:</strong> ${price.low.toFixed(2)} <br>
-            <strong>Cierre:</strong> ${price.close.toFixed(2)}<br>
-            <strong>Volumen:</strong> ${volumeData ? formatVolume(volumeData.value) : 'N/A'}<br>`;
-        
+            <strong>Cierre:</strong> ${price.close.toFixed(2)} <br>
+            <strong>Volumen:</strong> ${volumeData ? formatVolume(volumeData.value) : 'N/A'} <br>
+        `;
+
         // Actualizamos la leyenda y el último dato válido
         legendElement.innerHTML = newLegendContent;
         lastValidData = newLegendContent;
