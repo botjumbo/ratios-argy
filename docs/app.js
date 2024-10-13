@@ -241,9 +241,19 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
                 return null; // Si no hay coincidencia, devolver null
             }).filter(Boolean);
 
-            updateLC();
-
-
+        
+        
+            // Aquí solo actualiza los datos sin restablecer el gráfico
+            if (!isLineChart) {
+                candleSeries.setData(ratioData); // Solo si es gráfico de velas
+                lineSeries.setData([]); // Limpiar datos de línea
+        
+            } else {
+                const lineDataRatio = convertCandleToLineSeries(ratioData);
+                lineSeries.setData(lineDataRatio); // Actualiza línea si ya es gráfico de línea
+                candleSeries.setData([]); // Limpiar datos de velas
+            }
+            
             // Crear una nueva serie para los volúmenes sumados
             const combinedVolumeData = formattedData1.map(item1 => {
                 const item2 = formattedData2.find(item2 => item2.time === item1.time);
@@ -297,20 +307,7 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
     }
 }
 
-function updateLC(){
 
-    // Aquí solo actualiza los datos sin restablecer el gráfico
-    if (!isLineChart) {
-        candleSeries.setData(ratioData); // Solo si es gráfico de velas
-        lineSeries.setData([]); // Limpiar datos de línea
-
-    } else {
-        const lineDataRatio = convertCandleToLineSeries(ratioData);
-        lineSeries.setData(lineDataRatio); // Actualiza línea si ya es gráfico de línea
-        candleSeries.setData([]); // Limpiar datos de velas
-
-    }
-}
 function processInput(input) {
     // Convertir la entrada del usuario a mayúsculas y eliminar espacios extra
     const instrumentToLoad = input.trim().toUpperCase();
