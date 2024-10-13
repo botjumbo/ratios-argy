@@ -893,7 +893,7 @@ document.getElementById('toggle-bands').addEventListener('click', function () {
 
 
 function toggleChartType() {
-    const candleData = SelectedInstrument.candleData; // Obtener los datos de velas del instrumento
+    const candleData = selectedInstrument.candleData; // Obtener los datos de velas del instrumento
 
     if (currentChartType === 'candlestick') {
         // Cambiar a LineSeries
