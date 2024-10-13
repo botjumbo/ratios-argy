@@ -1,5 +1,5 @@
-const symbol = ['AL30', 'AL30D','GD30', 'GD30D','AE38', 'AE38D','AL30C', 'AL35','AL35D', 'GD30C','GD35', 'GD35D','MERVAL', 'TX26','TX28'];
-//const symbol = symbols.map(s => s + '.csv');
+const symbols = ['AL30', 'AL30D','GD30', 'GD30D','AE38', 'AE38D','AL30C', 'AL35','AL35D', 'GD30C','GD35', 'GD35D','MERVAL', 'TX26','TX28'];
+const symbol = symbols.map(s => s + '.csv');
 const promises = symbol.map(file => loadCSV(`/ratios-argy/${file}`));
 const legendElement = document.getElementById('legend');
 const suggestions = document.getElementById('suggestions');
@@ -613,44 +613,32 @@ function loadChartData(input) {
     document.getElementById('toggle-bands').textContent = bandsVisible ? 'Ocultar Bandas de Bollinger' : 'Mostrar Bandas de Bollinger';
     
     const instrumentToLoad = input.trim().toUpperCase();
-    
-    // Verificar si el input ya tiene la extensión .csv
-    const inputUpperCase = instrumentToLoad.endsWith('.csv') ? instrumentToLoad : `${instrumentToLoad}.csv`; // Asegurarse de que sea .csv en minúsculas
+    let inputUpperCase;
 
     // Verificar si el input es un ratio (par de símbolos separados por '/')
-    if (inputUpperCase.includes('/')) {
-        const [symbol1, symbol2] = inputUpperCase.split('/').map(s => s.trim()); // Extraer los símbolos
-
+    if (instrumentToLoad.includes('/')) {
+        const [symbol1, symbol2] = instrumentToLoad.split('/').map(s => s.trim());
+        
         // Llamar a la función que procesa ratios
-        fetchAndUpdateChartDataRatio(symbol1, symbol2); // Usar symbol1 y symbol2
-        document.getElementById('instrument-title').textContent = `Ratio ${symbol1}/${symbol2}`;
+        if (symbols.includes(symbol1) && symbols.includes(symbol2)) {
+            fetchAndUpdateChartDataRatio(symbol1, symbol2);
+            document.getElementById('instrument-title').textContent = `Ratio ${symbol1}/${symbol2}`;
+        } else {
+            console.error('Uno o ambos símbolos no existen en la lista de instrumentos.');
+        }
     } else {
-        // Cargar datos del símbolo individual
-        fetchAndUpdateChartData(inputUpperCase);
-        document.getElementById('instrument-title').textContent = `Análisis de ${inputUpperCase}`;
+        // Comprobar si el símbolo sin extensión existe
+        if (symbols.includes(instrumentToLoad)) {
+            inputUpperCase = `${instrumentToLoad}.csv`;
+            fetchAndUpdateChartData(inputUpperCase);
+            document.getElementById('instrument-title').textContent = `Análisis de ${inputUpperCase}`;
+        } else {
+            console.error('El símbolo no existe en la lista de instrumentos.');
+        }
     }
 
     // Limpiar el campo de búsqueda
-    document.getElementById('search-input').value = ''; // Mantener el campo vacío después de cargar los datos
-
-    // Si las bandas de Bollinger están activadas, cargarlas
-    if (bandsVisible) {
-        const filteredResults = candleSeries.getData(); // Obtener los datos actuales del gráfico
-
-        // Calcular las bandas de Bollinger y medias móviles
-        const { bands, movingAverage } = calculateBollingerBands(filteredResults.map(result => ({
-            fecha: result.time,
-            cierre: result.close
-        })));
-
-        upperBandData = bands.map(b => ({ time: b.time, value: b.upper }));
-        lowerBandData = bands.map(b => ({ time: b.time, value: b.lower }));
-        movingAverageData = movingAverage;
-
-        upperBandSeries.setData(upperBandData);
-        lowerBandSeries.setData(lowerBandData);
-        movingAverageSeries.setData(movingAverageData);
-    }
+    document.getElementById('search-input').value = '';
 }
 
 function search() {
