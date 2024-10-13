@@ -346,7 +346,7 @@ function updateSearchInput(selectedText, searchInput) {
 
     // Agregar la extensión .csv si no está presente
     if (!currentInput.endsWith('.csv')) {
-        currentInput += '';
+        currentInput += '.csv';
     }
 
     searchInput.value = currentInput;
@@ -960,7 +960,7 @@ function updateChart() {
                 }
                 
                 fetchAndUpdateChartDataRatio(symbol1, symbol2);
-                
+                console.log(`${symbol1}/${symbol2} instrumentos seleccionados.`);
             } else {
                 console.error(`${symbol1}/${symbol2} no existe en la lista de instrumentos.`);
             }
