@@ -241,14 +241,8 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
                 return null; // Si no hay coincidencia, devolver null
             }).filter(Boolean);
 
-            
-            // Aquí solo actualiza los datos sin restablecer el gráfico
-            if (!isLineChart) {
-                candleSeries.setData(ratioData); // Solo si es gráfico de velas
-            } else {
-                const lineDataRatio = convertCandleToLineSeries(ratioData);
-                lineSeries.setData(lineDataRatio); // Actualiza línea si ya es gráfico de línea
-            }
+            updateLC();
+
 
             // Crear una nueva serie para los volúmenes sumados
             const combinedVolumeData = formattedData1.map(item1 => {
@@ -303,6 +297,16 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
     }
 }
 
+function updateLC(){
+
+    // Aquí solo actualiza los datos sin restablecer el gráfico
+    if (!isLineChart) {
+        candleSeries.setData(ratioData); // Solo si es gráfico de velas
+    } else {
+        const lineDataRatio = convertCandleToLineSeries(ratioData);
+        lineSeries.setData(lineDataRatio); // Actualiza línea si ya es gráfico de línea
+    }
+}
 function processInput(input) {
     // Convertir la entrada del usuario a mayúsculas y eliminar espacios extra
     const instrumentToLoad = input.trim().toUpperCase();
@@ -931,7 +935,7 @@ function toggleChartType() {
     isLineChart = !isLineChart; // Alternar el estado del gráfico
 }
 
-// Función para alternar el tipo de gráfico
+// Función para alternar el tipo de gráfico del ratio
 function toggleChartTypeRatio() {
     if (isLineChart) {
         // Cambiar a gráfico de velas
