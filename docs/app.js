@@ -139,8 +139,15 @@ function fetchAndUpdateChartData(symbol) {
                 };
             });
 
-            candleSeries.setData(formattedData);
 
+            // Aquí solo actualiza los datos sin restablecer el gráfico
+            if (!isLineChart) {
+                candleSeries.setData(formattedData); // Solo si es gráfico de velas
+            } else {
+                const lineData = convertCandleToLineSeries(formattedData);
+                lineSeries.setData(lineData); // Actualiza línea si ya es gráfico de línea
+            }
+            
             const volumeData = rows.map(item => ({
                 time: item.fecha,
                 value: item.volumen,
@@ -923,6 +930,7 @@ function updateChart() {
     if (selectedInstrument) {
         if (!selectedInstrument.includes('/')) { // Comprueba que hay un solo símbolo
             fetchAndUpdateChartData(selectedInstrument); // Llama a la función con el símbolo seleccionado
+            
         } else {
             const [symbol1, symbol2] = selectedInstrument.split('/').map(s => s.trim());
 
