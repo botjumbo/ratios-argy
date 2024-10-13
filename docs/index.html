@@ -142,13 +142,21 @@
         #toggle-bands:hover {
             background: linear-gradient(90deg, #388E3C, #66BB6A); /* Cambia el gradiente al pasar el mouse */
         }
-        
         #watchlist {
+            display: flex; /* Utiliza Flexbox para alinear los elementos */
+            flex-wrap: wrap; /* Permite que los elementos se envuelvan en una nueva línea si no hay espacio */
             margin-top: 10px; /* Espacio arriba de la lista */
             border: 1px solid #ccc; /* Bordes de la lista */
             padding: 5px; /* Espacio interior */
         }
-
+        
+        .watchlist-item {
+            margin-right: 10px; /* Espacio entre elementos */
+            margin-bottom: 10px; /* Espacio entre filas */
+            /* Agrega más estilos según sea necesario, por ejemplo: */
+            padding: 5px; 
+            border: 1px solid #aaa; 
+        }
         .highlight {
             padding: 8px;
             cursor: pointer;
