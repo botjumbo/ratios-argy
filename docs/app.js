@@ -961,6 +961,7 @@ function updateChart() {
         if (!selectedInstrument.includes('/')) { // Comprueba que hay un solo símbolo
             fetchAndUpdateChartData(selectedInstrument); // Llama a la función con el símbolo seleccionado
             
+            
         } else {
             const [symbol1, symbol2] = selectedInstrument.split('/').map(s => s.trim());
 
@@ -972,6 +973,7 @@ function updateChart() {
                 }
                 
                 fetchAndUpdateChartDataRatio(symbol1, symbol2);
+                toggleChartTypeRatio();
             } else {
                 console.error(`${symbol1}/${symbol2} no existe en la lista de instrumentos.`);
             }
