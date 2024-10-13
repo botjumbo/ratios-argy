@@ -904,42 +904,24 @@ function convertCandleToLineSeries(candleData) {
     }));
 }
 
-// Función para alternar el tipo de gráfico
-function toggleChartType() {
+function toggleChartType(isRatio = false) {
+    let dataToUse = isRatio ? ratioData : formattedData; // Usar ratioData o formattedData según corresponda
+    const chartTypeText = isLineChart ? "Mostrar Gráfico de Línea" : "Mostrar Gráfico de Velas";
+
     if (isLineChart) {
         // Cambiar a gráfico de velas
+        candleSeries.setData(dataToUse); // Establecer datos para el gráfico de velas
         lineSeries.setData([]); // Limpiar datos de línea
-        candleSeries.setData(formattedData); // Restablecer a datos de velas
-        document.getElementById('toggle-chart').innerText = "Mostrar Gráfico de Línea"; // Actualizar texto del botón
     } else {
         // Cambiar a gráfico de línea
-        const lineData = convertCandleToLineSeries(formattedData); // Convertir datos
-        candleSeries.setData([]); 
+        const lineData = convertCandleToLineSeries(dataToUse); // Convertir datos a serie de línea
         lineSeries.setData(lineData); // Establecer datos de línea
-        document.getElementById('toggle-chart').innerText = "Mostrar Gráfico de Velas"; // Actualizar texto del botón
-        
-    }
-    isLineChart = !isLineChart; // Alternar el estado del gráfico
-}
-
-// Función para alternar el tipo de gráfico del ratio
-function toggleChartTypeRatio() {
-    if (isLineChart) {
-        // Cambiar a gráfico de velas
-        candleSeries.setData(ratioData); // Restablecer a datos de velas
-        lineSeries.setData([]); // Limpiar datos de línea
-        document.getElementById('toggle-chart').innerText = "Mostrar Gráfico de Línea"; // Actualizar texto del botón
-    } else {
-        // Cambiar a gráfico de línea
-        const lineDataRatio = convertCandleToLineSeries(ratioData); // Convertir datos
-        lineSeries.setData(lineDataRatio); // Establecer datos de línea
         candleSeries.setData([]); // Limpiar datos de velas
-        document.getElementById('toggle-chart').innerText = "Mostrar Gráfico de Velas"; // Actualizar texto del botón
-        
     }
+
+    document.getElementById('toggle-chart').innerText = chartTypeText; // Actualizar el texto del botón
     isLineChart = !isLineChart; // Alternar el estado del gráfico
 }
-
 function updateChart() {
     
     // Si hay un símbolo seleccionado
