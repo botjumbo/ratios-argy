@@ -894,43 +894,31 @@ document.getElementById('toggle-bands').addEventListener('click', function () {
     updateBollingerBandsVisibility(); // Actualizar la visibilidad según el estado
 
 });
-
 function convertCandleToLineSeries(candleData) {
     return candleData.map(item => ({
         time: item.time,
         value: item.close // Usamos el cierre como valor de la línea
     }));
 }
+
 function toggleChartType(isRatio = false) {
     let dataToUse = isRatio ? ratioData : formattedData; // Usar ratioData o formattedData según corresponda
     const chartTypeText = isLineChart ? "Mostrar Gráfico de Línea" : "Mostrar Gráfico de Velas";
 
-    // Limpieza de datos antes de establecer nuevos
-    candleSeries.setData([]); // Limpiar datos de velas
-    lineSeries.setData([]); // Limpiar datos de línea
-
-    console.log("Ratio Data:", ratioData);
-    console.log("Formatted Data:", formattedData);
-
-    // Verificar si hay datos
-    if (!Array.isArray(dataToUse) || dataToUse.length === 0) {
-        console.warn("No hay datos para mostrar."); // Asegúrate de que esto se imprima solo si realmente no hay datos
-        return; // Salir si no hay datos
-    }
-
     if (isLineChart) {
         // Cambiar a gráfico de velas
         candleSeries.setData(dataToUse); // Establecer datos para el gráfico de velas
+        lineSeries.setData([]); // Limpiar datos de línea
     } else {
         // Cambiar a gráfico de línea
         const lineData = convertCandleToLineSeries(dataToUse); // Convertir datos a serie de línea
         lineSeries.setData(lineData); // Establecer datos de línea
+        candleSeries.setData([]); // Limpiar datos de velas
     }
 
     document.getElementById('toggle-chart').innerText = chartTypeText; // Actualizar el texto del botón
     isLineChart = !isLineChart; // Alternar el estado del gráfico
 }
-
 function updateChart() {
     
     // Si hay un símbolo seleccionado
