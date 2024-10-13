@@ -126,12 +126,17 @@
             border-radius: 5px; /* Bordes redondeados */
             cursor: pointer; /* Cambia el cursor al pasar el mouse */
             transition: background 0.3s; /* Transición suave para el fondo */
+            text-align: center; /* Centra el texto en el botón */
+            width: 200px; /* Establece el mismo ancho para ambos botones */
+
+
         }
 
         /* Efecto al pasar el mouse */
         #toggle-bands:hover {
             background: linear-gradient(90deg, #388E3C, #66BB6A); /* Cambia el gradiente al pasar el mouse */
         }
+        
         #watchlist {
             margin-top: 10px; /* Espacio arriba de la lista */
             border: 1px solid #ccc; /* Bordes de la lista */
@@ -165,6 +170,14 @@
             border-radius: 5px; /* Bordes redondeados */
             cursor: pointer; /* Cambia el cursor al pasar el mouse */
             transition: background 0.3s; /* Transición suave para el fondo */
+            text-align: center; /* Centra el texto en el botón */
+            width: 200px; /* Establece el mismo ancho para ambos botones */
+
+
+        }
+        /* Efecto al pasar el mouse */
+        #toggle-chart:hover {
+            background: linear-gradient(90deg, #388E3C, #66BB6A); /* Cambia el gradiente al pasar el mouse */
         }
     </style>
 </head>
@@ -194,7 +207,7 @@
     
             <div id="suggestions" role="listbox" aria-live="polite"></div>
             <div id="watchlist">
-                <button id="toggle-chart">Mostrar Gráfico de Línea</button>
+                <button id="toggle-chart">Mostrar Gráfico de Líneas</button>
                 <button id="toggle-bands">Mostrar Bandas de Bollinger</button>
                 <h3>Lista de Seguimiento</h3>
                 <ul id="instrument-list"></ul>
