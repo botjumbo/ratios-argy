@@ -58,6 +58,8 @@ let highlightedIndex = -1; // Índice de la sugerencia resaltada
 let currentInput = ''; // Variable para guardar el valor actual
 let firstSuggestionConfirmed = false;
 let isLineChart = false; // Variable para rastrear el tipo de gráfico actual
+let formattedData = []; // Definición global
+
 
 
 document.getElementById('toggle-chart').addEventListener('click', toggleChartType);
