@@ -57,7 +57,7 @@ let isShiftPressed = false;
 let highlightedIndex = -1; // Índice de la sugerencia resaltada
 let currentInput = ''; // Variable para guardar el valor actual
 let firstSuggestionConfirmed = false;
-let isLineChart = false; // Variable para rastrear el tipo de gráfico actual
+//let isLineChart = false; // Variable para rastrear el tipo de gráfico actual
 let formattedData = []; // Definición global
 
 
@@ -890,12 +890,7 @@ document.getElementById('toggle-bands').addEventListener('click', function () {
     updateBollingerBandsVisibility(); // Actualizar la visibilidad según el estado
 
 });
-function convertCandleToLineSeries(candleData) {
-    return candleData.map(item => ({
-        time: item.time,
-        value: item.close // Usamos el cierre como valor de la línea
-    }));
-}
+
 
 // Función para alternar el tipo de gráfico
 function toggleChartType() {
@@ -910,6 +905,7 @@ function toggleChartType() {
         lineSeries.setData(lineData); // Establecer datos de línea
         candleSeries.setData([]); // Limpiar datos de velas
         document.getElementById('toggle-chart').innerText = "Mostrar Gráfico de Velas"; // Actualizar texto del botón
+        
     }
     isLineChart = !isLineChart; // Alternar el estado del gráfico
 }
