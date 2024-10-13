@@ -154,11 +154,18 @@
             display: none; /* Se oculta por defecto */
             white-space: nowrap;
         }
-         #toggle-chart {
-                display: block; /* Asegura que el botón esté en una línea separada */
-                margin-top: 10px; /* Espacio entre los botones */
-            }
-        
+       
+        #toggle-chart {
+            margin-top: 10px; /* Espacio arriba del botón */
+            padding: 10px 20px; /* Espacio interior del botón */
+            font-size: 14px; /* Tamaño de la fuente */
+            color: white; /* Color del texto */
+            background: linear-gradient(90deg, #4CAF50, #81C784); /* Gradiente de fondo */
+            border: none; /* Sin bordes */
+            border-radius: 5px; /* Bordes redondeados */
+            cursor: pointer; /* Cambia el cursor al pasar el mouse */
+            transition: background 0.3s; /* Transición suave para el fondo */
+        }
     </style>
 </head>
 
@@ -188,6 +195,7 @@
     
             <div id="suggestions" role="listbox" aria-live="polite"></div>
             <div id="watchlist">
+                <button id="toggle-chart">Mostrar Gráfico de Línea</button>
                 <button id="toggle-bands">Mostrar Bandas de Bollinger</button>
                 <h3>Lista de Seguimiento</h3>
                 <ul id="instrument-list"></ul>
