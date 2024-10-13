@@ -928,8 +928,8 @@ function toggleChartType() {
     } else {
         // Cambiar a gráfico de línea
         const lineData = convertCandleToLineSeries(formattedData); // Convertir datos
+        candleSeries.setData([]); 
         lineSeries.setData(lineData); // Establecer datos de línea
-        candleSeries.setData([]); // Limpiar datos de velas
         document.getElementById('toggle-chart').innerText = "Mostrar Gráfico de Velas"; // Actualizar texto del botón
         
     }
