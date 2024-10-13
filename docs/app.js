@@ -620,7 +620,7 @@ function loadChartData(input) {
         const [symbol1, symbol2] = instrumentToLoad.split('/').map(s => s.trim());
         
         // Llamar a la función que procesa ratios
-        if (symbols.includes(symbol1) && symbols.includes(symbol2)) {
+        if (symbol.includes(symbol1) && symbol.includes(symbol2)) {
             fetchAndUpdateChartDataRatio(symbol1, symbol2);
             document.getElementById('instrument-title').textContent = `Ratio ${symbol1}/${symbol2}`;
         } else {
@@ -628,7 +628,7 @@ function loadChartData(input) {
         }
     } else {
         // Comprobar si el símbolo sin extensión existe
-        if (symbols.includes(instrumentToLoad)) {
+        if (symbol.includes(instrumentToLoad)) {
             inputUpperCase = `${instrumentToLoad}.csv`;
             fetchAndUpdateChartData(inputUpperCase);
             document.getElementById('instrument-title').textContent = `Análisis de ${inputUpperCase}`;
