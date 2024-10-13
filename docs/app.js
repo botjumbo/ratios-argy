@@ -57,7 +57,7 @@ let isShiftPressed = false;
 let highlightedIndex = -1; // Índice de la sugerencia resaltada
 let currentInput = ''; // Variable para guardar el valor actual
 let firstSuggestionConfirmed = false;
-let currentChartType = 'candles'; // Establece el tipo de gráfico inicial
+let isLineChart = false; // Variable para rastrear el tipo de gráfico actual
 
 
 document.getElementById('toggle-chart').addEventListener('click', toggleChartType);
@@ -895,26 +895,22 @@ function convertCandleToLineSeries(candleData) {
     }));
 }
 
+// Función para alternar el tipo de gráfico
 function toggleChartType() {
-    // Obtener los datos actuales de la serie de velas
-    const candleData = candleSeries.data; // Esto asume que `candleSeries` tiene un método o propiedad que devuelve los datos actuales.
-
-    // Verificar si estamos en modo de velas o de línea
-    if (currentChartType === 'candles') {
-        const lineData = convertCandleToLineSeries(candleData);
-        lineSeries.setData(lineData); // Establecer los datos en la serie de línea
-        candleSeries.hide(); // Ocultar la serie de velas
-        lineSeries.show(); // Mostrar la serie de línea
-        currentChartType = 'line'; // Actualizar el tipo de gráfico actual
-        document.getElementById('toggle-chart').innerText = 'Mostrar Gráfico de Velas'; // Cambiar el texto del botón
+    if (isLineChart) {
+        // Cambiar a gráfico de velas
+        candleSeries.setData(formattedData); // Restablecer a datos de velas
+        lineSeries.setData([]); // Limpiar datos de línea
+        document.getElementById('toggle-chart').innerText = "Mostrar Gráfico de Línea"; // Actualizar texto del botón
     } else {
-        candleSeries.show(); // Mostrar la serie de velas
-        lineSeries.hide(); // Ocultar la serie de línea
-        currentChartType = 'candles'; // Actualizar el tipo de gráfico actual
-        document.getElementById('toggle-chart').innerText = 'Mostrar Gráfico de Línea'; // Cambiar el texto del botón
+        // Cambiar a gráfico de línea
+        const lineData = convertCandleToLineSeries(formattedData); // Convertir datos
+        lineSeries.setData(lineData); // Establecer datos de línea
+        candleSeries.setData([]); // Limpiar datos de velas
+        document.getElementById('toggle-chart').innerText = "Mostrar Gráfico de Velas"; // Actualizar texto del botón
     }
+    isLineChart = !isLineChart; // Alternar el estado del gráfico
 }
-
 
 
 function updateChart() {
