@@ -539,6 +539,7 @@ Promise.all(symbol.map(file => loadCSV(`/ratios-argy/${file}`))) // Reemplaza co
                 fetchAndUpdateChartData(selectedInstrument); // Actualiza el gráfico inmediatamente
                 
             };
+            listItem.className = 'instrument-item'; // Asigna la clase para aplicar estilos
             listItem.appendChild(button);
             instrumentList.appendChild(listItem);
         });
