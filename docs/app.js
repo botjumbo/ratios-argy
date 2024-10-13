@@ -901,7 +901,6 @@ function convertCandleToLineSeries(candleData) {
         value: item.close // Usamos el cierre como valor de la línea
     }));
 }
-
 function toggleChartType(isRatio = false) {
     let dataToUse = isRatio ? ratioData : formattedData; // Usar ratioData o formattedData según corresponda
     const chartTypeText = isLineChart ? "Mostrar Gráfico de Línea" : "Mostrar Gráfico de Velas";
@@ -910,8 +909,12 @@ function toggleChartType(isRatio = false) {
     candleSeries.setData([]); // Limpiar datos de velas
     lineSeries.setData([]); // Limpiar datos de línea
 
-    if (dataToUse.length === 0) {
-        console.warn("No hay datos para mostrar.");
+    console.log("Ratio Data:", ratioData);
+    console.log("Formatted Data:", formattedData);
+
+    // Verificar si hay datos
+    if (!dataToUse || dataToUse.length === 0) {
+        console.warn("No hay datos para mostrar."); // Asegúrate de que esto se imprima solo si realmente no hay datos
         return; // Salir si no hay datos
     }
 
