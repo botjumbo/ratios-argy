@@ -905,16 +905,18 @@ function toggleChartType(isRatio = false) {
     const chartTypeText = isLineChart ? "Mostrar Gráfico de Línea" : "Mostrar Gráfico de Velas";
 
     // Limpiar ambos series antes de cambiar el tipo de gráfico
-    candleSeries.setData([]); // Limpiar datos de velas
-    lineSeries.setData([]); // Limpiar datos de línea
 
     if (isLineChart) {
         // Cambiar a gráfico de velas
         candleSeries.setData(dataToUse); // Establecer datos para el gráfico de velas
+        lineSeries.setData([]); // Limpiar datos de línea
+
     } else {
         // Cambiar a gráfico de línea
         const lineData = convertCandleToLineSeries(dataToUse); // Convertir datos a serie de línea
         lineSeries.setData(lineData); // Establecer datos de línea
+        candleSeries.setData([]); // Limpiar datos de velas
+
     }
 
     document.getElementById('toggle-chart').innerText = chartTypeText; // Actualizar el texto del botón
