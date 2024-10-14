@@ -918,6 +918,7 @@ function toggleChartType(isRatio = false) {
 
     document.getElementById('toggle-chart').innerText = chartTypeText; // Actualizar el texto del botón
     isLineChart = !isLineChart; // Alternar el estado del gráfico
+    updateChart();
     
 }
 
@@ -949,7 +950,6 @@ function updateChart() {
     }
 }
 
-updateChart();
 // Llamar a updateChart cada segundo
 //setInterval(updateChart, 1000);
 
