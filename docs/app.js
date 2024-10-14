@@ -927,7 +927,6 @@ function updateChart() {
     if (selectedInstrument) {
         if (!selectedInstrument.includes('/')) { // Comprueba que hay un solo símbolo
             fetchAndUpdateChartData(selectedInstrument); // Llama a la función con el símbolo seleccionado
-            console.log("Datos formateados al cargar nuevo instrumento:", formattedData);
 
             
         } else {
@@ -951,6 +950,6 @@ function updateChart() {
 }
 
 // Llamar a updateChart cada segundo
-setInterval(updateChart, 1000);
+//setInterval(updateChart, 1000);
 
 
