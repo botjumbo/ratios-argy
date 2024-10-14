@@ -907,11 +907,14 @@ function toggleChartType(isRatio = false) {
 
     if (isLineChart) {
         // Cambiar a gráfico de velas
+        lineSeries.setData([]); // Limpiar datos de línea
         candleSeries.setData(dataToUse); // Establecer datos para el gráfico de velas
         lineSeries.setData([]); // Limpiar datos de línea
     } else {
         // Cambiar a gráfico de línea
         const lineData = convertCandleToLineSeries(dataToUse); // Convertir datos a serie de línea
+        candleSeries.setData([]); // Limpiar datos de velas
+
         lineSeries.setData(lineData); // Establecer datos de línea
         candleSeries.setData([]); // Limpiar datos de velas
     }
