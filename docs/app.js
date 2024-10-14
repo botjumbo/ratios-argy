@@ -948,6 +948,7 @@ function updateChart() {
     }
 }
 
+updatechart();
 // Llamar a updateChart cada segundo
 //setInterval(updateChart, 1000);
 
