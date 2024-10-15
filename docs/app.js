@@ -401,7 +401,11 @@ function formatVolume(volume) {
     }
 }
 
-
+// Función para formatear la fecha
+function formatDate(date) {
+    // Retorna la fecha en formato "YYYY-MM-DD"
+    return date; // Simplemente devuelve la fecha como está
+}
 // Suscribirse al movimiento del cursor
 chart.subscribeCrosshairMove(function(param) {
     // Comprobar si hay datos válidos
@@ -473,11 +477,7 @@ chart.subscribeCrosshairMove(function(param) {
     }
 });
 
-// Función para formatear la fecha
-function formatDate(date) {
-    // Retorna la fecha en formato "YYYY-MM-DD"
-    return date; // Simplemente devuelve la fecha como está
-}
+
 // Evento de clic para capturar el precio inicial y reiniciar la medición si es necesario
 chart.subscribeClick(function(param) {
     if (isShiftPressed && param && param.seriesData.size > 0 && param.point.x !== undefined) {
