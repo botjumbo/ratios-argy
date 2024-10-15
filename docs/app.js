@@ -506,7 +506,6 @@ chart.subscribeCrosshairMove(function(param) {
         }
         // Actualizamos la leyenda y el último dato válido
         legendElement.innerHTML = newLegendContent;
-        legendElement.innerHTML = ratioLegendContent;
 
         lastValidData = newLegendContent;
     } else {
