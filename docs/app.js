@@ -80,13 +80,12 @@ function loadCSV(filePath) {
             return parseCSV(data); // Función para procesar y convertir el CSV a un formato útil
         });
 }
-
 async function fetchAndUpdateChartData(symbol) {
     try {
-        const response = await fetch(`/ratios-argy/${symbol}`); // Cambia la URL según la ubicación de tus archivos CSV
+        const response = await fetch(/ratios-argy/${symbol}); // Cambia la URL según la ubicación de tus archivos CSV
         
         if (!response.ok) {
-            throw new Error(`Error al cargar los datos del símbolo: ${symbol}. Respuesta del servidor: ${response.statusText}`);
+            throw new Error(Error al cargar los datos del símbolo: ${symbol}. Respuesta del servidor: ${response.statusText});
         }
 
         const data = await response.text(); // Cambia a text() ya que vamos a leer un CSV
@@ -130,8 +129,7 @@ async function fetchAndUpdateChartData(symbol) {
             const low = item.minimo;
             const close = item.cierre;
             const volume = item.volumen;
-            
-        
+
             return {
                 time: time, // La fecha en formato "YYYY-MM-DD"
                 open: open,
@@ -141,15 +139,7 @@ async function fetchAndUpdateChartData(symbol) {
                 volume: volume // Agrega volumen si es necesario
             };
         });
-        
-        // Asigna el cierre del penúltimo día
-        if (rows.length >= 2) {
-            valorCierre = rows[rows.length - 2].cierre; // Cierre del penúltimo dato
-            console.log("El cierre del penúltimo día es:", valorCierre);
-        } else {
-            console.warn("No hay suficientes datos para obtener el cierre del penúltimo día.");
-        }
-        
+
         // Aquí solo actualiza los datos sin restablecer el gráfico
         if (!isLineChart) {
             candleSeries.setData(formattedData); // Solo si es gráfico de velas
@@ -406,6 +396,7 @@ function formatDate(date) {
     // Retorna la fecha en formato "YYYY-MM-DD"
     return date; // Simplemente devuelve la fecha como está
 }
+
 // Suscribirse al movimiento del cursor
 chart.subscribeCrosshairMove(function(param) {
     // Comprobar si hay datos válidos
