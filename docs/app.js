@@ -117,6 +117,7 @@ async function fetchAndUpdateChartData(symbol) {
                 volumen: parseInt(volumen), 
             };
         }).filter(item => item !== null); // Filtra las filas que son null
+        console.log(`Filas válidas encontradas: ${rows.length}`); // Mostrar cuántas filas válidas se encontraron
 
         if (rows.length === 0) {
             console.warn("No se encontraron datos válidos.");
@@ -148,6 +149,8 @@ async function fetchAndUpdateChartData(symbol) {
     
             // Almacena el precio de cierre en el objeto, usando la fecha como clave
             dailyClosePrices[date] = closePrice;
+            console.log(`Almacenando cierre del ${date}: ${closePrice}`); // Mostrar el cierre almacenado
+
         });
         // Aquí solo actualiza los datos sin restablecer el gráfico
         if (!isLineChart) {
