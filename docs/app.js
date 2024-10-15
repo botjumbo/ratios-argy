@@ -474,6 +474,7 @@ chart.subscribeCrosshairMove(function(param) {
             <strong>Máximo:</strong> ${price.high.toFixed(2)} <br>
             <strong>Mínimo:</strong> ${price.low.toFixed(2)} <br>
             <strong>Cierre:</strong> ${price.close.toFixed(2)} <br>
+            <strong>Cierre del día anterior:</strong> ${previousClosePrice !== null ? previousClosePrice.toFixed(2) : 'N/A'} <br>
             <strong>Volumen:</strong> ${volumeData ? formatVolume(volumeData.value) : 'N/A'} <br>
         `;
 
