@@ -130,8 +130,9 @@ async function fetchAndUpdateChartData(symbol) {
             const low = item.minimo;
             const close = item.cierre;
             const volume = item.volumen;
-            // Guardar el valor de cierre en la variable global
-            valorCierre = close;
+            
+            // Solo se asigna valorCierre al final
+            valorCierre = rows[rows.length - 1].cierre; // Asigna el cierre solo después de procesar todos los datos
             console.log("El cierre del día es:", valorCierre);
             
             return {
@@ -146,7 +147,6 @@ async function fetchAndUpdateChartData(symbol) {
         
         // Llamar a la función searchPreviousDay y mostrar el formattedData
         searchPreviousDay(formattedData);
-        console.log("El cierre del día anterior es:", formattedData);
 
         // Aquí solo actualiza los datos sin restablecer el gráfico
         if (!isLineChart) {
