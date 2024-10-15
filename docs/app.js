@@ -401,24 +401,14 @@ function formatVolume(volume) {
     }
 }
 
-// Función para formatear la fecha
-function formatDate(date) {
-    // Verifica si el argumento es un objeto Date
-    if (date instanceof Date) {
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0'); // Asegúrate de que el mes sea de 2 dígitos
-        const day = String(date.getDate()).padStart(2, '0'); // Asegúrate de que el día sea de 2 dígitos
-        return `${year}-${month}-${day}`; // Retorna la fecha en formato "YYYY-MM-DD"
-    }
-    return date; // Si no es un objeto Date, solo devuelve la fecha tal como está
-}
-const currentDate = formatDate(new Date(param.time * 1000)); // Convierte a objeto Date y formatea
+
 // Suscribirse al movimiento del cursor
 chart.subscribeCrosshairMove(function(param) {
     // Comprobar si hay datos válidos
     if (!param || !param.seriesData || param.seriesData.size === 0) {
         // Mantener el último dato mostrado si no hay interacción
         legendElement.innerHTML = lastValidData;
+        // tooltip.style.display = 'none'; // Ocultar si no hay datos
         return;
     }
 
@@ -426,15 +416,18 @@ chart.subscribeCrosshairMove(function(param) {
 
     // Si estamos midiendo (después de Shift + Click) y tenemos un precio inicial
     if (isMeasuring && initialPrice !== null) {
+        // Calcular el cambio porcentual
         const percentageChange = ((currentPrice - initialPrice) / initialPrice) * 100;
 
+        // Mostrar y actualizar la etiqueta
         tooltip.style.display = 'block';
-        tooltip.innerHTML = `
+        tooltip.innerHTML = 
             <strong>Precio inicial:</strong> ${initialPrice.toFixed(2)} <br>
             <strong>Precio actual:</strong> ${currentPrice.toFixed(2)} <br>
             <strong>Cambio:</strong> ${percentageChange.toFixed(2)} %
-        `;
+        ;
 
+        // Posicionar la etiqueta cerca del cursor
         tooltip.style.left = param.point.x + 'px';
         tooltip.style.top = param.point.y + 'px';
     }
@@ -443,52 +436,47 @@ chart.subscribeCrosshairMove(function(param) {
     const price = param.seriesData.get(candleSeries);
     const ratioData = param.seriesData.get(lineSeries);
     const volumeData = param.seriesData.get(volumeSeries);
-    let totalVolume = volumeData ? volumeData.value : 0;
+    let totalVolume = volumeData ? volumeData.value : 0; // Almacenar volumen total
 
-    // Obtener la fecha correspondiente a los datos actuales
-    const currentDate = formatDate(new Date(param.time * 1000)); // Formatea correctamente
+    // Manejar solo los datos del ratio
+    if (ratioData) {
+        const ratioValue = ratioData.value || null;
 
-    // Buscar el cierre del día actual y el anterior en tus datos
-    const currentDayData = formattedData.find(row => row.fecha === currentDate);
-    const previousDayData = formattedData.find(row => row.fecha === getPreviousDate(currentDate));
-
-    if (currentDayData) {
-        const cierreActual = currentDayData.cierre;
-        const cierreAnterior = previousDayData ? previousDayData.cierre : 'N/A';
-
-        // Preparar contenido para la leyenda
-        const legendContent = `
-            <strong>Fecha:</strong> ${currentDate} <br>
-            <strong>Cierre del día:</strong> ${cierreActual.toFixed(2)} <br>
-            <strong>Cierre del día anterior:</strong> ${cierreAnterior !== 'N/A' ? cierreAnterior.toFixed(2) : 'N/A'} <br>
+        // Preparar el contenido de la leyenda para el ratio
+        const ratioLegendContent = 
+            <strong>Fecha:</strong> ${formatDate(param.time)} <br>
+            <strong>Cierre:</strong> ${ratioValue.toFixed(2)} <br>
             <strong>Volumen Total:</strong> ${(totalVolume / 1000000).toFixed(2)}M <br>
-        `;
+        ;
 
         // Actualizar la leyenda
-        legendElement.innerHTML = legendContent;
-        lastValidData = legendContent;
+        legendElement.innerHTML = ratioLegendContent;
+        lastValidData = ratioLegendContent; // Guardar el último dato válido
+
     } else if (price) {
-        const newLegendContent = `
+        // Si no hay ratio, mostrar datos del precio
+        const newLegendContent = 
             <strong>Fecha:</strong> ${formatDate(param.time)} <br>
             <strong>Apertura:</strong> ${price.open.toFixed(2)} <br>
             <strong>Máximo:</strong> ${price.high.toFixed(2)} <br>
             <strong>Mínimo:</strong> ${price.low.toFixed(2)} <br>
             <strong>Cierre:</strong> ${price.close.toFixed(2)} <br>
             <strong>Volumen:</strong> ${volumeData ? formatVolume(volumeData.value) : 'N/A'} <br>
-        `;
+        ;
 
+        // Actualizamos la leyenda y el último dato válido
         legendElement.innerHTML = newLegendContent;
         lastValidData = newLegendContent;
     } else {
+        // Limpiar la leyenda si no hay datos
         legendElement.innerHTML = '';
     }
 });
 
-// Función para obtener la fecha anterior
-function getPreviousDate(currentDate) {
-    const date = new Date(currentDate);
-    date.setDate(date.getDate() - 1); // Restar un día
-    return formatDate(date);
+// Función para formatear la fecha
+function formatDate(date) {
+    // Retorna la fecha en formato "YYYY-MM-DD"
+    return date; // Simplemente devuelve la fecha como está
 }
 // Evento de clic para capturar el precio inicial y reiniciar la medición si es necesario
 chart.subscribeClick(function(param) {
