@@ -937,6 +937,7 @@ function toggleChartType(isRatio = false) {
     
 }
 
+
 function searchPreviousDay(candleData) {
     // Filtrar por el día anterior a hoy
     const today = new Date();
@@ -962,8 +963,6 @@ function searchPreviousDay(candleData) {
         return null;
     }
 }
-
-
 function updateChart() {
 
     
