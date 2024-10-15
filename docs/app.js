@@ -940,34 +940,11 @@ function toggleChartType(isRatio = false) {
 }
 
 
-function searchPreviousDay(candleData) {
-    // Filtrar por el día anterior a hoy
-    const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(today.getDate() - 1);
 
-    const yesterdayStr = yesterday.toISOString().split('T')[0]; // Fecha en formato YYYY-MM-DD
-
-    // Filtrar las velas del día anterior en candleData
-    const previousDayClose = candleData
-        .filter(item => item.time.startsWith(yesterdayStr)) // Filtrar las velas del día anterior
-        .map(item => item.close) // Obtener solo los valores de cierre
-        .pop(); // Obtener el último cierre
-
-    if (previousDayClose) {
-        // Guardar el valor de cierre del día anterior en la variable global valorCierre
-        valorCierre = previousDayClose;
-
-        console.log("Cierre del día anterior:", previousDayClose);
-        return previousDayClose;
-    } else {
-        console.log("No se encontró el cierre del día anterior.");
-        return null;
-    }
-}
 function updateChart() {
 
-    
+    console.log("El cierre del penúltimo día es:", valorCierre);
+
     if (selectedInstrument) {
         if (!selectedInstrument.includes('/')) { // Comprueba que hay un solo símbolo
             fetchAndUpdateChartData(selectedInstrument); // Llama a la función con el símbolo seleccionado
