@@ -474,10 +474,21 @@ chart.subscribeCrosshairMove(function(param) {
             <strong>Máximo:</strong> ${price.high.toFixed(2)} <br>
             <strong>Mínimo:</strong> ${price.low.toFixed(2)} <br>
             <strong>Cierre:</strong> ${price.close.toFixed(2)} <br>
-            <strong>Cierre del día anterior:</strong> ${previousClosePrice !== null ? previousClosePrice.toFixed(2) : 'N/A'} <br>
             <strong>Volumen:</strong> ${volumeData ? formatVolume(volumeData.value) : 'N/A'} <br>
         `;
 
+        // Calcular la diferencia porcentual si el cierre del día anterior es válido
+        let percentageDifference = null;
+        if (previousClosePrice !== null) {
+            percentageDifference = ((price.close / previousClosePrice) - 1) * 100;
+        }
+        
+        // Agregar la diferencia porcentual a la leyenda
+        if (percentageDifference !== null) {
+            newLegendContent += `
+                <strong>Diferencia porcentual:</strong> ${percentageDifference.toFixed(2)} % <br>
+            `;
+        }
         // Actualizamos la leyenda y el último dato válido
         legendElement.innerHTML = newLegendContent;
         lastValidData = newLegendContent;
