@@ -474,7 +474,7 @@ chart.subscribeCrosshairMove(function(param) {
         // Agregar la diferencia porcentual a la leyenda del ratio
         if (ratioPercentageDifference !== null) {
             ratioLegendContent += `
-                <strong>Diferencia porcentual:</strong> ${ratioPercentageDifference.toFixed(2)} % <br>
+                <strong>Diferencia:</strong> ${ratioPercentageDifference.toFixed(2)} % <br>
             `;
         }
         // Actualizar la leyenda
@@ -506,6 +506,8 @@ chart.subscribeCrosshairMove(function(param) {
         }
         // Actualizamos la leyenda y el último dato válido
         legendElement.innerHTML = newLegendContent;
+        legendElement.innerHTML = ratioLegendContent;
+
         lastValidData = newLegendContent;
     } else {
         // Limpiar la leyenda si no hay datos
