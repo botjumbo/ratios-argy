@@ -60,7 +60,6 @@ let firstSuggestionConfirmed = false;
 let isLineChart = false; // Variable para rastrear el tipo de gráfico actual
 let formattedData = []; // Definición global
 let ratioData = []; // Definición global
-let valorCierre = null; // Variable global para almacenar el valor de cierre
 
 
 
@@ -146,7 +145,7 @@ async function fetchAndUpdateChartData(symbol) {
         } else {
             const lineData = convertCandleToLineSeries(formattedData);
             lineSeries.setData(lineData); // Actualiza línea si ya es gráfico de línea
-        }
+        };
         
         const volumeData = rows.map(item => ({
             time: item.fecha,
