@@ -490,7 +490,6 @@ function getPreviousDate(currentDate) {
     date.setDate(date.getDate() - 1); // Restar un día
     return formatDate(date);
 }
-
 // Evento de clic para capturar el precio inicial y reiniciar la medición si es necesario
 chart.subscribeClick(function(param) {
     if (isShiftPressed && param && param.seriesData.size > 0 && param.point.x !== undefined) {
