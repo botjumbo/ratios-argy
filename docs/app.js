@@ -408,6 +408,7 @@ function formatDate(date) {
     return date; // Simplemente devuelve la fecha como está
 }
 
+let lastValidData = ""; // Asegúrate de que sea una variable `let`
 
 
 // Suscribirse al movimiento del cursor
