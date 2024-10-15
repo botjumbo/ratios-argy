@@ -467,7 +467,7 @@ chart.subscribeCrosshairMove(function(param) {
 
     } else if (price) {
         // Si no hay ratio, mostrar datos del precio
-        const newLegendContent = `
+        let newLegendContent = `
             <strong>Fecha:</strong> ${formatDate(param.time)} <br>
             <strong>Apertura:</strong> ${price.open.toFixed(2)} <br>
             <strong>Máximo:</strong> ${price.high.toFixed(2)} <br>
