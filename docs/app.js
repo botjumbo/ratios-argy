@@ -81,10 +81,10 @@ function loadCSV(filePath) {
 }
 async function fetchAndUpdateChartData(symbol) {
     try {
-        const response = await fetch(/ratios-argy/${symbol}); // Cambia la URL según la ubicación de tus archivos CSV
+        const response = await fetch(`/ratios-argy/${symbol}`); // Cambia la URL según la ubicación de tus archivos CSV
         
         if (!response.ok) {
-            throw new Error(Error al cargar los datos del símbolo: ${symbol}. Respuesta del servidor: ${response.statusText});
+            throw new Error(`Error al cargar los datos del símbolo: ${symbol}. Respuesta del servidor: ${response.statusText}`);
         }
 
         const data = await response.text(); // Cambia a text() ya que vamos a leer un CSV
@@ -145,7 +145,7 @@ async function fetchAndUpdateChartData(symbol) {
         } else {
             const lineData = convertCandleToLineSeries(formattedData);
             lineSeries.setData(lineData); // Actualiza línea si ya es gráfico de línea
-        };
+        }
         
         const volumeData = rows.map(item => ({
             time: item.fecha,
@@ -390,17 +390,19 @@ function formatVolume(volume) {
     }
 }
 
+
 // Función para formatear la fecha
 function formatDate(date) {
     // Retorna la fecha en formato "YYYY-MM-DD"
     return date; // Simplemente devuelve la fecha como está
 }
-
 // Suscribirse al movimiento del cursor
 chart.subscribeCrosshairMove(function(param) {
     // Comprobar si hay datos válidos
     if (!param || !param.seriesData || param.seriesData.size === 0) {
+        // Mantener el último dato mostrado si no hay interacción
         legendElement.innerHTML = lastValidData;
+        // tooltip.style.display = 'none'; // Ocultar si no hay datos
         return;
     }
 
@@ -408,8 +410,10 @@ chart.subscribeCrosshairMove(function(param) {
 
     // Si estamos midiendo (después de Shift + Click) y tenemos un precio inicial
     if (isMeasuring && initialPrice !== null) {
+        // Calcular el cambio porcentual
         const percentageChange = ((currentPrice - initialPrice) / initialPrice) * 100;
 
+        // Mostrar y actualizar la etiqueta
         tooltip.style.display = 'block';
         tooltip.innerHTML = `
             <strong>Precio inicial:</strong> ${initialPrice.toFixed(2)} <br>
@@ -417,6 +421,7 @@ chart.subscribeCrosshairMove(function(param) {
             <strong>Cambio:</strong> ${percentageChange.toFixed(2)} %
         `;
 
+        // Posicionar la etiqueta cerca del cursor
         tooltip.style.left = param.point.x + 'px';
         tooltip.style.top = param.point.y + 'px';
     }
@@ -425,31 +430,25 @@ chart.subscribeCrosshairMove(function(param) {
     const price = param.seriesData.get(candleSeries);
     const ratioData = param.seriesData.get(lineSeries);
     const volumeData = param.seriesData.get(volumeSeries);
-    let totalVolume = volumeData ? volumeData.value : 0;
+    let totalVolume = volumeData ? volumeData.value : 0; // Almacenar volumen total
 
-    // Obtener la fecha correspondiente a los datos actuales
-    const currentDate = formatDate(new Date(param.time * 1000)); // Formatea correctamente
+    // Manejar solo los datos del ratio
+    if (ratioData) {
+        const ratioValue = ratioData.value || null;
 
-    // Buscar el cierre del día actual y el anterior en tus datos
-    const currentDayData = formattedData.find(row => row.fecha === currentDate);
-    const previousDayData = formattedData.find(row => row.fecha === getPreviousDate(currentDate));
-
-    if (currentDayData) {
-        const cierreActual = currentDayData.cierre;
-        const cierreAnterior = previousDayData ? previousDayData.cierre : 'N/A';
-
-        // Preparar contenido para la leyenda
-        const legendContent = `
-            <strong>Fecha:</strong> ${currentDate} <br>
-            <strong>Cierre del día:</strong> ${cierreActual.toFixed(2)} <br>
-            <strong>Cierre del día anterior:</strong> ${cierreAnterior !== 'N/A' ? cierreAnterior.toFixed(2) : 'N/A'} <br>
+        // Preparar el contenido de la leyenda para el ratio
+        const ratioLegendContent = `
+            <strong>Fecha:</strong> ${formatDate(param.time)} <br>
+            <strong>Cierre:</strong> ${ratioValue.toFixed(2)} <br>
             <strong>Volumen Total:</strong> ${(totalVolume / 1000000).toFixed(2)}M <br>
         `;
 
         // Actualizar la leyenda
-        legendElement.innerHTML = legendContent;
-        lastValidData = legendContent;
+        legendElement.innerHTML = ratioLegendContent;
+        lastValidData = ratioLegendContent; // Guardar el último dato válido
+
     } else if (price) {
+        // Si no hay ratio, mostrar datos del precio
         const newLegendContent = `
             <strong>Fecha:</strong> ${formatDate(param.time)} <br>
             <strong>Apertura:</strong> ${price.open.toFixed(2)} <br>
@@ -459,19 +458,14 @@ chart.subscribeCrosshairMove(function(param) {
             <strong>Volumen:</strong> ${volumeData ? formatVolume(volumeData.value) : 'N/A'} <br>
         `;
 
+        // Actualizamos la leyenda y el último dato válido
         legendElement.innerHTML = newLegendContent;
         lastValidData = newLegendContent;
     } else {
+        // Limpiar la leyenda si no hay datos
         legendElement.innerHTML = '';
     }
 });
-
-// Función para obtener la fecha anterior
-function getPreviousDate(currentDate) {
-    const date = new Date(currentDate);
-    date.setDate(date.getDate() - 1); // Restar un día
-    return formatDate(date);
-}
 
 // Evento de clic para capturar el precio inicial y reiniciar la medición si es necesario
 chart.subscribeClick(function(param) {
@@ -900,8 +894,6 @@ document.getElementById('toggle-bands').addEventListener('click', function () {
     updateBollingerBandsVisibility(); // Actualizar la visibilidad según el estado
 
 });
-
-
 function convertCandleToLineSeries(candleData) {
     return candleData.map(item => ({
         time: item.time,
@@ -934,11 +926,9 @@ function toggleChartType(isRatio = false) {
     
 }
 
-
-
 function updateChart() {
-
-
+    
+    // Si hay un símbolo seleccionado
     if (selectedInstrument) {
         if (!selectedInstrument.includes('/')) { // Comprueba que hay un solo símbolo
             fetchAndUpdateChartData(selectedInstrument); // Llama a la función con el símbolo seleccionado
@@ -955,6 +945,7 @@ function updateChart() {
                 }
                 
                 fetchAndUpdateChartDataRatio(symbol1, symbol2);
+                console.log(`${symbol1}/${symbol2} instrumentos seleccionados.`);
                 
             } else {
                 console.error(`${symbol1}/${symbol2} no existe en la lista de instrumentos.`);
@@ -965,5 +956,4 @@ function updateChart() {
 
 // Llamar a updateChart cada segundo
 //setInterval(updateChart, 1000);
-
 
