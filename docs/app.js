@@ -131,10 +131,7 @@ async function fetchAndUpdateChartData(symbol) {
             const close = item.cierre;
             const volume = item.volumen;
             
-            // Solo se asigna valorCierre al final
-            valorCierre = rows[rows.length - 1].cierre; // Asigna el cierre solo después de procesar todos los datos
-            console.log("El cierre del día es:", valorCierre);
-            
+        
             return {
                 time: time, // La fecha en formato "YYYY-MM-DD"
                 open: open,
@@ -145,9 +142,14 @@ async function fetchAndUpdateChartData(symbol) {
             };
         });
         
-        // Llamar a la función searchPreviousDay y mostrar el formattedData
-        searchPreviousDay(formattedData);
-
+        // Asigna el cierre del penúltimo día
+        if (rows.length >= 2) {
+            valorCierre = rows[rows.length - 2].cierre; // Cierre del penúltimo dato
+            console.log("El cierre del penúltimo día es:", valorCierre);
+        } else {
+            console.warn("No hay suficientes datos para obtener el cierre del penúltimo día.");
+        }
+        
         // Aquí solo actualiza los datos sin restablecer el gráfico
         if (!isLineChart) {
             candleSeries.setData(formattedData); // Solo si es gráfico de velas
