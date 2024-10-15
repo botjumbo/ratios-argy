@@ -895,29 +895,6 @@ document.getElementById('toggle-bands').addEventListener('click', function () {
 
 });
 
-function searchPreviousDay(candleData) {
-    // Filtrar por el día anterior a hoy
-    const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(today.getDate() - 1);
-
-    const yesterdayStr = yesterday.toISOString().split('T')[0]; // Fecha en formato YYYY-MM-DD
-
-    // Encontrar el último valor de cierre del día anterior
-    const previousDayClose = candleData
-        .filter(item => item.time.startsWith(yesterdayStr)) // Filtrar las velas del día anterior
-        .map(item => item.close) // Obtener solo los valores de cierre
-        .pop(); // Obtener el último cierre
-
-    if (previousDayClose) {
-        console.log("Cierre del día anterior:", previousDayClose);
-        return previousDayClose;
-    } else {
-        console.log("No se encontró el cierre del día anterior.");
-        return null;
-    }
-}
-
 
 function convertCandleToLineSeries(candleData) {
     return candleData.map(item => ({
@@ -951,8 +928,31 @@ function toggleChartType(isRatio = false) {
     
 }
 
+function searchPreviousDay(candleData) {
+    // Filtrar por el día anterior a hoy
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(today.getDate() - 1);
+
+    const yesterdayStr = yesterday.toISOString().split('T')[0]; // Fecha en formato YYYY-MM-DD
+
+    // Encontrar el último valor de cierre del día anterior
+    const previousDayClose = candleData
+        .filter(item => item.time.startsWith(yesterdayStr)) // Filtrar las velas del día anterior
+        .map(item => item.close) // Obtener solo los valores de cierre
+        .pop(); // Obtener el último cierre
+
+    if (previousDayClose) {
+        console.log("Cierre del día anterior:", previousDayClose);
+        return previousDayClose;
+    } else {
+        console.log("No se encontró el cierre del día anterior.");
+        return null;
+    }
+}
+
 function updateChart() {
-    
+    console.log(formattedData);
     const previousClose = searchPreviousDay(candleData); // Buscar el cierre del día anterior
     // Si hay un símbolo seleccionado
     if (selectedInstrument) {
