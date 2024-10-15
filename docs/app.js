@@ -43,6 +43,7 @@ volumeSeries.priceScale().applyOptions({
     },
 });
 const tooltip = document.getElementById('tooltip');
+const dailyClosePrices = {}; // Objeto para almacenar cierres diarios
 
 
 
@@ -79,6 +80,8 @@ function loadCSV(filePath) {
             return parseCSV(data); // Función para procesar y convertir el CSV a un formato útil
         });
 }
+
+
 async function fetchAndUpdateChartData(symbol) {
     try {
         const response = await fetch(`/ratios-argy/${symbol}`); // Cambia la URL según la ubicación de tus archivos CSV
@@ -138,7 +141,14 @@ async function fetchAndUpdateChartData(symbol) {
                 volume: volume // Agrega volumen si es necesario
             };
         });
-
+        // Almacena el cierre diario
+        rows.forEach(item => {
+            const date = item.fecha; // Obtener la fecha
+            const closePrice = item.cierre; // Obtener el cierre
+    
+            // Almacena el precio de cierre en el objeto, usando la fecha como clave
+            dailyClosePrices[date] = closePrice;
+        });
         // Aquí solo actualiza los datos sin restablecer el gráfico
         if (!isLineChart) {
             candleSeries.setData(formattedData); // Solo si es gráfico de velas
@@ -396,6 +406,9 @@ function formatDate(date) {
     // Retorna la fecha en formato "YYYY-MM-DD"
     return date; // Simplemente devuelve la fecha como está
 }
+
+
+
 // Suscribirse al movimiento del cursor
 chart.subscribeCrosshairMove(function(param) {
     // Comprobar si hay datos válidos
@@ -407,6 +420,9 @@ chart.subscribeCrosshairMove(function(param) {
     }
 
     const currentPrice = candleSeries.coordinateToPrice(param.point.y);
+    const currentDate = formatDate(param.time); // Formatear la fecha actual
+    // Obtener el precio de cierre del día anterior
+    const previousClosePrice = getPreviousClosePrice(currentDate);
 
     // Si estamos midiendo (después de Shift + Click) y tenemos un precio inicial
     if (isMeasuring && initialPrice !== null) {
@@ -466,6 +482,23 @@ chart.subscribeCrosshairMove(function(param) {
         legendElement.innerHTML = '';
     }
 });
+
+// Función para obtener el cierre del día anterior
+function getPreviousClosePrice(currentDate) {
+    // Obtener las fechas de las claves del objeto y convertirlas a un array
+    const dates = Object.keys(dailyClosePrices);
+    // Ordenar las fechas para buscar la anterior
+    const sortedDates = dates.sort(); // Asegúrate de que las fechas están en formato YYYY-MM-DD
+
+    // Buscar el índice de la fecha actual
+    const currentIndex = sortedDates.indexOf(currentDate);
+    // Si la fecha actual es la primera, no hay cierre anterior
+    if (currentIndex <= 0) return null;
+
+    // Obtener el cierre anterior usando el índice
+    const previousDate = sortedDates[currentIndex - 1]; // La fecha anterior
+    return dailyClosePrices[previousDate]; // Retornar el precio de cierre del día anterior
+}
 
 // Evento de clic para capturar el precio inicial y reiniciar la medición si es necesario
 chart.subscribeClick(function(param) {
