@@ -239,9 +239,10 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
             // Crear la serie de datos para el ratio
             ratioData = formattedData1.map(item1 => {
                 const item2 = formattedData2.find(item2 => item2.time === item1.time);
-                dailyRatioClosePrices[item2.time] = item1.close / item2.close; // Guardar el precio de cierre del ratio
 
                 if (item2) {
+                    const ratioClose = item1.close / item2.close;
+                    dailyRatioClosePrices[item2.time] = ratioClose;
                     return {
                         time: item1.time,
                         open: item1.open / item2.open,
@@ -250,6 +251,7 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
                         close: item1.close / item2.close
                     };
                 }
+
                 return null; // Si no hay coincidencia, devolver null
             }).filter(Boolean);
 
