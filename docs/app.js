@@ -80,6 +80,7 @@ function loadCSV(filePath) {
             return parseCSV(data); // Función para procesar y convertir el CSV a un formato útil
         });
 }
+
 async function fetchAndUpdateChartData(symbol) {
     try {
         const response = await fetch(`/ratios-argy/${symbol}`); // Cambia la URL según la ubicación de tus archivos CSV
@@ -131,7 +132,8 @@ async function fetchAndUpdateChartData(symbol) {
             const volume = item.volumen;
             // Guardar el valor de cierre en la variable global
             valorCierre = close;
-
+            console.log("El cierre del día es:", valorCierre);
+            
             return {
                 time: time, // La fecha en formato "YYYY-MM-DD"
                 open: open,
@@ -141,6 +143,10 @@ async function fetchAndUpdateChartData(symbol) {
                 volume: volume // Agrega volumen si es necesario
             };
         });
+        
+        // Llamar a la función searchPreviousDay y mostrar el formattedData
+        searchPreviousDay(formattedData);
+        console.log("El cierre del día anterior es:", formattedData);
 
         // Aquí solo actualiza los datos sin restablecer el gráfico
         if (!isLineChart) {
@@ -959,9 +965,8 @@ function searchPreviousDay(candleData) {
 
 
 function updateChart() {
-    console.log(formattedData);
-    const previousClose = searchPreviousDay(candleData); // Buscar el cierre del día anterior
-    // Si hay un símbolo seleccionado
+
+    
     if (selectedInstrument) {
         if (!selectedInstrument.includes('/')) { // Comprueba que hay un solo símbolo
             fetchAndUpdateChartData(selectedInstrument); // Llama a la función con el símbolo seleccionado
