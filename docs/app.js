@@ -60,6 +60,7 @@ let firstSuggestionConfirmed = false;
 let isLineChart = false; // Variable para rastrear el tipo de gráfico actual
 let formattedData = []; // Definición global
 let ratioData = []; // Definición global
+let valorCierre = null; // Variable global para almacenar el valor de cierre
 
 
 
@@ -128,6 +129,8 @@ async function fetchAndUpdateChartData(symbol) {
             const low = item.minimo;
             const close = item.cierre;
             const volume = item.volumen;
+            // Guardar el valor de cierre en la variable global
+            valorCierre = close;
 
             return {
                 time: time, // La fecha en formato "YYYY-MM-DD"
@@ -936,13 +939,16 @@ function searchPreviousDay(candleData) {
 
     const yesterdayStr = yesterday.toISOString().split('T')[0]; // Fecha en formato YYYY-MM-DD
 
-    // Encontrar el último valor de cierre del día anterior
+    // Filtrar las velas del día anterior en candleData
     const previousDayClose = candleData
         .filter(item => item.time.startsWith(yesterdayStr)) // Filtrar las velas del día anterior
         .map(item => item.close) // Obtener solo los valores de cierre
         .pop(); // Obtener el último cierre
 
     if (previousDayClose) {
+        // Guardar el valor de cierre del día anterior en la variable global valorCierre
+        valorCierre = previousDayClose;
+
         console.log("Cierre del día anterior:", previousDayClose);
         return previousDayClose;
     } else {
@@ -950,6 +956,7 @@ function searchPreviousDay(candleData) {
         return null;
     }
 }
+
 
 function updateChart() {
     console.log(formattedData);
