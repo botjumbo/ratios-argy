@@ -26,14 +26,16 @@ const chart = LightweightCharts.createChart(document.getElementById('chart'), {
 });
 
 
-// Definición de series
+// Agregar series al gráfico
 const candleSeries = chart.addCandlestickSeries({
     upColor: '#4fff00',
     downColor: '#ff4976',
-    borderVisible: false,
+    borderUpColor: '#4fff00',
+    borderDownColor: '#ff4976',
     wickUpColor: '#4fff00',
     wickDownColor: '#ff4976',
 });
+
 const lineSeries = chart.addLineSeries({ color: '#2196F3' });
 const divisionSeries = chart.addLineSeries({ color: '#2196F3' });
 const upperBandSeries = chart.addLineSeries({ color: '#000000', lineWidth: 2 });
