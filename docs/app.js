@@ -7,16 +7,16 @@ const suggestions = document.getElementById('suggestions');
 // Inicialización del gráfico y series
 const chart = LightweightCharts.createChart(document.getElementById('chart'), {
     width: window.innerWidth * 0.7 - 40,
+    height: 500,
     grid: { horzLines: { visible: false }, vertLines: { visible: false } },
     crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
 });
 
-// Agregar series al gráfico
+// Definición de series
 const candleSeries = chart.addCandlestickSeries({
     upColor: '#4fff00',
     downColor: '#ff4976',
-    borderUpColor: '#4fff00',
-    borderDownColor: '#ff4976',
+    borderVisible: false,
     wickUpColor: '#4fff00',
     wickDownColor: '#ff4976',
 });
