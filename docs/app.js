@@ -10,8 +10,18 @@ const chart = LightweightCharts.createChart(document.getElementById('chart'), {
     grid: { horzLines: { visible: false }, vertLines: { visible: false } },
     crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
     priceScale: {
-        // Definir un formato de precio con más decimales
+        // Ajuste de padding
+        borderVisible: true,
+        paddingTop: 10, // Ajusta el padding superior según tus necesidades
+        paddingBottom: 10, // Ajusta el padding inferior según tus necesidades
         formatter: (price) => price.toFixed(4) // Cambia 4 por el número de decimales que desees
+    },
+    timeScale: {
+        timeVisible: true,
+        borderVisible: true,
+        // Ajusta el padding si es necesario
+        paddingStart: 5,
+        paddingEnd: 5,
     },
 });
 
