@@ -20,8 +20,8 @@ const chart = LightweightCharts.createChart(document.getElementById('chart'), {
         timeVisible: true,
         borderVisible: true,
         // Ajusta el padding si es necesario
-        paddingStart: 5,
-        paddingEnd: 5,
+        paddingStart: 1,
+        paddingEnd: 1,
     },
 });
 
