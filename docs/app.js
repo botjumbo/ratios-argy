@@ -19,6 +19,11 @@ const candleSeries = chart.addCandlestickSeries({
     borderVisible: false,
     wickUpColor: '#4fff00',
     wickDownColor: '#ff4976',
+    priceFormat: {
+        type: 'price',   // Tipo de formato (para el precio)
+        precision: 3,    // 3 decimales
+        minMove: 0.001,  // Movimiento mínimo de 0.001 para reflejar los 3 decimales
+    }
 });
 
 const lineSeries = chart.addLineSeries({ color: '#2196F3' });
