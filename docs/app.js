@@ -7,7 +7,6 @@ const suggestions = document.getElementById('suggestions');
 // Inicialización del gráfico y series
 const chart = LightweightCharts.createChart(document.getElementById('chart'), {
     width: window.innerWidth * 0.7 - 40,
-    height: 500,
     grid: { horzLines: { visible: false }, vertLines: { visible: false } },
     crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
 });
