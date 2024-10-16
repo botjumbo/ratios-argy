@@ -4,13 +4,17 @@ const promises = symbol.map(file => loadCSV(`/ratios-argy/${file}`));
 const legendElement = document.getElementById('legend');
 const suggestions = document.getElementById('suggestions');
 
-// Inicialización del gráfico y series
 const chart = LightweightCharts.createChart(document.getElementById('chart'), {
     width: window.innerWidth * 0.7 - 40,
     height: 500,
     grid: { horzLines: { visible: false }, vertLines: { visible: false } },
     crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
+    priceScale: {
+        // Definir un formato de precio con más decimales
+        formatter: (price) => price.toFixed(4) // Cambia 4 por el número de decimales que desees
+    },
 });
+
 
 // Definición de series
 const candleSeries = chart.addCandlestickSeries({
