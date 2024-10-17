@@ -1005,14 +1005,14 @@ function toggleChartType(isRatio = false) {
         const lineData = convertCandleToLineSeries(dataToUse); // Convertir datos a serie de línea
         lineSeries.setData(lineData); // Establecer datos de línea
         candleSeries.setData([]); // Limpiar datos de velas
-
+        loadChartData(selectedInstrument); // Carga los datos del gráfico para el archivo
 
     }
 
     document.getElementById('toggle-chart').innerText = chartTypeText; // Actualizar el texto del botón
     isLineChart = !isLineChart; // Alternar el estado del gráfico
     //updateChart();
-    
+
 }
 
 function updateChart() {
