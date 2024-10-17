@@ -998,6 +998,7 @@ function toggleChartType(isRatio = false) {
         // Cambiar a gráfico de velas
         candleSeries.setData(dataToUse); // Establecer datos para el gráfico de velas
         lineSeries.setData([]); // Limpiar datos de línea
+        loadChartData(selectedInstrument); // Carga los datos del gráfico para el archivo
 
 
     } else {
