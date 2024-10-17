@@ -463,9 +463,9 @@ chart.subscribeCrosshairMove(function(param) {
 
     // Obtener los datos de las series
     const price = param.seriesData.get(candleSeries);
-    console.log(candleSeries);
+    console.log(price);
     const ratioData = param.seriesData.get(lineSeries);
-    console.log(lineSeries);
+    console.log(ratioData);
     const volumeData = param.seriesData.get(volumeSeries);
     let totalVolume = volumeData ? volumeData.value : 0; // Almacenar volumen total
     if (ratioData) {
