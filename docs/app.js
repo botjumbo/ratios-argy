@@ -439,7 +439,7 @@ chart.subscribeCrosshairMove(function(param) {
         return;
     }
 
-    const price = param.seriesData.get(candleSeries);
+    const price = isLineChart ? param.seriesData.get(lineSeries) : param.seriesData.get(candleSeries);
     const volumeData = param.seriesData.get(volumeSeries);
     let totalVolume = volumeData ? volumeData.value : 0; // Almacenar volumen total
 
