@@ -51,6 +51,12 @@ volumeSeries.priceScale().applyOptions({
 const tooltip = document.getElementById('tooltip');
 const dailyClosePrices = {}; // Objeto para almacenar cierres diarios
 const dailyRatioClosePrices = {}; // Asegúrate de inicializar este objeto
+let divisionValues = { // Declarar como variable global
+    close: [],
+    open: [],
+    high: [],
+    low: []
+};
 
 
 
@@ -666,12 +672,7 @@ function calculateBollingerBands(data, period = 20, multiplier = 2) {
 
 // Función para calcular los ratios (cierre, apertura, alto, bajo)
 function calculateRatio(data1, data2) {
-    let divisionValues = {
-        close: [],
-        open: [],
-        high: [],
-        low: []
-    };
+
     
     const datesSet = new Set(data1.map(item => item.fecha));
 
@@ -710,6 +711,7 @@ function calculateRatio(data1, data2) {
 
     return divisionValues;
 }
+
 
 async function loadChartData(input) {
     // Limpiar los datos previos del gráfico
