@@ -465,6 +465,8 @@ chart.subscribeCrosshairMove(function(param) {
     const price = param.seriesData.get(candleSeries);
     console.log(price);
     const ratioData = divisionValues.close; // O puedes elegir 'open', 'high', o 'low'
+    console.log(ratioData);
+
     const ratioValue = ratioData.length > 0 ? ratioData.find(r => r.date === currentDate)?.value : null; // Asegúrate de que ratioData contenga un objeto con una propiedad 'date'
     console.log(ratioValue);
 
