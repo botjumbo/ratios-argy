@@ -465,21 +465,20 @@ chart.subscribeCrosshairMove(function(param) {
     // Obtener los datos de las series
     const price = param.seriesData.get(candleSeries);
     console.log(price);
-    console.log(divisionValues);
-    const ratioData = divisionValues.close; // O puedes elegir 'open', 'high', o 'low'
-    console.log(ratioData);
+    const ratioData = param.seriesData.get(candleSeries.close);
 
-    const ratioValue = ratioData.length > 0 ? ratioData.find(r => r.date === currentDate)?.value : null; // Asegúrate de que ratioData contenga un objeto con una propiedad 'date'
-    console.log(ratioValue);
+    console.log(ratioData);
+    const closePrice = ratioData ? ratioData.close : null; // Asegúrate de que existe un valor de cierre
+
 
     const volumeData = param.seriesData.get(volumeSeries);
     let totalVolume = volumeData ? volumeData.value : 0; // Almacenar volumen total
-    if (ratioValue !== null) {
+    if (isLineChart) {
 
         // Preparar el contenido de la leyenda para el ratio
         let ratioLegendContent = `
             <strong>Fecha:</strong> ${formatDate(param.time)} <br>
-            <strong>Cierre Ratio:</strong> ${ratioValue.toFixed(2)} <br>
+            <strong>Cierre Ratio:</strong> ${closePrice.toFixed(2)} <br>
             <strong>Volumen Total:</strong> ${(totalVolume / 1000000).toFixed(2)}M <br>
         `;
 
