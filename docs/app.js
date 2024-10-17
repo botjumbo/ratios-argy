@@ -463,7 +463,7 @@ chart.subscribeCrosshairMove(function(param) {
 
     // Obtener los datos de las series
     const price = param.seriesData.get(candleSeries);
-    const datosClose = param.seriesData.get(candleSeries.close);
+    const datosClose = param.seriesData.get(divisionValues.close);
     console.log(datosClose);
     const closePrice = datosClose ? datosClose : null; // Obtener directamente el valor de ratioData, ya que probablemente es un número y no un objeto
     console.log(closePrice);
