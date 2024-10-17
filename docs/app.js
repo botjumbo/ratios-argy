@@ -269,6 +269,7 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
 
                 return null; // Si no hay coincidencia, devolver null
             }).filter(Boolean);
+            console.log("Ratiodata:", ratioData);
 
         
         
