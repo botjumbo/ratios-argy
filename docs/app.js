@@ -155,6 +155,8 @@ async function fetchAndUpdateChartData(symbol) {
                 volume: volume // Agrega volumen si es necesario
             };
         });
+        console.log("formattedData:", formattedData);
+
         // Almacena el cierre diario
         rows.forEach(item => {
             const date = item.fecha; // Obtener la fecha
