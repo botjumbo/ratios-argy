@@ -464,6 +464,7 @@ chart.subscribeCrosshairMove(function(param) {
     // Obtener los datos de las series
     const price = param.seriesData.get(candleSeries);
     console.log(price);
+    console.log(divisionValues);
     const ratioData = divisionValues.close; // O puedes elegir 'open', 'high', o 'low'
     console.log(ratioData);
 
