@@ -463,7 +463,9 @@ chart.subscribeCrosshairMove(function(param) {
 
     // Obtener los datos de las series
     const price = param.seriesData.get(candleSeries);
-    const ratioData = param.seriesData.get(lineSeries);
+    const ratioData = param.seriesData.get(candleSeries);
+
+    //const ratioData = param.seriesData.get(lineSeries);
     const volumeData = param.seriesData.get(volumeSeries);
     let totalVolume = volumeData ? volumeData.value : 0; // Almacenar volumen total
     if (ratioData) {
@@ -989,6 +991,7 @@ function convertCandleToLineSeries(candleData) {
         value: item.close // Usamos el cierre como valor de la línea
     }));
 }
+
 function toggleChartType(isRatio = false) {
     let dataToUse = isRatio ? ratioData : formattedData; // Usar ratioData o formattedData según corresponda
     const chartTypeText = isLineChart ? "Mostrar Gráfico de Línea" : "Mostrar Gráfico de Velas";
@@ -1012,9 +1015,9 @@ function toggleChartType(isRatio = false) {
 
     document.getElementById('toggle-chart').innerText = chartTypeText; // Actualizar el texto del botón
     isLineChart = !isLineChart; // Alternar el estado del gráfico
-    //updateChart();
 
 }
+
 
 function updateChart() {
     
