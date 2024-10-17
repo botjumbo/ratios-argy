@@ -1030,8 +1030,9 @@ function updateChart() {
                     console.error('Ambos símbolos deben estar definidos antes de hacer la solicitud.');
                     return; // Detener ejecución si hay un símbolo indefinido
                 }
-                
-                fetchAndUpdateChartDataRatio(symbol1, symbol2);
+                fetchAndUpdateChartData(divisionValues); // Llama a la función con el símbolo seleccionado
+
+                //fetchAndUpdateChartDataRatio(symbol1, symbol2);
                 console.log(`${symbol1}/${symbol2} instrumentos seleccionados.`);
                 
             } else {
