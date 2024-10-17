@@ -435,7 +435,6 @@ chart.subscribeCrosshairMove(function(param) {
     if (!param || !param.seriesData || param.seriesData.size === 0) {
         // Mantener el último dato mostrado si no hay interacción
         legendElement.innerHTML = lastValidData;
-        // tooltip.style.display = 'none'; // Ocultar si no hay datos
         return;
     }
 
@@ -464,29 +463,24 @@ chart.subscribeCrosshairMove(function(param) {
 
     // Obtener los datos de las series
     const price = param.seriesData.get(candleSeries);
-    console.log(price);
     const ratioData = param.seriesData.get(candleSeries.close);
-
-    console.log(ratioData);
     const closePrice = ratioData ? ratioData.close : null; // Asegúrate de que existe un valor de cierre
-
-
     const volumeData = param.seriesData.get(volumeSeries);
     let totalVolume = volumeData ? volumeData.value : 0; // Almacenar volumen total
-    if (isLineChart) {
 
+    if (isLineChart) {
         // Preparar el contenido de la leyenda para el ratio
         let ratioLegendContent = `
             <strong>Fecha:</strong> ${formatDate(param.time)} <br>
-            <strong>Cierre Ratio:</strong> ${closePrice.toFixed(2)} <br>
+            <strong>Cierre Ratio:</strong> ${closePrice ? closePrice.toFixed(2) : 'N/A'} <br>
             <strong>Volumen Total:</strong> ${(totalVolume / 1000000).toFixed(2)}M <br>
         `;
 
         // Calcular la diferencia porcentual si el cierre del día anterior es válido
         let previousRatioClosePrice = getPreviousRatioClosePrice(currentDate); // Función para obtener el cierre anterior del ratio
         let ratioPercentageDifference = null;
-        if (previousRatioClosePrice !== null) {
-            ratioPercentageDifference = ((ratioValue / previousRatioClosePrice) - 1) * 100;
+        if (previousRatioClosePrice !== null && closePrice !== null) {
+            ratioPercentageDifference = ((closePrice / previousRatioClosePrice) - 1) * 100;
         }
 
         // Agregar la diferencia porcentual a la leyenda del ratio
@@ -495,42 +489,41 @@ chart.subscribeCrosshairMove(function(param) {
                 <strong>Diferencia:</strong> ${ratioPercentageDifference.toFixed(2)} % <br>
             `;
         }
+
         // Actualizar la leyenda
         legendElement.innerHTML = ratioLegendContent;
         lastValidData = ratioLegendContent; // Guardar el último dato válido
-        
+
     } else {
-        // Si no hay ratio, mostrar datos del precio
+        // Si no es un gráfico de línea, mostrar datos del precio (gráfico de velas)
         let newLegendContent = `
             <strong>Fecha:</strong> ${formatDate(param.time)} <br>
-            <strong>Apertura:</strong> ${price.open.toFixed(2)} <br>
-            <strong>Máximo:</strong> ${price.high.toFixed(2)} <br>
-            <strong>Mínimo:</strong> ${price.low.toFixed(2)} <br>
-            <strong>Cierre:</strong> ${price.close.toFixed(2)} <br>
+            <strong>Apertura:</strong> ${price ? price.open.toFixed(2) : 'N/A'} <br>
+            <strong>Máximo:</strong> ${price ? price.high.toFixed(2) : 'N/A'} <br>
+            <strong>Mínimo:</strong> ${price ? price.low.toFixed(2) : 'N/A'} <br>
+            <strong>Cierre:</strong> ${price ? price.close.toFixed(2) : 'N/A'} <br>
             <strong>Volumen:</strong> ${volumeData ? formatVolume(volumeData.value) : 'N/A'} <br>
         `;
 
         // Calcular la diferencia porcentual si el cierre del día anterior es válido
         let percentageDifference = null;
-        if (previousClosePrice !== null) {
+        if (previousClosePrice !== null && price && price.close) {
             percentageDifference = ((price.close / previousClosePrice) - 1) * 100;
         }
-        
+
         // Agregar la diferencia porcentual a la leyenda
         if (percentageDifference !== null) {
             newLegendContent += `
                 <strong>Diferencia:</strong> ${percentageDifference.toFixed(2)} % <br>
             `;
         }
-        // Actualizamos la leyenda y el último dato válido
-        legendElement.innerHTML = newLegendContent;
 
+        // Actualizar la leyenda y el último dato válido
+        legendElement.innerHTML = newLegendContent;
         lastValidData = newLegendContent;
-    } else {
-        // Limpiar la leyenda si no hay datos
-        legendElement.innerHTML = '';
     }
 });
+
 
 // Función para obtener el cierre del día anterior
 function getPreviousClosePrice(currentDate) {
