@@ -499,7 +499,7 @@ chart.subscribeCrosshairMove(function(param) {
         legendElement.innerHTML = ratioLegendContent;
         lastValidData = ratioLegendContent; // Guardar el último dato válido
         
-    } else if (price) {
+    } else {
         // Si no hay ratio, mostrar datos del precio
         let newLegendContent = `
             <strong>Fecha:</strong> ${formatDate(param.time)} <br>
