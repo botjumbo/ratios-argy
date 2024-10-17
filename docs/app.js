@@ -74,7 +74,7 @@ let currentInput = ''; // Variable para guardar el valor actual
 let firstSuggestionConfirmed = false;
 let isLineChart = false; // Variable para rastrear el tipo de gráfico actual
 let formattedData = []; // Definición global
-let ratioData = []; // Definición global
+//let ratioData = []; // Definición global
 
 
 
@@ -988,21 +988,21 @@ function convertCandleToLineSeries(candleData) {
     }));
 }
 
-function toggleChartType(isRatio = false) {
-    let dataToUse = isRatio ? ratioData : formattedData; // Usar ratioData o formattedData según corresponda
+function toggleChartType() {
+    let dataToUse = formattedData; // Usar ratioData o formattedData según corresponda
     const chartTypeText = isLineChart ? "Mostrar Gráfico de Línea" : "Mostrar Gráfico de Velas";
 
     if (isLineChart) {
         // Cambiar a gráfico de velas
         candleSeries.setData(dataToUse); // Establecer datos para el gráfico de velas
         lineSeries.setData([]); // Limpiar datos de línea
-        loadChartData(selectedInstrument, isRatio); // Cargar los datos para el gráfico de velas, ya sea para ratio o instrumento
+        loadChartData(selectedInstrument); // Cargar los datos para el gráfico de velas, ya sea para ratio o instrumento
     } else {
         // Cambiar a gráfico de línea
         const lineData = convertCandleToLineSeries(dataToUse); // Convertir datos de velas a serie de línea
         lineSeries.setData(lineData); // Establecer datos de línea
         candleSeries.setData([]); // Limpiar datos de velas
-        loadChartData(selectedInstrument, isRatio); // Cargar los datos para el gráfico de línea, ya sea para ratio o instrumento
+        loadChartData(selectedInstrument); // Cargar los datos para el gráfico de línea, ya sea para ratio o instrumento
     }
 
     // Actualizar el texto del botón según el tipo de gráfico actual
