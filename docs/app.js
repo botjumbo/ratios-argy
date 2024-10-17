@@ -430,7 +430,6 @@ function formatDate(date) {
 }
 
 let lastValidData = ""; // Asegúrate de que sea una variable `let`
-// Suscribirse al movimiento del cursor
 chart.subscribeCrosshairMove(function(param) {
     // Comprobar si hay datos válidos
     if (!param || !param.seriesData || param.seriesData.size === 0) {
@@ -451,11 +450,11 @@ chart.subscribeCrosshairMove(function(param) {
 
         // Mostrar y actualizar la etiqueta del tooltip
         tooltip.style.display = 'block';
-        tooltip.innerHTML = 
+        tooltip.innerHTML = `
             <strong>Precio inicial:</strong> ${initialPrice.toFixed(2)} <br>
             <strong>Precio actual:</strong> ${currentPrice.toFixed(2)} <br>
             <strong>Cambio:</strong> ${percentageChange.toFixed(2)} %
-        ;
+        `;
 
         // Posicionar la etiqueta cerca del cursor
         tooltip.style.left = param.point.x + 'px';
@@ -472,11 +471,11 @@ chart.subscribeCrosshairMove(function(param) {
 
     if (isLineChart) {
         // Preparar el contenido de la leyenda para el gráfico de líneas
-        let ratioLegendContent = 
+        let ratioLegendContent = `
             <strong>Fecha:</strong> ${formatDate(param.time)} <br>
             <strong>Cierre:</strong> ${price ? price.close.toFixed(2) : 'N/A'} <br>
             <strong>Volumen Total:</strong> ${(totalVolume / 1000000).toFixed(2)}M <br>
-        ;
+        `;
 
         // Calcular la diferencia porcentual si el cierre del día anterior es válido
         let ratioPercentageDifference = null;
@@ -486,9 +485,9 @@ chart.subscribeCrosshairMove(function(param) {
 
         // Agregar la diferencia porcentual a la leyenda del gráfico de líneas
         if (ratioPercentageDifference !== null) {
-            ratioLegendContent += 
+            ratioLegendContent += `
                 <strong>Diferencia:</strong> ${ratioPercentageDifference.toFixed(2)} % <br>
-            ;
+            `;
         }
 
         // Actualizar la leyenda
@@ -497,14 +496,14 @@ chart.subscribeCrosshairMove(function(param) {
 
     } else {
         // Si no es un gráfico de línea, mostrar datos del precio (gráfico de velas)
-        let newLegendContent = 
+        let newLegendContent = `
             <strong>Fecha:</strong> ${formatDate(param.time)} <br>
             <strong>Apertura:</strong> ${price ? price.open.toFixed(2) : 'N/A'} <br>
             <strong>Máximo:</strong> ${price ? price.high.toFixed(2) : 'N/A'} <br>
             <strong>Mínimo:</strong> ${price ? price.low.toFixed(2) : 'N/A'} <br>
             <strong>Cierre:</strong> ${price ? price.close.toFixed(2) : 'N/A'} <br>
             <strong>Volumen:</strong> ${volumeData ? formatVolume(volumeData.value) : 'N/A'} <br>
-        ;
+        `;
 
         // Calcular la diferencia porcentual si el cierre del día anterior es válido
         let percentageDifference = null;
@@ -514,9 +513,9 @@ chart.subscribeCrosshairMove(function(param) {
 
         // Agregar la diferencia porcentual a la leyenda del gráfico de velas
         if (percentageDifference !== null) {
-            newLegendContent += 
+            newLegendContent += `
                 <strong>Diferencia:</strong> ${percentageDifference.toFixed(2)} % <br>
-            ;
+            `;
         }
 
         // Actualizar la leyenda y el último dato válido
