@@ -465,11 +465,12 @@ chart.subscribeCrosshairMove(function(param) {
     const price = param.seriesData.get(candleSeries);
     console.log(price);
     const ratioData = divisionValues.close; // O puedes elegir 'open', 'high', o 'low'
-    console.log(ratioData);
+    const ratioValue = ratioData.length > 0 ? ratioData.find(r => r.date === currentDate)?.value : null; // Asegúrate de que ratioData contenga un objeto con una propiedad 'date'
+    console.log(ratioValue);
+
     const volumeData = param.seriesData.get(volumeSeries);
     let totalVolume = volumeData ? volumeData.value : 0; // Almacenar volumen total
-    if (ratioData) {
-        const ratioValue = ratioData.value || null;
+    if (ratioValue !== null) {
 
         // Preparar el contenido de la leyenda para el ratio
         let ratioLegendContent = `
@@ -533,7 +534,7 @@ function getPreviousClosePrice(currentDate) {
     // Obtener las fechas de las claves del objeto y convertirlas a un array
     const dates = Object.keys(dailyClosePrices);
     // Ordenar las fechas para buscar la anterior
-    const sortedDates = dates.sort(); // Asegúrate de que las fechas están en formato YYYY-MM-DD
+    const sortedDates = dates.sort((a, b) => new Date(a) - new Date(b));
 
     // Buscar el índice de la fecha actual
     const currentIndex = sortedDates.indexOf(currentDate);
@@ -550,7 +551,7 @@ function getPreviousRatioClosePrice(currentDate) {
     // Aquí deberías implementar la lógica para obtener el cierre del ratio del día anterior
     // Este podría ser un objeto similar a dailyClosePrices pero para los ratios
     const dates = Object.keys(dailyRatioClosePrices);
-    const sortedDates = dates.sort(); // Asegúrate de que las fechas están en formato YYYY-MM-DD
+    const sortedDates = dates.sort((a, b) => new Date(a) - new Date(b));
 
     // Buscar el índice de la fecha actual
     const currentIndex = sortedDates.indexOf(currentDate);
@@ -985,6 +986,8 @@ document.getElementById('toggle-bands').addEventListener('click', function () {
     updateBollingerBandsVisibility(); // Actualizar la visibilidad según el estado
 
 });
+
+
 function convertCandleToLineSeries(candleData) {
     return candleData.map(item => ({
         time: item.time,
