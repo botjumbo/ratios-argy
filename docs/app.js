@@ -430,98 +430,60 @@ function formatDate(date) {
 }
 
 let lastValidData = ""; // Asegúrate de que sea una variable `let`
+
 // Suscribirse al movimiento del cursor
 chart.subscribeCrosshairMove(function(param) {
-    // Comprobar si hay datos válidos
     if (!param || !param.seriesData || param.seriesData.size === 0) {
         // Mantener el último dato mostrado si no hay interacción
         legendElement.innerHTML = lastValidData;
         return;
     }
 
-    const currentPrice = candleSeries.coordinateToPrice(param.point.y); // Precio actual basado en el cursor
-    const currentDate = formatDate(param.time); // Formatear la fecha actual
-    // Obtener el precio de cierre del día anterior
-    const previousClosePrice = getPreviousClosePrice(currentDate);
-
-    // Si estamos midiendo (después de Shift + Click) y tenemos un precio inicial
-    if (isMeasuring && initialPrice !== null) {
-        // Calcular el cambio porcentual
-        const percentageChange = ((currentPrice - initialPrice) / initialPrice) * 100;
-
-        // Mostrar y actualizar la etiqueta del tooltip
-        tooltip.style.display = 'block';
-        tooltip.innerHTML = `
-            <strong>Precio inicial:</strong> ${initialPrice.toFixed(2)} <br>
-            <strong>Precio actual:</strong> ${currentPrice.toFixed(2)} <br>
-            <strong>Cambio:</strong> ${percentageChange.toFixed(2)} %
-        `;
-
-        // Posicionar la etiqueta cerca del cursor
-        tooltip.style.left = param.point.x + 'px';
-        tooltip.style.top = param.point.y + 'px';
-    } else {
-        // Ocultar el tooltip si no estamos midiendo
-        tooltip.style.display = 'none';
-    }
-
-    // Obtener los datos de las series
     const price = param.seriesData.get(candleSeries);
     const volumeData = param.seriesData.get(volumeSeries);
     let totalVolume = volumeData ? volumeData.value : 0; // Almacenar volumen total
 
-    if (isLineChart) {
-        // Preparar el contenido de la leyenda para el gráfico de líneas
-        let ratioLegendContent = `
-            <strong>Fecha:</strong> ${formatDate(param.time)} <br>
-            <strong>Cierre:</strong> ${price ? price.close.toFixed(2) : 'N/A'} <br>
+    if (price) {
+        const currentDate = formatDate(param.time); // Fecha actual
+        const currentPrice = price.close; // Precio de cierre actual
+
+        // Obtener el precio de cierre del día anterior
+        const previousClosePrice = getPreviousClosePrice(currentDate);
+        let percentageChange = previousClosePrice ? ((currentPrice - previousClosePrice) / previousClosePrice) * 100 : null;
+
+        // Actualizar la leyenda del gráfico
+        let legendContent = `
+            <strong>Fecha:</strong> ${currentDate} <br>
+            <strong>Cierre:</strong> ${currentPrice.toFixed(2)} <br>
             <strong>Volumen Total:</strong> ${(totalVolume / 1000000).toFixed(2)}M <br>
         `;
 
-        // Calcular la diferencia porcentual si el cierre del día anterior es válido
-        let ratioPercentageDifference = null;
-        if (previousClosePrice !== null && price && price.close) {
-            ratioPercentageDifference = ((price.close / previousClosePrice) - 1) * 100;
-        }
-
-        // Agregar la diferencia porcentual a la leyenda del gráfico de líneas
-        if (ratioPercentageDifference !== null) {
-            ratioLegendContent += `
-                <strong>Diferencia:</strong> ${ratioPercentageDifference.toFixed(2)} % <br>
-            `;
+        if (percentageChange !== null) {
+            legendContent += `<strong>Cambio:</strong> ${percentageChange.toFixed(2)} %<br>`;
         }
 
         // Actualizar la leyenda
-        legendElement.innerHTML = ratioLegendContent;
-        lastValidData = ratioLegendContent; // Guardar el último dato válido
-
+        legendElement.innerHTML = legendContent;
+        lastValidData = legendContent;
     } else {
-        // Si no es un gráfico de línea, mostrar datos del precio (gráfico de velas)
-        let newLegendContent = `
-            <strong>Fecha:</strong> ${formatDate(param.time)} <br>
-            <strong>Apertura:</strong> ${price ? price.open.toFixed(2) : 'N/A'} <br>
-            <strong>Máximo:</strong> ${price ? price.high.toFixed(2) : 'N/A'} <br>
-            <strong>Mínimo:</strong> ${price ? price.low.toFixed(2) : 'N/A'} <br>
-            <strong>Cierre:</strong> ${price ? price.close.toFixed(2) : 'N/A'} <br>
-            <strong>Volumen:</strong> ${volumeData ? formatVolume(volumeData.value) : 'N/A'} <br>
+        legendElement.innerHTML = lastValidData; // Si no hay datos de precio, mostrar el último válido
+    }
+
+    // Manejo de tooltip si estamos midiendo cambios
+    if (isMeasuring && initialPrice !== null) {
+        const percentageChangeMeasure = ((currentPrice - initialPrice) / initialPrice) * 100;
+
+        tooltip.style.display = 'block';
+        tooltip.innerHTML = `
+            <strong>Precio inicial:</strong> ${initialPrice.toFixed(2)} <br>
+            <strong>Precio actual:</strong> ${currentPrice.toFixed(2)} <br>
+            <strong>Cambio:</strong> ${percentageChangeMeasure.toFixed(2)} %
         `;
 
-        // Calcular la diferencia porcentual si el cierre del día anterior es válido
-        let percentageDifference = null;
-        if (previousClosePrice !== null && price && price.close) {
-            percentageDifference = ((price.close / previousClosePrice) - 1) * 100;
-        }
-
-        // Agregar la diferencia porcentual a la leyenda del gráfico de velas
-        if (percentageDifference !== null) {
-            newLegendContent += `
-                <strong>Diferencia:</strong> ${percentageDifference.toFixed(2)} % <br>
-            `;
-        }
-
-        // Actualizar la leyenda y el último dato válido
-        legendElement.innerHTML = newLegendContent;
-        lastValidData = newLegendContent;
+        tooltip.style.left = param.point.x + 'px';
+        tooltip.style.top = param.point.y + 'px';
+    } else {
+        tooltip.style.display = 'none';
     }
 });
 
