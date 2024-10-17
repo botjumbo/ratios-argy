@@ -666,7 +666,7 @@ function calculateBollingerBands(data, period = 20, multiplier = 2) {
 
 // Función para calcular los ratios (cierre, apertura, alto, bajo)
 function calculateRatio(data1, data2) {
-    const divisionValues = {
+    let divisionValues = {
         close: [],
         open: [],
         high: [],
