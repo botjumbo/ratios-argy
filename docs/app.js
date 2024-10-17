@@ -992,23 +992,26 @@ function convertCandleToLineSeries(candleData) {
 }
 
 function toggleChartType() {
-    let dataToUse = formattedData; // Usar ratioData o formattedData según corresponda
     const chartTypeText = isLineChart ? "Mostrar Gráfico de Línea" : "Mostrar Gráfico de Velas";
 
     if (isLineChart) {
         // Cambiar a gráfico de velas
-        candleSeries.setData(dataToUse); // Establecer datos para el gráfico de velas
+        candleSeries.setData(formattedData); // Establecer datos para el gráfico de velas
         lineSeries.setData([]); // Limpiar datos de línea
         loadChartData(selectedInstrument); // Cargar los datos para el gráfico de velas, ya sea para ratio o instrumento
     } else {
         // Cambiar a gráfico de línea
-        const lineData = convertCandleToLineSeries(dataToUse); // Convertir datos de velas a serie de línea
+        const lineData = convertCandleToLineSeries(formattedData); // Convertir datos de velas a serie de línea
         lineSeries.setData(lineData); // Establecer datos de línea
         candleSeries.setData([]); // Limpiar datos de velas
         loadChartData(selectedInstrument); // Cargar los datos para el gráfico de línea, ya sea para ratio o instrumento
     }
-
-    // Actualizar el texto del botón según el tipo de gráfico actual
+    //aca agregar 
+    //si es un ratio (osea si en el search-input hay dos simbolos o / )
+    //entonces usamos ratioData donde tengo los datos de esa ratio 
+    //candleSeries.setData(ratioData); // Establecer datos para el gráfico de velas
+    //lineSeries.setData([]); // Limpiar datos de línea
+    //fetchAndUpdateChartDataRatio(symbol1, symbol2)    // Actualizar el texto del botón según el tipo de gráfico actual
     document.getElementById('toggle-chart').innerText = chartTypeText;
     
     // Alternar el estado del gráfico (entre línea y velas)
