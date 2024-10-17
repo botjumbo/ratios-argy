@@ -463,10 +463,6 @@ chart.subscribeCrosshairMove(function(param) {
 
     // Obtener los datos de las series
     const price = param.seriesData.get(candleSeries);
-    const datosClose = param.seriesData.get(divisionValues.close);
-    console.log(datosClose);
-    const closePrice = datosClose ? datosClose : null; // Obtener directamente el valor de ratioData, ya que probablemente es un número y no un objeto
-    console.log(closePrice);
     const volumeData = param.seriesData.get(volumeSeries);
     let totalVolume = volumeData ? volumeData.value : 0; // Almacenar volumen total
 
@@ -474,7 +470,7 @@ chart.subscribeCrosshairMove(function(param) {
         // Preparar el contenido de la leyenda para el ratio
         let ratioLegendContent = `
             <strong>Fecha:</strong> ${formatDate(param.time)} <br>
-            <strong>Cierre Ratio:</strong> ${closePrice ? closePrice.toFixed(2) : 'N/A'} <br>
+            <strong>Cierre:</strong> ${price ? price.close.toFixed(2) : 'N/A'} <br>
             <strong>Volumen Total:</strong> ${(totalVolume / 1000000).toFixed(2)}M <br>
         `;
 
