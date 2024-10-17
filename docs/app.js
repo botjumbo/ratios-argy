@@ -52,10 +52,11 @@ const tooltip = document.getElementById('tooltip');
 const dailyClosePrices = {}; // Objeto para almacenar cierres diarios
 const dailyRatioClosePrices = {}; // Asegúrate de inicializar este objeto
 let divisionValues = { // Declarar como variable global
-    close: [],
     open: [],
     high: [],
-    low: []
+    low: [],
+    close: [],
+    time: []
 };
 
 
