@@ -477,7 +477,7 @@ chart.subscribeCrosshairMove(function(param) {
 
         let ratioLegendContent = `
             <strong>Fecha:</strong> ${formatDate(param.time)} <br>
-            <strong>Cierre:</strong> ${price.close.toFixed(2) : 'N/A'} <br>
+            <strong>Cierre:</strong> ${price ? price.close.toFixed(2) : 'N/A'} <br>
             <strong>Volumen Total:</strong> ${(totalVolume / 1000000).toFixed(2)}M <br>
         `;
 
