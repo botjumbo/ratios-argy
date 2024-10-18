@@ -557,21 +557,28 @@ function getPreviousClosePrice(currentDate) {
     const previousDate = sortedDates[currentIndex - 1]; // La fecha anterior
     return dailyClosePrices[previousDate]; // Retornar el precio de cierre del día anterior
 }
-
 function getPreviousRatioClosePrice(currentDate) {
-    // Filtrar los datos anteriores a la fecha actual
-    const previousRatios = ratioData.filter(item => new Date(item.date) < new Date(currentDate));
+    // Convertir la fecha actual a un objeto Date
+    const currentDateObj = new Date(currentDate);
 
-    // Si no hay ratios anteriores, retornar null
-    if (previousRatios.length === 0) return null;
+    // Ordenar los datos por fecha (en caso de que no estén ordenados)
+    const sortedRatioData = [...ratioData].sort((a, b) => new Date(a.time) - new Date(b.time));
 
-    // Ordenar los ratios por fecha y obtener el último (día anterior)
-    const sortedPreviousRatios = previousRatios.sort((a, b) => new Date(a.date) - new Date(b.date));
-    const previousRatio = sortedPreviousRatios[sortedPreviousRatios.length - 1];
+    // Encontrar el índice del elemento con la fecha actual
+    const currentIndex = sortedRatioData.findIndex(item => {
+        const itemDate = new Date(item.time);
+        return itemDate.getTime() === currentDateObj.getTime();
+    });
 
-    return previousRatio.ratio;
+    // Si encontramos el índice y no es el primer día, devolvemos el precio de cierre del día anterior
+    if (currentIndex > 0) {
+        const previousDay = sortedRatioData[currentIndex - 1]; // El día anterior
+        return previousDay.close; // Retornamos el precio de cierre
+    }
+
+    // Si no hay día anterior o no se encuentra el actual, devolver null
+    return null;
 }
-
 // Evento de clic para capturar el precio inicial y reiniciar la medición si es necesario
 chart.subscribeClick(function(param) {
     if (isShiftPressed && param && param.seriesData.size > 0 && param.point.x !== undefined) {
