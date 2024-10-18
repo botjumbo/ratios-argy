@@ -442,7 +442,7 @@ chart.subscribeCrosshairMove(function(param) {
     const currentDate = formatDate(param.time); // Formatear la fecha actual
     // Obtener el precio de cierre del día anterior
     const previousClosePrice = getPreviousClosePrice(currentDate);
-
+    const previousClosePriceRatio = getPreviousRatioClosePrice(currentDate);
     // Si estamos midiendo (después de Shift + Click) y tenemos un precio inicial
     if (isMeasuring && initialPrice !== null) {
         // Calcular el cambio porcentual
@@ -480,7 +480,7 @@ chart.subscribeCrosshairMove(function(param) {
 
         // Calcular la diferencia porcentual si el cierre del día anterior es válido
         let ratioPercentageDifference = null;
-        if (previousClosePrice !== null && price && price.value) {
+        if (previousClosePriceRatio !== null && price && price.value) {
             ratioPercentageDifference = ((price.value / previousClosePrice) - 1) * 100;
         }
 
