@@ -470,7 +470,7 @@ chart.subscribeCrosshairMove(function(param) {
     const price = isLineChart ? param.seriesData.get(lineSeries) : param.seriesData.get(candleSeries);
     const volumeData = param.seriesData.get(volumeSeries);
     let totalVolume = volumeData ? volumeData.value : 0; // Almacenar volumen total
-    let ratioLegendContent = ''; 
+    //let ratioLegendContent = ''; 
     console.log(previousClosePriceRatio);
 
     if (ratioData && ratioData.length > 0) {
