@@ -468,9 +468,13 @@ chart.subscribeCrosshairMove(function(param) {
     const price = param.seriesData.get(candleSeries);
     const volumeData = param.seriesData.get(volumeSeries);
     let totalVolume = volumeData ? volumeData.value : 0; // Almacenar volumen total
-    console.log(price.close);
+  
     if (isLineChart) {
         // Preparar el contenido de la leyenda para el gráfico de líneas
+        if (price) {
+        console.log(price.close); // Aquí se imprime el precio de cierre
+        }
+
         let ratioLegendContent = `
             <strong>Fecha:</strong> ${formatDate(param.time)} <br>
             <strong>Cierre:</strong> ${price.close.toFixed(2) : 'N/A'} <br>
