@@ -471,12 +471,17 @@ chart.subscribeCrosshairMove(function(param) {
     const volumeData = param.seriesData.get(volumeSeries);
     let totalVolume = volumeData ? volumeData.value : 0; // Almacenar volumen total
     let ratioLegendContent = ''; 
+    console.log(previousClosePriceRatio);
 
     if (ratioData && ratioData.length > 0) {
         let ratioPercentageDifference = null;
      
         if (previousClosePriceRatio !== null && price && price.value) {
             const currentRatio = price.value;
+            console.log('-----------');
+            console.log(currentRatio);
+            console.log(previousClosePriceRatio);
+
             ratioPercentageDifference = ((currentRatio / previousClosePriceRatio) - 1) * 100;
         }
         
