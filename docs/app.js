@@ -430,6 +430,7 @@ function formatDate(date) {
 }
 
 let lastValidData = ""; // Asegúrate de que sea una variable `let`
+
 chart.subscribeCrosshairMove(function(param) {
     // Comprobar si hay datos válidos
     if (!param || !param.seriesData || param.seriesData.size === 0) {
@@ -443,6 +444,7 @@ chart.subscribeCrosshairMove(function(param) {
     // Obtener el precio de cierre del día anterior
     const previousClosePrice = getPreviousClosePrice(currentDate);
     const previousClosePriceRatio = getPreviousRatioClosePrice(currentDate);
+
     // Si estamos midiendo (después de Shift + Click) y tenemos un precio inicial
     if (isMeasuring && initialPrice !== null) {
         // Calcular el cambio porcentual
@@ -468,7 +470,21 @@ chart.subscribeCrosshairMove(function(param) {
     const price = isLineChart ? param.seriesData.get(lineSeries) : param.seriesData.get(candleSeries);
     const volumeData = param.seriesData.get(volumeSeries);
     let totalVolume = volumeData ? volumeData.value : 0; // Almacenar volumen total
-  
+    if (ratioData) {
+        let ratioPercentageDifference = null;
+     
+        if (previousClosePriceRatio !== null && price && price.value) {
+            const currentRatio = price.value;
+            ratioPercentageDifference = ((currentRatio / previousClosePriceRatio) - 1) * 100;
+        }
+        
+        if (ratioPercentageDifference !== null) {
+            ratioLegendContent += `
+                <strong>Diferencia:</strong> ${ratioPercentageDifference.toFixed(2)} % <br>
+            `;
+        }
+        
+    }
     if (isLineChart) {
         // Preparar el contenido de la leyenda para el gráfico de líneas
    
@@ -542,21 +558,18 @@ function getPreviousClosePrice(currentDate) {
     return dailyClosePrices[previousDate]; // Retornar el precio de cierre del día anterior
 }
 
-// Función para obtener el cierre del día anterior del ratio
 function getPreviousRatioClosePrice(currentDate) {
-    // Aquí deberías implementar la lógica para obtener el cierre del ratio del día anterior
-    // Este podría ser un objeto similar a dailyClosePrices pero para los ratios
-    const dates = Object.keys(dailyRatioClosePrices);
-    const sortedDates = dates.sort((a, b) => new Date(a) - new Date(b));
+    // Filtrar los datos anteriores a la fecha actual
+    const previousRatios = ratioData.filter(item => new Date(item.date) < new Date(currentDate));
 
-    // Buscar el índice de la fecha actual
-    const currentIndex = sortedDates.indexOf(currentDate);
-    // Si la fecha actual es la primera, no hay cierre anterior
-    if (currentIndex <= 0) return null;
+    // Si no hay ratios anteriores, retornar null
+    if (previousRatios.length === 0) return null;
 
-    // Obtener el cierre anterior usando el índice
-    const previousDate = sortedDates[currentIndex - 1]; // La fecha anterior
-    return dailyRatioClosePrices[previousDate]; // Retornar el precio de cierre del día anterior
+    // Ordenar los ratios por fecha y obtener el último (día anterior)
+    const sortedPreviousRatios = previousRatios.sort((a, b) => new Date(a.date) - new Date(b.date));
+    const previousRatio = sortedPreviousRatios[sortedPreviousRatios.length - 1];
+
+    return previousRatio.ratio;
 }
 
 // Evento de clic para capturar el precio inicial y reiniciar la medición si es necesario
