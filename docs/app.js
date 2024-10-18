@@ -465,19 +465,19 @@ chart.subscribeCrosshairMove(function(param) {
     }
 
     // Obtener los datos de las series
-    const price = param.seriesData.get(candleSeries);
+    const price = isLineChart ? param.seriesData.get(lineSeries) : param.seriesData.get(candleSeries);
     const volumeData = param.seriesData.get(volumeSeries);
     let totalVolume = volumeData ? volumeData.value : 0; // Almacenar volumen total
   
     if (isLineChart) {
         // Preparar el contenido de la leyenda para el gráfico de líneas
         if (price) {
-        console.log(price.close); // Aquí se imprime el precio de cierre
+            console.log(price.value); // Aquí se imprime el valor de cierre (en un gráfico de líneas solo hay un valor: 'value')
         }
 
         let ratioLegendContent = `
             <strong>Fecha:</strong> ${formatDate(param.time)} <br>
-            <strong>Cierre:</strong> ${price ? price.close.toFixed(2) : 'N/A'} <br>
+            <strong>Cierre:</strong> ${price ? price.value.toFixed(2) : 'N/A'} <br>
             <strong>Volumen Total:</strong> ${(totalVolume / 1000000).toFixed(2)}M <br>
         `;
 
