@@ -471,10 +471,7 @@ chart.subscribeCrosshairMove(function(param) {
   
     if (isLineChart) {
         // Preparar el contenido de la leyenda para el gráfico de líneas
-        if (price) {
-            console.log(price.value); // Aquí se imprime el valor de cierre (en un gráfico de líneas solo hay un valor: 'value')
-        }
-
+   
         let ratioLegendContent = `
             <strong>Fecha:</strong> ${formatDate(param.time)} <br>
             <strong>Cierre:</strong> ${price ? price.value.toFixed(2) : 'N/A'} <br>
@@ -483,17 +480,17 @@ chart.subscribeCrosshairMove(function(param) {
 
         // Calcular la diferencia porcentual si el cierre del día anterior es válido
         let ratioPercentageDifference = null;
-        if (previousClosePrice !== null && price && price.close) {
-            ratioPercentageDifference = ((price.close / previousClosePrice) - 1) * 100;
+        if (previousClosePrice !== null && price && price.value) {
+            ratioPercentageDifference = ((price.value / previousClosePrice) - 1) * 100;
         }
 
-        // Agregar la diferencia porcentual a la leyenda del gráfico de líneas
+       // Agregar la diferencia porcentual a la leyenda del gráfico de líneas
         if (ratioPercentageDifference !== null) {
             ratioLegendContent += `
                 <strong>Diferencia:</strong> ${ratioPercentageDifference.toFixed(2)} % <br>
             `;
         }
-
+        
         // Actualizar la leyenda
         legendElement.innerHTML = ratioLegendContent;
         lastValidData = ratioLegendContent; // Guardar el último dato válido
