@@ -487,17 +487,18 @@ chart.subscribeCrosshairMove(function(param) {
                 <strong>Cierre:</strong> ${price ? price.close.toFixed(2) : 'N/A'} <br>
                 <strong>Volumen:</strong> ${volumeData ? formatVolume(volumeData.value) : 'N/A'} <br>
             `;
+            const currentRatio = price.close; // Cambiado de price.value a price.close
 
             // Calcular la diferencia porcentual si el cierre del día anterior es válido
             let percentageDifference = null;
-            if (previousClosePrice !== null && price && price.close) {
+            if (previousClosePriceRatio !== null && price && price.close) {
                 ratioPercentageDifference = ((currentRatio / previousClosePriceRatio) - 1) * 100;
             }
 
             // Agregar la diferencia porcentual a la leyenda del gráfico de velas
-            if (percentageDifference !== null) {
+            if (ratioPercentageDifference !== null) {
                 ratioLegendContent += `
-                    <strong>Diferencia:</strong> ${percentageDifference.toFixed(2)} % <br>
+                    <strong>Diferencia:</strong> ${ratioPercentageDifference.toFixed(2)} % <br>
                 `;
             }
 
