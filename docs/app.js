@@ -481,7 +481,7 @@ chart.subscribeCrosshairMove(function(param) {
             lastValidData = ratioLegendContent;
 
         } else {
-            legendElement.innerHTML = '';
+            //legendElement.innerHTML = '';
 
             // Si no es un gráfico de línea del ratio, mostrar datos del precio del ratio(gráfico de velas)
             let ratioLegendContent = `
