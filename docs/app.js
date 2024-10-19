@@ -524,22 +524,47 @@ chart.subscribeCrosshairMove(function(param) {
         `;
 
        // Calcular la diferencia porcentual si el cierre del día anterior es válido
-        let percentageDifference = null;
+        let percentageDifferenceonlysymbolvelas = null;
         if (previousClosePrice !== null && price && price.close) {
-            percentageDifference = ((price.close / previousClosePrice) - 1) * 100;
+            percentageDifferenceonlysymbolvelas = ((price.close / previousClosePrice) - 1) * 100;
         }
         
-        console.log("La diferencia porcentual vs el dia anterior es : " , percentageDifference);
+        console.log("La diferencia porcentual vs el dia anterior es : " , percentageDifferenceonlysymbolvelas);
        // Agregar la diferencia porcentual a la leyenda del gráfico de velas
-        if (percentageDifference !== null) {
+        if (percentageDifferenceonlysymbolvelas !== null) {
             newLegendContent += `
-                <strong>Diferencia:</strong> ${percentageDifference.toFixed(2)} % <br>
+                <strong>Diferencia:</strong> ${percentageDifferenceonlysymbolvelas.toFixed(2)} % <br>
             `;
         }
 
         // Actualizar la leyenda y el último dato válido
         legendElement.innerHTML = newLegendContent;
         lastValidData = newLegendContent;
+    } else {
+        
+        let linePercentageDifference = null;
+        let onlysymbollineLegendContent = `
+        <strong>Fecha:</strong> ${formatDate(param.time)} <br>
+        <strong>Cierre:</strong> ${price ? price.value.toFixed(2) : 'N/A'} <br>  <!-- Aquí accedes a price.close -->
+        <strong>Volumen:</strong> ${(totalVolume / 1000000).toFixed(2)}M <br>
+        `;
+
+
+        if (previousClosePriceRatio !== null && price && price.value) {
+            const currentRatio = price.value; // Cambiado de price.value a price.close
+            console.log(currentRatio);
+            console.log(previousClosePriceRatio);
+            linePercentageDifference = ((currentRatio / previousClosePriceRatio) - 1) * 100;
+        }
+        
+        if (linePercentageDifference !== null) {
+            onlysymbollineLegendContent += `
+                <strong>Diferencia:</strong> ${linePercentageDifference.toFixed(2)} % <br>
+            `;
+        }
+        legendElement.innerHTML = onlysymbollineLegendContent;
+        lastValidData = onlysymbollineLegendContent;
+    
     }
     
 
