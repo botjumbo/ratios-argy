@@ -454,7 +454,6 @@ chart.subscribeCrosshairMove(function(param) {
     let totalVolume = volumeData ? volumeData.value : 0; // Almacenar volumen total
 
     if (ratioData && ratioData.length > 0) {
-        legendElement.innerHTML = '';
 
         if (isLineChart) {
             let ratioPercentageDifference = null;
@@ -481,7 +480,6 @@ chart.subscribeCrosshairMove(function(param) {
             lastValidData = ratioLegendContent;
 
         } else {
-            //legendElement.innerHTML = '';
 
             // Si no es un gráfico de línea del ratio, mostrar datos del precio del ratio(gráfico de velas)
             let ratioLegendContent = `
