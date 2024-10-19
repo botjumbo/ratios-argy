@@ -512,65 +512,7 @@ chart.subscribeCrosshairMove(function(param) {
         }
     }
     
-    if (isLineChart && ratioData.length == 0) {
-        
-        legendElement.innerHTML = '';
 
-        // Preparar el contenido de la leyenda para el gráfico de líneas
-   
-        let ratioLegendContent = `
-            <strong>Fecha:</strong> ${formatDate(param.time)} <br>
-            <strong>Cierre:</strong> ${price ? price.value.toFixed(2) : 'N/A'} <br>
-            <strong>Volumen Total:</strong> ${(totalVolume / 1000000).toFixed(2)}M <br>
-        `;
-
-        // Calcular la diferencia porcentual si el cierre del día anterior es válido
-        let ratioPercentageDifference = null;
-        if (previousClosePriceRatio !== null && price && price.value) {
-            ratioPercentageDifference = ((price.value / previousClosePrice) - 1) * 100;
-        }
-
-       // Agregar la diferencia porcentual a la leyenda del gráfico de líneas
-        if (ratioPercentageDifference !== null) {
-            ratioLegendContent += `
-                <strong>Diferencia:</strong> ${ratioPercentageDifference.toFixed(2)} % <br>
-            `;
-        }
-        
-        // Actualizar la leyenda
-        legendElement.innerHTML = ratioLegendContent;
-        lastValidData = ratioLegendContent; // Guardar el último dato válido
-
-    } else {
-        legendElement.innerHTML = '';
-
-        // Si no es un gráfico de línea, mostrar datos del precio (gráfico de velas)
-        let newLegendContent = `
-            <strong>Fecha:</strong> ${formatDate(param.time)} <br>
-            <strong>Apertura:</strong> ${price ? price.open.toFixed(2) : 'N/A'} <br>
-            <strong>Máximo:</strong> ${price ? price.high.toFixed(2) : 'N/A'} <br>
-            <strong>Mínimo:</strong> ${price ? price.low.toFixed(2) : 'N/A'} <br>
-            <strong>Cierre:</strong> ${price ? price.close.toFixed(2) : 'N/A'} <br>
-            <strong>Volumen:</strong> ${volumeData ? formatVolume(volumeData.value) : 'N/A'} <br>
-        `;
-
-        // Calcular la diferencia porcentual si el cierre del día anterior es válido
-        let percentageDifference = null;
-        if (previousClosePrice !== null && price && price.close) {
-            percentageDifference = ((price.close / previousClosePrice) - 1) * 100;
-        }
-
-        // Agregar la diferencia porcentual a la leyenda del gráfico de velas
-        if (percentageDifference !== null) {
-            newLegendContent += `
-                <strong>Diferencia:</strong> ${percentageDifference.toFixed(2)} % <br>
-            `;
-        }
-
-        // Actualizar la leyenda y el último dato válido
-        //legendElement.innerHTML = newLegendContent;
-        //lastValidData = newLegendContent;
-    }
 });
 
 // Función para obtener el cierre del día anterior
