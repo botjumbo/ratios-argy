@@ -479,6 +479,7 @@ chart.subscribeCrosshairMove(function(param) {
             }
             legendElement.innerHTML = ratioLegendContent;
             lastValidData = ratioLegendContent;
+            ratioData = null; 
 
         } else {
 
@@ -1045,7 +1046,7 @@ function convertCandleToLineSeries(candleData) {
 function toggleChartType() {
     const chartTypeText = isLineChart ? "Mostrar Gráfico de Línea" : "Mostrar Gráfico de Velas";
     //previousClosePriceRatio = null; // Define la variable al inicio
-    ratioData = null; //
+    
 
 
     // Obtener el valor del input de búsqueda
