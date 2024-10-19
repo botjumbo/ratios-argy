@@ -529,7 +529,7 @@ chart.subscribeCrosshairMove(function(param) {
             percentageDifference = ((price.close / previousClosePrice) - 1) * 100;
         }
         
-        console.log("La diferencia porcentual vs el dia anterior es : " , porcentageDifference);
+        console.log("La diferencia porcentual vs el dia anterior es : " , percentageDifference);
        // Agregar la diferencia porcentual a la leyenda del gráfico de velas
         if (percentageDifference !== null) {
             newLegendContent += `
