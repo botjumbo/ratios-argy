@@ -454,7 +454,8 @@ chart.subscribeCrosshairMove(function(param) {
     let totalVolume = volumeData ? volumeData.value : 0; // Almacenar volumen total
 
     if (ratioData && ratioData.length > 0) {
-        
+        legendElement.innerHTML = '';
+
         if (isLineChart) {
             let ratioPercentageDifference = null;
             let ratioLegendContent = `
@@ -480,6 +481,7 @@ chart.subscribeCrosshairMove(function(param) {
             lastValidData = ratioLegendContent;
 
         } else {
+            legendElement.innerHTML = '';
 
             // Si no es un gráfico de línea del ratio, mostrar datos del precio del ratio(gráfico de velas)
             let ratioLegendContent = `
@@ -513,9 +515,12 @@ chart.subscribeCrosshairMove(function(param) {
     }
     
     if (isLineChart && ratioData.length == 0) {
+        
+        legendElement.innerHTML = '';
+
         // Preparar el contenido de la leyenda para el gráfico de líneas
    
-        const ratioLegendContent = `
+        let ratioLegendContent = `
             <strong>Fecha:</strong> ${formatDate(param.time)} <br>
             <strong>Cierre:</strong> ${price ? price.value.toFixed(2) : 'N/A'} <br>
             <strong>Volumen Total:</strong> ${(totalVolume / 1000000).toFixed(2)}M <br>
@@ -539,6 +544,8 @@ chart.subscribeCrosshairMove(function(param) {
         lastValidData = ratioLegendContent; // Guardar el último dato válido
 
     } else {
+        legendElement.innerHTML = '';
+
         // Si no es un gráfico de línea, mostrar datos del precio (gráfico de velas)
         let newLegendContent = `
             <strong>Fecha:</strong> ${formatDate(param.time)} <br>
