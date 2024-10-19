@@ -459,13 +459,13 @@ chart.subscribeCrosshairMove(function(param) {
             let ratioPercentageDifference = null;
             let ratioLegendContent = `
             <strong>Fecha:</strong> ${formatDate(param.time)} <br>
-            <strong>Cierre:</strong> ${price ? price.close.toFixed(2) : 'N/A'} <br>  <!-- Aquí accedes a price.close -->
+            <strong>Cierre:</strong> ${price ? price.value.toFixed(2) : 'N/A'} <br>  <!-- Aquí accedes a price.close -->
             <strong>Volumen Total:</strong> ${(totalVolume / 1000000).toFixed(2)}M <br>
             `;
 
 
-            if (previousClosePriceRatio !== null && price && price.close) {
-                const currentRatio = price.close; // Cambiado de price.value a price.close
+            if (previousClosePriceRatio !== null && price && price.value) {
+                const currentRatio = price.value; // Cambiado de price.value a price.close
                 console.log(currentRatio);
                 console.log(previousClosePriceRatio);
                 ratioPercentageDifference = ((currentRatio / previousClosePriceRatio) - 1) * 100;
