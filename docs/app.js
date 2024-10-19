@@ -430,6 +430,7 @@ function formatDate(date) {
 }
 
 let lastValidData = ""; // Asegúrate de que sea una variable `let`
+let previousClosePriceRatio = null; // Define la variable al inicio
 
 chart.subscribeCrosshairMove(function(param) {
     // Comprobar si hay datos válidos
