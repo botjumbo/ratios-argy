@@ -430,7 +430,7 @@ function formatDate(date) {
 }
 
 let lastValidData = ""; // Asegúrate de que sea una variable `let`
-let previousClosePriceRatio = null; // Define la variable al inicio
+let previousClosePriceRatio = null; // Variable global
 
 chart.subscribeCrosshairMove(function(param) {
     // Comprobar si hay datos válidos
@@ -1040,8 +1040,10 @@ function convertCandleToLineSeries(candleData) {
         value: item.close // Usamos el cierre como valor de la línea
     }));
 }
+
 function toggleChartType() {
     const chartTypeText = isLineChart ? "Mostrar Gráfico de Línea" : "Mostrar Gráfico de Velas";
+    previousClosePriceRatio = null; // Define la variable al inicio
 
     // Obtener el valor del input de búsqueda
     const searchInputValue = document.getElementById('search-input').value;
