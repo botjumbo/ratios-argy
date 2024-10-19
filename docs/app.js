@@ -541,8 +541,8 @@ chart.subscribeCrosshairMove(function(param) {
         // Actualizar la leyenda y el último dato válido
         legendElement.innerHTML = newLegendContent;
         lastValidData = newLegendContent;
-    } else (isLineChart && ratioData.length === 0){
-        
+    } else if (isLineChart && ratioData.length === 0) {
+        console.log("Entrando a donde no es un grafico de lineas pero tampoco hay datos de ratiodata");
         let linePercentageDifference = null;
         let onlysymbollineLegendContent = `
         <strong>Fecha:</strong> ${formatDate(param.time)} <br>
