@@ -551,11 +551,11 @@ chart.subscribeCrosshairMove(function(param) {
         `;
 
 
-        if (previousClosePriceRatio !== null && price && price.value) {
+        if (previousClosePrice !== null && price && price.value) {
             const currentRatio = price.value; // Cambiado de price.value a price.close
             console.log(currentRatio);
-            console.log(previousClosePriceRatio);
-            linePercentageDifference = ((currentRatio / previousClosePriceRatio) - 1) * 100;
+            console.log(previousClosePrice);
+            linePercentageDifference = ((currentRatio / previousClosePrice) - 1) * 100;
         }
         
         if (linePercentageDifference !== null) {
@@ -1043,7 +1043,7 @@ function convertCandleToLineSeries(candleData) {
 
 function toggleChartType() {
     const chartTypeText = isLineChart ? "Mostrar Gráfico de Línea" : "Mostrar Gráfico de Velas";
-    previousClosePriceRatio = null; // Define la variable al inicio
+    //previousClosePriceRatio = null; // Define la variable al inicio
 
     // Obtener el valor del input de búsqueda
     const searchInputValue = document.getElementById('search-input').value;
