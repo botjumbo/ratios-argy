@@ -541,6 +541,7 @@ chart.subscribeCrosshairMove(function(param) {
         // Actualizar la leyenda y el último dato válido
         legendElement.innerHTML = newLegendContent;
         lastValidData = newLegendContent;
+        
     } else if (isLineChart && ratioData.length === 0) {
         console.log("Entrando a donde no es un grafico de lineas pero tampoco hay datos de ratiodata");
         let linePercentageDifference = null;
@@ -1044,6 +1045,8 @@ function convertCandleToLineSeries(candleData) {
 function toggleChartType() {
     const chartTypeText = isLineChart ? "Mostrar Gráfico de Línea" : "Mostrar Gráfico de Velas";
     //previousClosePriceRatio = null; // Define la variable al inicio
+    ratioData = null; //
+
 
     // Obtener el valor del input de búsqueda
     const searchInputValue = document.getElementById('search-input').value;
