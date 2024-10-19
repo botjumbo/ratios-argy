@@ -541,7 +541,7 @@ chart.subscribeCrosshairMove(function(param) {
         // Actualizar la leyenda y el último dato válido
         legendElement.innerHTML = newLegendContent;
         lastValidData = newLegendContent;
-    } else {
+    } else (isLineChart && ratioData.length === 0){
         
         let linePercentageDifference = null;
         let onlysymbollineLegendContent = `
