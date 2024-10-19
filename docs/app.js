@@ -460,7 +460,7 @@ chart.subscribeCrosshairMove(function(param) {
             let ratioLegendContent = `
             <strong>Fecha:</strong> ${formatDate(param.time)} <br>
             <strong>Cierre:</strong> ${price ? price.value.toFixed(2) : 'N/A'} <br>  <!-- Aquí accedes a price.close -->
-            <strong>Volumen Total:</strong> ${(totalVolume / 1000000).toFixed(2)}M <br>
+            <strong>Volumen:</strong> ${(totalVolume / 1000000).toFixed(2)}M <br>
             `;
 
 
@@ -510,6 +510,36 @@ chart.subscribeCrosshairMove(function(param) {
             legendElement.innerHTML = ratioLegendContent;
             lastValidData = ratioLegendContent;
         }
+    } else if (!isLineChart && ratioData.length === 0) {
+        //aca
+
+        // Si no es un gráfico de línea del ratio, mostrar datos del precio del ratio(gráfico de velas)
+        let newLegendContent = `
+            <strong>Fecha:</strong> ${formatDate(param.time)} <br>
+            <strong>Apertura:</strong> ${price ? price.open.toFixed(2) : 'N/A'} <br>
+            <strong>Máximo:</strong> ${price ? price.high.toFixed(2) : 'N/A'} <br>
+            <strong>Mínimo:</strong> ${price ? price.low.toFixed(2) : 'N/A'} <br>
+            <strong>Cierre:</strong> ${price ? price.close.toFixed(2) : 'N/A'} <br>
+            <strong>Volumen:</strong> ${volumeData ? formatVolume(volumeData.value) : 'N/A'} <br>
+        `;
+
+       // Calcular la diferencia porcentual si el cierre del día anterior es válido
+        let percentageDifference = null;
+        if (previousClosePrice !== null && price && price.close) {
+            percentageDifference = ((price.close / previousClosePrice) - 1) * 100;
+        }
+        
+        console.log("La diferencia porcentual vs el dia anterior es : " , porcentageDifference);
+       // Agregar la diferencia porcentual a la leyenda del gráfico de velas
+        if (percentageDifference !== null) {
+            newLegendContent += `
+                <strong>Diferencia:</strong> ${percentageDifference.toFixed(2)} % <br>
+            `;
+        }
+
+        // Actualizar la leyenda y el último dato válido
+        legendElement.innerHTML = newLegendContent;
+        lastValidData = newLegendContent;
     }
     
 
