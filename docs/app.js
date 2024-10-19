@@ -570,8 +570,8 @@ chart.subscribeCrosshairMove(function(param) {
         }
 
         // Actualizar la leyenda y el último dato válido
-        legendElement.innerHTML = newLegendContent;
-        lastValidData = newLegendContent;
+        //legendElement.innerHTML = newLegendContent;
+        //lastValidData = newLegendContent;
     }
 });
 
