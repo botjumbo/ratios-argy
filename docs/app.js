@@ -444,6 +444,7 @@ chart.subscribeCrosshairMove(function(param) {
     // Obtener el precio de cierre del día anterior
     const previousClosePrice = getPreviousClosePrice(currentDate);
     const previousClosePriceRatio = getPreviousRatioClosePrice(currentDate);
+    console.log("El dato previo de ratio es:", previousClosePriceRatio);
 
 
     // Obtener los datos de las series
@@ -478,7 +479,7 @@ chart.subscribeCrosshairMove(function(param) {
         
         } else {
 
-            // Si no es un gráfico de línea del ratio, mostrar datos del precio (gráfico de velas)
+            // Si no es un gráfico de línea del ratio, mostrar datos del precio del ratio(gráfico de velas)
             ratioLegendContent = `
                 <strong>Fecha:</strong> ${formatDate(param.time)} <br>
                 <strong>Apertura:</strong> ${price ? price.open.toFixed(2) : 'N/A'} <br>
@@ -488,6 +489,7 @@ chart.subscribeCrosshairMove(function(param) {
                 <strong>Volumen:</strong> ${volumeData ? formatVolume(volumeData.value) : 'N/A'} <br>
             `;
             const currentRatio = price.close; // Cambiado de price.value a price.close
+            console.log("El dato previo de ratio es:", previousClosePriceRatio);
 
             // Calcular la diferencia porcentual si el cierre del día anterior es válido
             let percentageDifference = null;
