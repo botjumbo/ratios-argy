@@ -479,7 +479,6 @@ chart.subscribeCrosshairMove(function(param) {
             }
             legendElement.innerHTML = ratioLegendContent;
             lastValidData = ratioLegendContent;
-            ratioData = null; 
 
         } else {
 
@@ -543,8 +542,8 @@ chart.subscribeCrosshairMove(function(param) {
         legendElement.innerHTML = newLegendContent;
         lastValidData = newLegendContent;
         
-    } else if (isLineChart && ratioData.length === 0) {
-        console.log("Entrando a donde no es un grafico de lineas pero tampoco hay datos de ratiodata");
+    } else if isLineChart {
+        console.log("Entrando a donde no es un grafico de lineas , ratiodata se queda guardado ");
         let linePercentageDifference = null;
         let onlysymbollineLegendContent = `
         <strong>Fecha:</strong> ${formatDate(param.time)} <br>
@@ -559,7 +558,7 @@ chart.subscribeCrosshairMove(function(param) {
             console.log(previousClosePrice);
             linePercentageDifference = ((currentRatio / previousClosePrice) - 1) * 100;
         }
-        
+            console.log("linePercentageDifference: ",linePercentageDifference);
         if (linePercentageDifference !== null) {
             onlysymbollineLegendContent += `
                 <strong>Diferencia:</strong> ${linePercentageDifference.toFixed(2)} % <br>
