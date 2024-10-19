@@ -445,7 +445,7 @@ chart.subscribeCrosshairMove(function(param) {
     // Obtener el precio de cierre del día anterior
     const previousClosePrice = getPreviousClosePrice(currentDate);
     const previousClosePriceRatio = getPreviousRatioClosePrice(currentDate);
-    console.log("El dato previo de ratio es:", previousClosePriceRatio);
+    console.log("El dato previo de precio es:", previousClosePrice);
 
 
     // Obtener los datos de las series
@@ -542,7 +542,7 @@ chart.subscribeCrosshairMove(function(param) {
         legendElement.innerHTML = newLegendContent;
         lastValidData = newLegendContent;
         
-    } else if (isLineChart) {
+    } else {
         console.log("Entrando a donde no es un grafico de lineas , ratiodata se queda guardado ");
         let linePercentageDifference = null;
         let onlysymbollineLegendContent = `
@@ -553,10 +553,10 @@ chart.subscribeCrosshairMove(function(param) {
 
 
         if (previousClosePrice !== null && price && price.value) {
-            const currentRatio = price.value; // Cambiado de price.value a price.close
-            console.log(currentRatio);
+            const currentPrice = price.value; // Cambiado de price.value a price.close
+            console.log(currentPrice);
             console.log(previousClosePrice);
-            linePercentageDifference = ((currentRatio / previousClosePrice) - 1) * 100;
+            linePercentageDifference = ((currentPrice / previousClosePrice) - 1) * 100;
         }
             console.log("linePercentageDifference: ",linePercentageDifference);
         if (linePercentageDifference !== null) {
