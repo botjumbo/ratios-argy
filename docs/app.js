@@ -1086,6 +1086,7 @@ function toggleChartType() {
 
     // Alternar el estado del gráfico
     isLineChart = !isLineChart;
+    updateChart();
 }
 
 
