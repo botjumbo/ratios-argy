@@ -431,6 +431,7 @@ function formatDate(date) {
 
 let lastValidData = ""; // Asegúrate de que sea una variable `let`
 let previousClosePriceRatio = null; // Variable global
+let previousClosePrice = null; // Variable global
 
 chart.subscribeCrosshairMove(function(param) {
     // Comprobar si hay datos válidos
@@ -553,7 +554,7 @@ chart.subscribeCrosshairMove(function(param) {
 
 
         if (previousClosePrice !== null && price && price.value) {
-            const currentPrice = price.value; // Cambiado de price.value a price.close
+            const currentPrice = price.value; //
             console.log(currentPrice);
             console.log(previousClosePrice);
             linePercentageDifference = ((currentPrice / previousClosePrice) - 1) * 100;
@@ -1044,8 +1045,9 @@ function convertCandleToLineSeries(candleData) {
 
 function toggleChartType() {
     const chartTypeText = isLineChart ? "Mostrar Gráfico de Línea" : "Mostrar Gráfico de Velas";
-    //previousClosePriceRatio = null; // Define la variable al inicio
-    
+   // Reiniciar variables de precios previos
+    previousClosePriceRatio = null; 
+    previousClosePrice = null; 
 
 
     // Obtener el valor del input de búsqueda
