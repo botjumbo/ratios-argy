@@ -1080,13 +1080,14 @@ function toggleChartType() {
         }
         loadChartData(selectedInstrument);
     }
-
-    // Actualizar el texto del botón
-    document.getElementById('toggle-chart').innerText = chartTypeText;
-
     // Alternar el estado del gráfico
     isLineChart = !isLineChart;
+    // Actualizar el texto del botón
     updateChart();
+
+    document.getElementById('toggle-chart').innerText = chartTypeText;
+
+
 }
 
 
@@ -1095,7 +1096,7 @@ function updateChart() {
     previousClosePrice = null;
     previousClosePriceRatio = null;
     linePercentageDifference = null;
-    
+    ratioData = null;
     // Si hay un símbolo seleccionado
     if (selectedInstrument) {
         if (!selectedInstrument.includes('/')) { // Comprueba que hay un solo símbolo
