@@ -543,7 +543,7 @@ chart.subscribeCrosshairMove(function(param) {
         legendElement.innerHTML = newLegendContent;
         lastValidData = newLegendContent;
         
-    } else (isLineChart){
+    } else if (isLineChart){
         console.log("Entrando a donde no es un grafico de lineas , ratiodata se queda guardado ");
         let linePercentageDifference = null;
         let onlysymbollineLegendContent = `
