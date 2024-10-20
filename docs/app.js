@@ -1045,9 +1045,6 @@ function convertCandleToLineSeries(candleData) {
 
 function toggleChartType() {
     // Reiniciar variables relevantes al cambiar el tipo de gráfico
-    previousClosePrice = null; // Reinicializar el precio de cierre previo
-    previousClosePriceRatio = null; // Reinicializar el precio de cierre previo del ratio
-    linePercentageDifference = null; // Reinicializar la diferencia porcentual de línea
 
     const chartTypeText = isLineChart ? "Mostrar Gráfico de Línea" : "Mostrar Gráfico de Velas";
 
@@ -1083,7 +1080,6 @@ function toggleChartType() {
     // Alternar el estado del gráfico
     isLineChart = !isLineChart;
     // Actualizar el texto del botón
-    updateChart();
 
     document.getElementById('toggle-chart').innerText = chartTypeText;
 
@@ -1093,10 +1089,7 @@ function toggleChartType() {
 
 function updateChart() {
     // Reiniciar datos previos al actualizar el gráfico
-    previousClosePrice = null;
-    previousClosePriceRatio = null;
-    linePercentageDifference = null;
-    ratioData = null;
+
     // Si hay un símbolo seleccionado
     if (selectedInstrument) {
         if (!selectedInstrument.includes('/')) { // Comprueba que hay un solo símbolo
