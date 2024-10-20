@@ -1044,50 +1044,47 @@ function convertCandleToLineSeries(candleData) {
 }
 
 function toggleChartType() {
-    const chartTypeText = isLineChart ? "Mostrar Gráfico de Línea" : "Mostrar Gráfico de Velas";
-   // Reiniciar variables de precios previos
-    previousClosePriceRatio = null; 
-    previousClosePrice = null; 
+    // Reiniciar variables relevantes al cambiar el tipo de gráfico
+    previousClosePrice = null; // Reinicializar el precio de cierre previo
+    previousClosePriceRatio = null; // Reinicializar el precio de cierre previo del ratio
+    linePercentageDifference = null; // Reinicializar la diferencia porcentual de línea
 
+    const chartTypeText = isLineChart ? "Mostrar Gráfico de Línea" : "Mostrar Gráfico de Velas";
 
     // Obtener el valor del input de búsqueda
     const searchInputValue = document.getElementById('search-input').value;
-
-    // Verificar si se trata de un ratio (dos símbolos separados por '/')
     const isRatio = searchInputValue.includes('/') && searchInputValue.split('/').length === 2;
 
     if (isLineChart) {
         // Cambiar a gráfico de velas
         if (isRatio) {
-            // Si es un ratio, usar los datos de ratio
-            candleSeries.setData(ratioData); // Establecer datos para el gráfico de velas
-            lineSeries.setData([]); // Limpiar datos de línea
+            candleSeries.setData(ratioData);
+            lineSeries.setData([]);
             const [symbol1, symbol2] = searchInputValue.split('/').map(symbol => symbol.trim());
-            fetchAndUpdateChartDataRatio(symbol1, symbol2); // Actualizar los datos del ratio
+            fetchAndUpdateChartDataRatio(symbol1, symbol2);
         } else {
-            candleSeries.setData(formattedData); // Establecer datos para el gráfico de velas
-            lineSeries.setData([]); // Limpiar datos de línea
-            loadChartData(selectedInstrument); // Cargar los datos para el gráfico de velas, ya sea para ratio o instrumento
+            candleSeries.setData(formattedData);
+            lineSeries.setData([]);
+            loadChartData(selectedInstrument);
         }
     } else {
         // Cambiar a gráfico de línea
         if (isRatio) {
-            // Si es un ratio, convertir los datos de velas a serie de línea
-            const lineData = convertCandleToLineSeries(ratioData); // Convertir datos de ratio a serie de línea
-            lineSeries.setData(lineData); // Establecer datos de línea
-            candleSeries.setData([]); // Limpiar datos de velas
+            const lineData = convertCandleToLineSeries(ratioData);
+            lineSeries.setData(lineData);
+            candleSeries.setData([]);
         } else {
-            const lineData = convertCandleToLineSeries(formattedData); // Convertir datos de velas a serie de línea
-            lineSeries.setData(lineData); // Establecer datos de línea
-            candleSeries.setData([]); // Limpiar datos de velas
+            const lineData = convertCandleToLineSeries(formattedData);
+            lineSeries.setData(lineData);
+            candleSeries.setData([]);
         }
-        loadChartData(selectedInstrument); // Cargar los datos para el gráfico de línea, ya sea para ratio o instrumento
+        loadChartData(selectedInstrument);
     }
 
-    // Actualizar el texto del botón según el tipo de gráfico actual
+    // Actualizar el texto del botón
     document.getElementById('toggle-chart').innerText = chartTypeText;
 
-    // Alternar el estado del gráfico (entre línea y velas)
+    // Alternar el estado del gráfico
     isLineChart = !isLineChart;
 }
 
