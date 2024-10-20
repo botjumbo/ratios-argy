@@ -1090,6 +1090,10 @@ function toggleChartType() {
 
 
 function updateChart() {
+    // Reiniciar datos previos al actualizar el gráfico
+    previousClosePrice = null;
+    previousClosePriceRatio = null;
+    linePercentageDifference = null;
     
     // Si hay un símbolo seleccionado
     if (selectedInstrument) {
