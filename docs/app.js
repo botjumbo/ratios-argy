@@ -598,9 +598,8 @@ document.getElementById('search-input').addEventListener('blur', function() {
 
 });
 
-
 // Carga todos los archivos CSV y actualiza la lista de instrumentos
-Promise.all(symbol.map(file => loadCSV(`/ratios-argy/${file}`))) // Reemplaza con la ruta correcta
+Promise.all(symbol.map(file => loadCSV(`/ratios-argy/${file}`))) // Asegúrate de que esta ruta es correcta
     .then(results => {
         const instrumentList = document.getElementById('instrument-list');
         
@@ -608,6 +607,12 @@ Promise.all(symbol.map(file => loadCSV(`/ratios-argy/${file}`))) // Reemplaza co
         instrumentList.innerHTML = ''; // Limpia los elementos anteriores
 
         results.forEach((data, index) => {
+            // Si el archivo no se cargó correctamente, puedes ignorarlo
+            if (!data) {
+                console.warn(`El archivo ${symbol[index]} no se pudo cargar.`);
+                return;
+            }
+
             const listItem = document.createElement('li');
             const button = document.createElement('button');
             const fileName = symbol[index].replace('.csv', ''); // Obtener el nombre del archivo sin extensión
@@ -617,8 +622,8 @@ Promise.all(symbol.map(file => loadCSV(`/ratios-argy/${file}`))) // Reemplaza co
                 selectedInstrument = symbol[index]; // Almacena el archivo seleccionado globalmente
                 loadChartData(selectedInstrument); // Carga los datos del gráfico para el archivo
                 fetchAndUpdateChartData(selectedInstrument); // Actualiza el gráfico inmediatamente
-                
             };
+
             listItem.className = 'instrument-item'; // Asigna la clase para aplicar estilos
             listItem.appendChild(button);
             instrumentList.appendChild(listItem);
@@ -634,6 +639,7 @@ Promise.all(symbol.map(file => loadCSV(`/ratios-argy/${file}`))) // Reemplaza co
         document.getElementById('search-input').value = ''; // Limpiar el campo de búsqueda
     })
     .catch(error => console.error('Error al cargar la lista de instrumentos:', error));
+
 
 // Procesa el archivo CSV y maneja celdas vacías
 function parseCSV(data) {
