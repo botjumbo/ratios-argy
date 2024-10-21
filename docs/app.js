@@ -432,7 +432,6 @@ function formatDate(date) {
 let lastValidData = ""; // Asegúrate de que sea una variable `let`
 let previousClosePriceRatio = null; // Variable global
 let previousClosePrice = null; // Variable global
-
 chart.subscribeCrosshairMove(function(param) {
     // Comprobar si hay datos válidos
     if (!param || !param.seriesData || param.seriesData.size === 0) {
@@ -443,35 +442,38 @@ chart.subscribeCrosshairMove(function(param) {
 
     const currentPrice = candleSeries.coordinateToPrice(param.point.y); // Precio actual basado en el cursor
     const currentDate = formatDate(param.time); // Formatear la fecha actual
-    // Obtener el precio de cierre del día anterior
     const previousClosePrice = getPreviousClosePrice(currentDate);
     const previousClosePriceRatio = getPreviousRatioClosePrice(currentDate);
     console.log("El dato previo de precio es:", previousClosePrice);
 
-
     // Obtener los datos de las series
     const price = isLineChart ? param.seriesData.get(lineSeries) : param.seriesData.get(candleSeries);
-    console.log("El precio es:" , price);
+    console.log("El precio es:", price);
+    
+    // Validación de price
+    if (!price) {
+        console.warn("No hay datos para el precio en la serie seleccionada");
+        return; // Salir si price es undefined
+    }
+
     const volumeData = param.seriesData.get(volumeSeries);
     let totalVolume = volumeData ? volumeData.value : 0; // Almacenar volumen total
-
 
     if (isLineChart) {
         let ratioPercentageDifference = null;
         let ratioLegendContent = `
-        <strong>Fecha:</strong> ${formatDate(param.time)} <br>
-        <strong>Cierre:</strong> ${price ? price.value.toFixed(2) : 'N/A'} <br>  <!-- Aquí accedes a price.close -->
-        <strong>Volumen:</strong> ${(totalVolume / 1000000).toFixed(2)}M <br>
+            <strong>Fecha:</strong> ${formatDate(param.time)} <br>
+            <strong>Cierre:</strong> ${price.value ? price.value.toFixed(2) : 'N/A'} <br>
+            <strong>Volumen:</strong> ${(totalVolume / 1000000).toFixed(2)}M <br>
         `;
 
-
-        if (previousClosePriceRatio !== null && price && price.value) {
-            const currentRatio = price.value; // Cambiado de price.value a price.close
+        if (previousClosePriceRatio !== null && price.value) {
+            const currentRatio = price.value;
             console.log(currentRatio);
             console.log(previousClosePriceRatio);
             ratioPercentageDifference = ((currentRatio / previousClosePriceRatio) - 1) * 100;
         }
-        
+
         if (ratioPercentageDifference !== null) {
             ratioLegendContent += `
                 <strong>Diferencia:</strong> ${ratioPercentageDifference.toFixed(2)} % <br>
@@ -481,25 +483,25 @@ chart.subscribeCrosshairMove(function(param) {
         lastValidData = ratioLegendContent;
 
     } else {
-
         // Si no es un gráfico de línea del ratio, mostrar datos del precio del ratio(gráfico de velas)
         let ratioLegendContent = `
             <strong>Fecha:</strong> ${formatDate(param.time)} <br>
-            <strong>Apertura:</strong> ${price ? price.open.toFixed(2) : 'N/A'} <br>
-            <strong>Máximo:</strong> ${price ? price.high.toFixed(2) : 'N/A'} <br>
-            <strong>Mínimo:</strong> ${price ? price.low.toFixed(2) : 'N/A'} <br>
-            <strong>Cierre:</strong> ${price ? price.close.toFixed(2) : 'N/A'} <br>
+            <strong>Apertura:</strong> ${price.open ? price.open.toFixed(2) : 'N/A'} <br>
+            <strong>Máximo:</strong> ${price.high ? price.high.toFixed(2) : 'N/A'} <br>
+            <strong>Mínimo:</strong> ${price.low ? price.low.toFixed(2) : 'N/A'} <br>
+            <strong>Cierre:</strong> ${price.close ? price.close.toFixed(2) : 'N/A'} <br>
             <strong>Volumen:</strong> ${volumeData ? formatVolume(volumeData.value) : 'N/A'} <br>
         `;
+
         const currentRatio = price.close; // Cambiado de price.value a price.close
 
         // Calcular la diferencia porcentual si el cierre del día anterior es válido
         let ratioPercentageDifference = null;
-        if (previousClosePriceRatio !== null && price && price.close) {
+        if (previousClosePriceRatio !== null && price.close) {
             ratioPercentageDifference = ((currentRatio / previousClosePriceRatio) - 1) * 100;
         }
-        
-        console.log("La diferencia porcentual vs el dia anterior es : " , ratioPercentageDifference);
+
+        console.log("La diferencia porcentual vs el día anterior es:", ratioPercentageDifference);
         // Agregar la diferencia porcentual a la leyenda del gráfico de velas
         if (ratioPercentageDifference !== null) {
             ratioLegendContent += `
@@ -511,10 +513,7 @@ chart.subscribeCrosshairMove(function(param) {
         legendElement.innerHTML = ratioLegendContent;
         lastValidData = ratioLegendContent;
     }
-
-
 });
-
 // Función para obtener el cierre del día anterior
 function getPreviousClosePrice(currentDate) {
     // Obtener las fechas de las claves del objeto y convertirlas a un array
