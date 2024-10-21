@@ -239,6 +239,15 @@
 
         </div>
         <div id="search-container" class="search-container">
+            <label for="interval-selector">Selecciona el intervalo:</label>
+            <select id="interval-selector">
+                <option value="1d">Diario</option>
+                <option value="1w">Semanal</option>
+                <option value="4h">4 Horas</option>
+                <option value="1h">1 Hora</option>
+                <option value="30m">30 Minutos</option>
+                <option value="15m">15 Minutos</option>
+            </select>
             <div class="search-wrapper">
                 <input type="text" id="search-input" placeholder="Buscar instrumento o cálculo..." 
                     oninput="filterInstruments()" 
