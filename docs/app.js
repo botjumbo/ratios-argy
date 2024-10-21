@@ -483,7 +483,7 @@ chart.subscribeCrosshairMove(function(param) {
         lastValidData = ratioLegendContent;
 
     } else {
-        // Si no es un gráfico de línea del ratio, mostrar datos del precio del ratio(gráfico de velas)
+        // Si no es un gráfico de línea , mostrar datos del precio para gráfico de velas
         let ratioLegendContent = `
             <strong>Fecha:</strong> ${formatDate(param.time)} <br>
             <strong>Apertura:</strong> ${price.open ? price.open.toFixed(2) : 'N/A'} <br>
@@ -1087,36 +1087,56 @@ function cargarDatos(intervalo) {
     let dataDiaria = []; 
     let dataMinuto = [];
     
+    // Lógica para cargar los datos según el intervalo
     switch(intervalo) {
         case 'diaria':
-            return dataDiaria;
+            console.log("Datos diarios:", dataDiaria);
+            return dataDiaria;  // Asegúrate de que haya datos aquí
         case 'semanal':
-            return agregarIntervalo(dataDiaria, 5);  // Agrupando cada 5 días
+            const semanal = agregarIntervalo(dataDiaria, 5); 
+            console.log("Datos semanales:", semanal);
+            return semanal;  
         case '4horas':
-            return agregarIntervalo(dataMinuto, 240); // 4 horas = 240 minutos
+            const cuatroHoras = agregarIntervalo(dataMinuto, 240);
+            console.log("Datos de 4 horas:", cuatroHoras);
+            return cuatroHoras; 
         case '1hora':
-            return agregarIntervalo(dataMinuto, 60);  // 1 hora = 60 minutos
+            const unaHora = agregarIntervalo(dataMinuto, 60);  
+            console.log("Datos de 1 hora:", unaHora);
+            return unaHora;  
         case '30min':
-            return agregarIntervalo(dataMinuto, 30);  // 30 minutos
+            const treintaMin = agregarIntervalo(dataMinuto, 30);  
+            console.log("Datos de 30 minutos:", treintaMin);
+            return treintaMin;  
         case '15min':
-            return agregarIntervalo(dataMinuto, 15);  // 15 minutos
+            const quinceMin = agregarIntervalo(dataMinuto, 15);  
+            console.log("Datos de 15 minutos:", quinceMin);
+            return quinceMin;  
         default:
+            console.log("Datos diarios (por defecto):", dataDiaria);
             return dataDiaria;
     }
 }
-
-// Función para renderizar los gráficos usando Lightweight Charts
 function renderizarGrafico(intervalo) {
-    let data = cargarDatos(intervalo);
-    candleSeries.setData(data.map(candle => ({
-        time: new Date(candle.fecha).getTime() / 1000, // Convertir la fecha a formato UNIX
-        open: candle.apertura,
-        high: candle.maximo,
-        low: candle.minimo,
-        close: candle.cierre
-    })));
+    // Limpiar los datos de la serie existente
+    candleSeries.setData([]); // Limpia los datos actuales antes de agregar nuevos
 
-    chart.timeScale().fitContent(); // Ajusta la escala de tiempo para que se ajuste al contenido
+    let data = cargarDatos(intervalo);
+    console.log("Datos a renderizar:", data); // Para verificar los datos que se van a renderizar
+
+    if (data.length > 0) {
+        candleSeries.setData(data.map(candle => ({
+            time: new Date(candle.fecha).getTime() / 1000, // Convertir la fecha a formato UNIX
+            open: candle.apertura,
+            high: candle.maximo,
+            low: candle.minimo,
+            close: candle.cierre
+        })));
+    } else {
+        console.warn("No hay datos para renderizar el gráfico en el intervalo seleccionado.");
+    }
+
+    chart.timeScale().fitContent();
 }
 
 // Manejar el cambio de intervalo de tiempo
