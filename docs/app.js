@@ -501,11 +501,11 @@ chart.subscribeCrosshairMove(function(param) {
             PercentageDifference = ((currentPriceLigth / previousClosePrice) - 1) * 100;
         }
 
-        console.log("La diferencia porcentual vs el día anterior es:", ratioPercentageDifference);
+        console.log("La diferencia porcentual vs el día anterior es:", PercentageDifference);
         // Agregar la diferencia porcentual a la leyenda del gráfico de velas
-        if (ratioPercentageDifference !== null) {
+        if (PercentageDifference !== null) {
             ligthLegendContent += `
-                <strong>Diferencia:</strong> ${ratioPercentageDifference.toFixed(2)} % <br>
+                <strong>Diferencia:</strong> ${PercentageDifference.toFixed(2)} % <br>
             `;
         }
 
