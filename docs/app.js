@@ -1051,7 +1051,6 @@ function toggleChartType() {
 
 }
 
-
 // Función para agregar datos en diferentes intervalos de tiempo
 function agregarIntervalo(data, interval) {
     let resultado = [];
@@ -1093,7 +1092,6 @@ function cargarDatos(intervalo) {
         case 'diaria':
             return dataDiaria;
         case 'semanal':
-            // Agregar los datos para mostrar como semanal
             return agregarIntervalo(dataDiaria, 5);  // Agrupando cada 5 días
         case '4horas':
             return agregarIntervalo(dataMinuto, 240); // 4 horas = 240 minutos
@@ -1110,13 +1108,6 @@ function cargarDatos(intervalo) {
 
 // Función para renderizar los gráficos usando Lightweight Charts
 function renderizarGrafico(intervalo) {
-    let chart = LightweightCharts.createChart(document.getElementById('chart'), {
-        width: 600,
-        height: 400,
-    });
-
-    let series = chart.addCandlestickSeries();
-
     let data = cargarDatos(intervalo);
     series.setData(data.map(candle => ({
         time: new Date(candle.fecha).getTime() / 1000, // Convertir la fecha a formato UNIX
@@ -1126,7 +1117,7 @@ function renderizarGrafico(intervalo) {
         close: candle.cierre
     })));
 
-    chart.timeScale().fitContent();
+    chart.timeScale().fitContent(); // Ajusta la escala de tiempo para que se ajuste al contenido
 }
 
 // Manejar el cambio de intervalo de tiempo
@@ -1137,7 +1128,6 @@ document.getElementById('interval-selector').addEventListener('change', function
 
 // Inicializar con intervalo diario por defecto
 renderizarGrafico('diaria');
-
 function updateChart() {
     // Reiniciar datos previos al actualizar el gráfico
 
