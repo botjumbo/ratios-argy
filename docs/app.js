@@ -644,7 +644,7 @@ function parseCSV(data) {
         const columns = row.split(','); // Divide las columnas
         const cleanedColumns = columns.map((cell) => {
             if (cell.trim() === '') {
-                return 'Valor inválido'; // Asigna un valor por defecto si la celda está vacía
+                return '0'; // Asigna un valor por defecto si la celda está vacía
             }
             return cell.trim(); // Elimina espacios en blanco alrededor del valor
         });
