@@ -1052,6 +1052,92 @@ function toggleChartType() {
 }
 
 
+// Función para agregar datos en diferentes intervalos de tiempo
+function agregarIntervalo(data, interval) {
+    let resultado = [];
+    let temp = [];
+
+    data.forEach((candle, index) => {
+        temp.push(candle);
+
+        if ((index + 1) % interval === 0) {
+            let open = temp[0].apertura;
+            let close = temp[temp.length - 1].cierre;
+            let high = Math.max(...temp.map(t => t.maximo));
+            let low = Math.min(...temp.map(t => t.minimo));
+            let volume = temp.reduce((acc, t) => acc + t.volumen, 0);
+            let fecha = temp[temp.length - 1].fecha;
+
+            resultado.push({
+                fecha: fecha,
+                apertura: open,
+                maximo: high,
+                minimo: low,
+                cierre: close,
+                volumen: volume
+            });
+
+            temp = [];
+        }
+    });
+
+    return resultado;
+}
+
+// Función para cargar datos y agrupar en intervalos deseados
+function cargarDatos(intervalo) {
+    let dataDiaria = /* Cargar la data diaria */;
+    let dataMinuto = /* Cargar la data minuto */;
+    
+    switch(intervalo) {
+        case 'diaria':
+            return dataDiaria;
+        case 'semanal':
+            // Agregar los datos para mostrar como semanal
+            return agregarIntervalo(dataDiaria, 5);  // Agrupando cada 5 días
+        case '4horas':
+            return agregarIntervalo(dataMinuto, 240); // 4 horas = 240 minutos
+        case '1hora':
+            return agregarIntervalo(dataMinuto, 60);  // 1 hora = 60 minutos
+        case '30min':
+            return agregarIntervalo(dataMinuto, 30);  // 30 minutos
+        case '15min':
+            return agregarIntervalo(dataMinuto, 15);  // 15 minutos
+        default:
+            return dataDiaria;
+    }
+}
+
+// Función para renderizar los gráficos usando Lightweight Charts
+function renderizarGrafico(intervalo) {
+    let chart = LightweightCharts.createChart(document.getElementById('chart'), {
+        width: 600,
+        height: 400,
+    });
+
+    let series = chart.addCandlestickSeries();
+
+    let data = cargarDatos(intervalo);
+    series.setData(data.map(candle => ({
+        time: new Date(candle.fecha).getTime() / 1000, // Convertir la fecha a formato UNIX
+        open: candle.apertura,
+        high: candle.maximo,
+        low: candle.minimo,
+        close: candle.cierre
+    })));
+
+    chart.timeScale().fitContent();
+}
+
+// Manejar el cambio de intervalo de tiempo
+document.getElementById('interval-selector').addEventListener('change', function(event) {
+    let selectedInterval = event.target.value;
+    renderizarGrafico(selectedInterval);
+});
+
+// Inicializar con intervalo diario por defecto
+renderizarGrafico('diaria');
+
 function updateChart() {
     // Reiniciar datos previos al actualizar el gráfico
 
