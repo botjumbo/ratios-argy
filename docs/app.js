@@ -1086,8 +1086,8 @@ function agregarIntervalo(data, interval) {
 
 // Función para cargar datos y agrupar en intervalos deseados
 function cargarDatos(intervalo) {
-    let dataDiaria = /* Cargar la data diaria */;
-    let dataMinuto = /* Cargar la data minuto */;
+    let dataDiaria = []; 
+    let dataMinuto = [];
     
     switch(intervalo) {
         case 'diaria':
