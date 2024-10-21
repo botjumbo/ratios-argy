@@ -1109,7 +1109,7 @@ function cargarDatos(intervalo) {
 // Función para renderizar los gráficos usando Lightweight Charts
 function renderizarGrafico(intervalo) {
     let data = cargarDatos(intervalo);
-    series.setData(data.map(candle => ({
+    candleSeries.setData(data.map(candle => ({
         time: new Date(candle.fecha).getTime() / 1000, // Convertir la fecha a formato UNIX
         open: candle.apertura,
         high: candle.maximo,
