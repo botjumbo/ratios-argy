@@ -432,6 +432,8 @@ function formatDate(date) {
 let lastValidData = ""; // Asegúrate de que sea una variable `let`
 let previousClosePriceRatio = null; // Variable global
 let previousClosePrice = null; // Variable global
+
+
 chart.subscribeCrosshairMove(function(param) {
     // Comprobar si hay datos válidos
     if (!param || !param.seriesData || param.seriesData.size === 0) {
@@ -467,11 +469,11 @@ chart.subscribeCrosshairMove(function(param) {
             <strong>Volumen:</strong> ${(totalVolume / 1000000).toFixed(2)}M <br>
         `;
 
-        if (previousClosePriceRatio !== null && price.value) {
+        if (previousClosePrice !== null && price.value) {
             const currentRatio = price.value;
             console.log(currentRatio);
-            console.log(previousClosePriceRatio);
-            ratioPercentageDifference = ((currentRatio / previousClosePriceRatio) - 1) * 100;
+            console.log(previousClosePrice);
+            ratioPercentageDifference = ((currentRatio / previousClosePrice) - 1) * 100;
         }
 
         if (ratioPercentageDifference !== null) {
@@ -1118,8 +1120,6 @@ function cargarDatos(intervalo) {
     }
 }
 function renderizarGrafico(intervalo) {
-    // Limpiar los datos de la serie existente
-    candleSeries.setData([]); // Limpia los datos actuales antes de agregar nuevos
 
     let data = cargarDatos(intervalo);
     console.log("Datos a renderizar:", data); // Para verificar los datos que se van a renderizar
