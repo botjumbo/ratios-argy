@@ -460,8 +460,8 @@ chart.subscribeCrosshairMove(function(param) {
     let totalVolume = volumeData ? volumeData.value : 0; // Almacenar volumen total
 
     if (isLineChart) {
-        let ratioPercentageDifference = null;
-        let ratioLegendContent = `
+        let PercentageDifference = null;
+        let lineLegendContent = `
             <strong>Fecha:</strong> ${formatDate(param.time)} <br>
             <strong>Cierre:</strong> ${price.value ? price.value.toFixed(2) : 'N/A'} <br>
             <strong>Volumen:</strong> ${(totalVolume / 1000000).toFixed(2)}M <br>
@@ -475,16 +475,16 @@ chart.subscribeCrosshairMove(function(param) {
         }
 
         if (ratioPercentageDifference !== null) {
-            ratioLegendContent += `
+            lineLegendContent += `
                 <strong>Diferencia:</strong> ${ratioPercentageDifference.toFixed(2)} % <br>
             `;
         }
-        legendElement.innerHTML = ratioLegendContent;
-        lastValidData = ratioLegendContent;
+        legendElement.innerHTML = lineLegendContent;
+        lastValidData = lineLegendContent;
 
     } else {
         // Si no es un gráfico de línea , mostrar datos del precio para gráfico de velas
-        let ratioLegendContent = `
+        let ligthLegendContent = `
             <strong>Fecha:</strong> ${formatDate(param.time)} <br>
             <strong>Apertura:</strong> ${price.open ? price.open.toFixed(2) : 'N/A'} <br>
             <strong>Máximo:</strong> ${price.high ? price.high.toFixed(2) : 'N/A'} <br>
@@ -493,25 +493,25 @@ chart.subscribeCrosshairMove(function(param) {
             <strong>Volumen:</strong> ${volumeData ? formatVolume(volumeData.value) : 'N/A'} <br>
         `;
 
-        const currentRatio = price.close; // Cambiado de price.value a price.close
+        const currentPriceLigth = price.close; // Cambiado de price.value a price.close
 
         // Calcular la diferencia porcentual si el cierre del día anterior es válido
-        let ratioPercentageDifference = null;
-        if (previousClosePriceRatio !== null && price.close) {
-            ratioPercentageDifference = ((currentRatio / previousClosePriceRatio) - 1) * 100;
+        let PercentageDifference = null;
+        if (previousClosePrice !== null && price.close) {
+            PercentageDifference = ((currentPriceLigth / previousClosePrice) - 1) * 100;
         }
 
         console.log("La diferencia porcentual vs el día anterior es:", ratioPercentageDifference);
         // Agregar la diferencia porcentual a la leyenda del gráfico de velas
         if (ratioPercentageDifference !== null) {
-            ratioLegendContent += `
+            ligthLegendContent += `
                 <strong>Diferencia:</strong> ${ratioPercentageDifference.toFixed(2)} % <br>
             `;
         }
 
         // Actualizar la leyenda y el último dato válido
-        legendElement.innerHTML = ratioLegendContent;
-        lastValidData = ratioLegendContent;
+        legendElement.innerHTML = ligthLegendContent;
+        lastValidData = ligthLegendContent;
     }
 });
 // Función para obtener el cierre del día anterior
