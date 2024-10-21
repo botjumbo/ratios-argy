@@ -635,10 +635,23 @@ Promise.all(symbol.map(file => loadCSV(`/ratios-argy/${file}`))) // Reemplaza co
     })
     .catch(error => console.error('Error al cargar la lista de instrumentos:', error));
 
-// Función para parsear el CSV (puedes usarla si la necesitas más adelante)
+// Procesa el archivo CSV y maneja celdas vacías o inválidas
 function parseCSV(data) {
-    const lines = data.split('\n');
-    return lines.map(line => line.trim()).filter(line => line.length > 0); // Eliminar líneas vacías
+    const rows = data.split('\n'); // Divide las filas del CSV
+    const result = [];
+
+    rows.forEach((row) => {
+        const columns = row.split(','); // Divide las columnas
+        const cleanedColumns = columns.map((cell) => {
+            if (cell.trim() === '') {
+                return 'Valor inválido'; // Asigna un valor por defecto si la celda está vacía
+            }
+            return cell.trim(); // Elimina espacios en blanco alrededor del valor
+        });
+        result.push(cleanedColumns);
+    });
+
+    return result;
 }
 
 function calculateBollingerBands(data, period = 20, multiplier = 2) {
