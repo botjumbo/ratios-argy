@@ -635,7 +635,7 @@ Promise.all(symbol.map(file => loadCSV(`/ratios-argy/${file}`))) // Reemplaza co
     })
     .catch(error => console.error('Error al cargar la lista de instrumentos:', error));
 
-// Procesa el archivo CSV y maneja celdas vacías o inválidas
+// Procesa el archivo CSV y maneja celdas vacías
 function parseCSV(data) {
     const rows = data.split('\n'); // Divide las filas del CSV
     const result = [];
@@ -643,10 +643,14 @@ function parseCSV(data) {
     rows.forEach((row) => {
         const columns = row.split(','); // Divide las columnas
         const cleanedColumns = columns.map((cell) => {
-            if (cell.trim() === '') {
-                return '0'; // Asigna un valor por defecto si la celda está vacía
+            const trimmedCell = cell.trim(); // Elimina espacios en blanco
+
+            // Si la celda está vacía, retorna 'Valor inválido', pero acepta 0.0 como válido
+            if (trimmedCell === '') {
+                return '0.0'; // O el valor que desees para celdas vacías
             }
-            return cell.trim(); // Elimina espacios en blanco alrededor del valor
+            
+            return trimmedCell; // Retorna la celda tal cual si tiene contenido
         });
         result.push(cleanedColumns);
     });
