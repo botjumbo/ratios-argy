@@ -445,6 +445,7 @@ chart.subscribeCrosshairMove(function(param) {
     const previousClosePrice = getPreviousClosePrice(currentDate);
     const previousClosePriceRatio = getPreviousRatioClosePrice(currentDate);
     console.log("El dato previo de precio es:", previousClosePrice);
+    console.log("El dato previo del ratio es: " , previousClosePriceRatio);
 
     // Obtener los datos de las series
     const price = isLineChart ? param.seriesData.get(lineSeries) : param.seriesData.get(candleSeries);
