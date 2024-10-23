@@ -455,25 +455,26 @@ chart.subscribeCrosshairMove(function(param) {
             console.log(previousClosePrice);
             ratioPercentageDifference = ((currentRatio / previousClosePrice) - 1) * 100;
         }
-
+        
         if (ratioPercentageDifference !== null) {
-            lineLegendContent += 
+            lineLegendContent += `
                 <strong>Diferencia:</strong> ${ratioPercentageDifference.toFixed(2)} % <br>
-            ;
+            `;
         }
+
         legendElement.innerHTML = lineLegendContent;
         lastValidData = lineLegendContent;
 
     } else {
         // Si no es un gráfico de línea , mostrar datos del precio para gráfico de velas
-        let ligthLegendContent = 
+        let ligthLegendContent =  `
             <strong>Fecha:</strong> ${formatDate(param.time)} <br>
             <strong>Apertura:</strong> ${price.open ? price.open.toFixed(2) : 'N/A'} <br>
             <strong>Máximo:</strong> ${price.high ? price.high.toFixed(2) : 'N/A'} <br>
             <strong>Mínimo:</strong> ${price.low ? price.low.toFixed(2) : 'N/A'} <br>
             <strong>Cierre:</strong> ${price.close ? price.close.toFixed(2) : 'N/A'} <br>
             <strong>Volumen:</strong> ${volumeData ? formatVolume(volumeData.value) : 'N/A'} <br>
-        ;
+        `;
 
         const currentPriceLigth = price.close; // Cambiado de price.value a price.close
 
@@ -486,9 +487,9 @@ chart.subscribeCrosshairMove(function(param) {
         console.log("La diferencia porcentual vs el día anterior es:", PercentageDifference);
         // Agregar la diferencia porcentual a la leyenda del gráfico de velas
         if (PercentageDifference !== null) {
-            ligthLegendContent += 
+            ligthLegendContent += `
                 <strong>Diferencia:</strong> ${PercentageDifference.toFixed(2)} % <br>
-            ;
+           ` ;
         }
 
         // Actualizar la leyenda y el último dato válido
