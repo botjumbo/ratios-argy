@@ -443,19 +443,15 @@ chart.subscribeCrosshairMove(function(param) {
 
     const currentPrice = candleSeries.coordinateToPrice(param.point.y); // Precio actual basado en el cursor
     const currentDate = formatDate(param.time); // Formatear la fecha actual
-    console.log("El current Date es: " ,currentDate); //muestra la fecha previa al puntero
     // Obtener el precio de cierre del día anterior
     const previousClosePrice = getPreviousClosePrice(currentDate);
     const previousClosePriceRatio = getPreviousRatioClosePrice(currentDate);
-    console.log("El dato previo de precio es:", previousClosePrice);
 
 
     // Obtener los datos de las series
     const price = isLineChart ? param.seriesData.get(lineSeries) : param.seriesData.get(candleSeries);
-    console.log("El precio es:" , price);
     const volumeData = param.seriesData.get(volumeSeries);
     let totalVolume = volumeData ? volumeData.value : 0; // Almacenar volumen total
-    console.log(selectedInstrument);
     if (selectedInstrument.includes('/')) {
 
         if (isLineChart) {
@@ -469,8 +465,6 @@ chart.subscribeCrosshairMove(function(param) {
     
             if (previousClosePriceRatio !== null && price && price.value) {
                 const currentPriceRatio = price.value; // Cambiado de price.value a price.close
-                console.log(currentPriceRatio);
-                console.log(previousClosePriceRatio);
                 ratioPercentageDifference = ((currentPriceRatio / previousClosePriceRatio) - 1) * 100;
             }
             
@@ -501,7 +495,6 @@ chart.subscribeCrosshairMove(function(param) {
                 ratioPercentageDifference = ((currentPriceRatio / previousClosePriceRatio) - 1) * 100;
             }
             
-            console.log("La diferencia porcentual vs el dia anterior es : " , ratioPercentageDifference);
             // Agregar la diferencia porcentual a la leyenda del gráfico de velas
             if (ratioPercentageDifference !== null) {
                 LegendContent += `
@@ -528,8 +521,6 @@ chart.subscribeCrosshairMove(function(param) {
     
             if (previousClosePrice !== null && price && price.value) {
                 const currentPrice = price.value; // Cambiado de price.value a price.close
-                console.log(currentPrice);
-                console.log(previousClosePrice);
                 PercentageDifference = ((currentPrice / previousClosePrice) - 1) * 100;
             }
             
@@ -560,7 +551,6 @@ chart.subscribeCrosshairMove(function(param) {
                 PercentageDifference = ((currentPrice / previousClosePrice) - 1) * 100;
             }
             
-            console.log("La diferencia porcentual vs el dia anterior es : " , PercentageDifference);
             // Agregar la diferencia porcentual a la leyenda del gráfico de velas
             if (PercentageDifference !== null) {
                 LegendContent += `
