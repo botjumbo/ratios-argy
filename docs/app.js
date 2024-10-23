@@ -457,6 +457,8 @@ chart.subscribeCrosshairMove(function(param) {
     let totalVolume = volumeData ? volumeData.value : 0; // Almacenar volumen total
     console.log(selectedInstrument);
     if (selectedInstrument.includes('/')) {
+        let PercentageDifference = null;
+
         if (isLineChart) {
             let ratioPercentageDifference = null;
             let LegendContent = `
