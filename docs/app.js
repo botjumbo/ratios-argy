@@ -446,7 +446,7 @@ chart.subscribeCrosshairMove(function(param) {
     const price = isLineChart ? param.seriesData.get(lineSeries) : param.seriesData.get(candleSeries);
     console.log("El precio es:", price);
     
-    if isLineChart{
+    if (isLineChart){
         console.log("El precio de cierre es:", price.value);
 
     } else {
