@@ -496,8 +496,10 @@ chart.subscribeCrosshairMove(function(param) {
         lastValidData = ligthLegendContent;
     }
 });
-// Función unificada para obtener el precio de cierre del día anterior
+
+// Función para obtener el cierre del día anterior
 function getPreviousClosePrice(currentDate) {
+
     // Obtener las fechas de las claves del objeto y convertirlas a un array
     const dates = Object.keys(dailyClosePrices);
     // Ordenar las fechas para buscar la anterior
@@ -513,6 +515,31 @@ function getPreviousClosePrice(currentDate) {
     return dailyClosePrices[previousDate]; // Retornar el precio de cierre del día anterior
 }
 
+
+function getPreviousRatioClosePrice(currentDate) {
+    
+
+    // Convertir la fecha actual a un objeto Date
+    const currentDateObj = new Date(currentDate);
+
+    // Ordenar los datos por fecha (en caso de que no estén ordenados)
+    const sortedRatioData = [...ratioData].sort((a, b) => new Date(a.time) - new Date(b.time));
+
+    // Encontrar el índice del elemento con la fecha actual
+    const currentIndex = sortedRatioData.findIndex(item => {
+        const itemDate = new Date(item.time);
+        return itemDate.getTime() === currentDateObj.getTime();
+    });
+
+    // Si encontramos el índice y no es el primer día, devolvemos el precio de cierre del día anterior
+    if (currentIndex > 0) {
+        const previousDay = sortedRatioData[currentIndex - 1]; // El día anterior
+        return previousDay.close; // Retornamos el precio de cierre
+    }
+
+    // Si no hay día anterior o no se encuentra el actual, devolver null
+    return null;
+}
 // Evento de clic para capturar el precio inicial y reiniciar la medición si es necesario
 chart.subscribeClick(function(param) {
     if (isShiftPressed && param && param.seriesData.size > 0 && param.point.x !== undefined) {
