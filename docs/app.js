@@ -409,8 +409,6 @@ function formatDate(date) {
 let lastValidData = ""; // Asegúrate de que sea una variable `let`
 let previousClosePriceRatio = null; // Variable global
 let previousClosePrice = null; // Variable global
-
-// Suscribirse al movimiento del cursor en el gráfico
 chart.subscribeCrosshairMove(function(param) {
     // Comprobar si hay datos válidos
     if (!param || !param.seriesData || param.seriesData.size === 0) {
@@ -421,77 +419,83 @@ chart.subscribeCrosshairMove(function(param) {
 
     const currentPrice = candleSeries.coordinateToPrice(param.point.y); // Precio actual basado en el cursor
     const currentDate = formatDate(param.time); // Formatear la fecha actual
-
-    // Obtener los datos de las series (líneas o velas)
+    // Obtener los datos de las series
     const price = isLineChart ? param.seriesData.get(lineSeries) : param.seriesData.get(candleSeries);
     console.log("El precio es:", price);
+    
+    if (isLineChart){
+        console.log("El precio de cierre es:", price.value);
 
-    // Validar si es gráfico de línea o de velas y obtener el valor adecuado
-    const currentClosePrice = isLineChart ? price?.value : price?.close;
+    } else {
+        console.log("El precio de cierre es:", price.close);
+    }
+    
 
-    // Si no hay datos en el precio, salir
-    if (!currentClosePrice) {
-        console.warn("No hay datos de cierre para la serie seleccionada");
-        return;
+    
+    // Validación de price
+    if (!price) {
+        console.warn("No hay datos para el precio en la serie seleccionada");
+        return; // Salir si price es undefined
     }
 
-    // Guardar el precio de cierre en dailyClosePrices para la fecha actual
-    dailyClosePrices[currentDate] = currentClosePrice;
+    const volumeData = param.seriesData.get(volumeSeries);
+    let totalVolume = volumeData ? volumeData.value : 0; // Almacenar volumen total
 
-    // Obtener el cierre del día anterior
-    const previousClosePrice = getPreviousClosePrice(currentDate);
-
-    // Mostrar datos adicionales según el tipo de gráfico (línea o velas)
     if (isLineChart) {
-        let ratioPercentageDifference = null;
-        let lineLegendContent = `
-            <strong>Fecha:</strong> ${currentDate} <br>
-            <strong>Cierre:</strong> ${currentClosePrice.toFixed(2)} <br>
+        let PercentageDifference = null;
+        let lineLegendContent = 
+            <strong>Fecha:</strong> ${formatDate(param.time)} <br>
+            <strong>Cierre:</strong> ${price.value ? price.value.toFixed(2) : 'N/A'} <br>
             <strong>Volumen:</strong> ${(totalVolume / 1000000).toFixed(2)}M <br>
-        `;
+        ;
 
-        // Calcular la diferencia porcentual con el cierre anterior
-        if (previousClosePrice !== null) {
-            ratioPercentageDifference = ((currentClosePrice / previousClosePrice) - 1) * 100;
+        if (previousClosePrice !== null && price.value) {
+            const currentRatio = price.value;
+            console.log(currentRatio);
+            console.log(previousClosePrice);
+            ratioPercentageDifference = ((currentRatio / previousClosePrice) - 1) * 100;
         }
 
-        // Añadir la diferencia porcentual a la leyenda
         if (ratioPercentageDifference !== null) {
-            lineLegendContent += `
+            lineLegendContent += 
                 <strong>Diferencia:</strong> ${ratioPercentageDifference.toFixed(2)} % <br>
-            `;
+            ;
         }
-
         legendElement.innerHTML = lineLegendContent;
         lastValidData = lineLegendContent;
 
     } else {
-        // Si es gráfico de velas, mostrar datos de apertura, cierre, etc.
-        let ligthLegendContent = `
-            <strong>Fecha:</strong> ${currentDate} <br>
+        // Si no es un gráfico de línea , mostrar datos del precio para gráfico de velas
+        let ligthLegendContent = 
+            <strong>Fecha:</strong> ${formatDate(param.time)} <br>
             <strong>Apertura:</strong> ${price.open ? price.open.toFixed(2) : 'N/A'} <br>
             <strong>Máximo:</strong> ${price.high ? price.high.toFixed(2) : 'N/A'} <br>
             <strong>Mínimo:</strong> ${price.low ? price.low.toFixed(2) : 'N/A'} <br>
-            <strong>Cierre:</strong> ${currentClosePrice.toFixed(2)} <br>
+            <strong>Cierre:</strong> ${price.close ? price.close.toFixed(2) : 'N/A'} <br>
             <strong>Volumen:</strong> ${volumeData ? formatVolume(volumeData.value) : 'N/A'} <br>
-        `;
+        ;
 
-        let percentageDifference = null;
-        if (previousClosePrice !== null) {
-            percentageDifference = ((currentClosePrice / previousClosePrice) - 1) * 100;
+        const currentPriceLigth = price.close; // Cambiado de price.value a price.close
+
+        // Calcular la diferencia porcentual si el cierre del día anterior es válido
+        let PercentageDifference = null;
+        if (previousClosePrice !== null && price.close) {
+            PercentageDifference = ((currentPriceLigth / previousClosePrice) - 1) * 100;
         }
 
-        if (percentageDifference !== null) {
-            ligthLegendContent += `
-                <strong>Diferencia:</strong> ${percentageDifference.toFixed(2)} % <br>
-            `;
+        console.log("La diferencia porcentual vs el día anterior es:", PercentageDifference);
+        // Agregar la diferencia porcentual a la leyenda del gráfico de velas
+        if (PercentageDifference !== null) {
+            ligthLegendContent += 
+                <strong>Diferencia:</strong> ${PercentageDifference.toFixed(2)} % <br>
+            ;
         }
 
+        // Actualizar la leyenda y el último dato válido
         legendElement.innerHTML = ligthLegendContent;
         lastValidData = ligthLegendContent;
     }
 });
-
 // Función unificada para obtener el precio de cierre del día anterior
 function getPreviousClosePrice(currentDate) {
     // Obtener las fechas de las claves del objeto y convertirlas a un array
