@@ -440,14 +440,14 @@ chart.subscribeCrosshairMove(function(param) {
 
     const volumeData = param.seriesData.get(volumeSeries);
     let totalVolume = volumeData ? volumeData.value : 0; // Almacenar volumen total
-
     if (isLineChart) {
         let PercentageDifference = null;
-        let lineLegendContent = 
+        let lineLegendContent = `
             <strong>Fecha:</strong> ${formatDate(param.time)} <br>
             <strong>Cierre:</strong> ${price.value ? price.value.toFixed(2) : 'N/A'} <br>
             <strong>Volumen:</strong> ${(totalVolume / 1000000).toFixed(2)}M <br>
-        ;
+        `;
+        
 
         if (previousClosePrice !== null && price.value) {
             const currentRatio = price.value;
