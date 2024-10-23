@@ -49,7 +49,7 @@ volumeSeries.priceScale().applyOptions({
     },
 });
 const tooltip = document.getElementById('tooltip');
-const dailyClosePrices = {}; // Objeto para almacenar cierres diarios
+let dailyClosePrices = {}; // Objeto para almacenar cierres diarios
 const dailyRatioClosePrices = {}; // Asegúrate de inicializar este objeto
 let divisionValues = { // Declarar como variable global
     open: [],
@@ -517,6 +517,8 @@ chart.subscribeCrosshairMove(function(param) {
 });
 // Función para obtener el cierre del día anterior
 function getPreviousClosePrice(currentDate) {
+    ratioData = []; // Limpiar los datos de ratio
+
     // Obtener las fechas de las claves del objeto y convertirlas a un array
     const dates = Object.keys(dailyClosePrices);
     // Ordenar las fechas para buscar la anterior
@@ -532,6 +534,8 @@ function getPreviousClosePrice(currentDate) {
     return dailyClosePrices[previousDate]; // Retornar el precio de cierre del día anterior
 }
 function getPreviousRatioClosePrice(currentDate) {
+    dailyClosePrices = {}; // Limpiar los datos de precios de cierre diarios
+
     // Convertir la fecha actual a un objeto Date
     const currentDateObj = new Date(currentDate);
 
@@ -1057,6 +1061,7 @@ function updateChart() {
     // Si hay un símbolo seleccionado
     if (selectedInstrument) {
         if (!selectedInstrument.includes('/')) { // Comprueba que hay un solo símbolo
+            
             fetchAndUpdateChartData(selectedInstrument); // Llama a la función con el símbolo seleccionado
 
             
@@ -1069,6 +1074,7 @@ function updateChart() {
                     console.error('Ambos símbolos deben estar definidos antes de hacer la solicitud.');
                     return; // Detener ejecución si hay un símbolo indefinido
                 }
+                
                 //fetchAndUpdateChartData(divisionValues); // Llama a la función con el símbolo seleccionado
 
                 fetchAndUpdateChartDataRatio(symbol1, symbol2);
