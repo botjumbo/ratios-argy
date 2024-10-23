@@ -250,6 +250,27 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
                     volume: parseFloat(item.volumen)
                 }));
 
+            // Crear la serie de datos para el ratio
+            ratioData = formattedData1.map(item1 => {
+                const item2 = formattedData2.find(item2 => item2.time === item1.time);
+
+                if (item2) {
+                    const ratioClose = item1.close / item2.close;
+                    dailyRatioClosePrices[item2.time] = ratioClose;
+                    return {
+                        time: item1.time,
+                        open: item1.open / item2.open,
+                        high: item1.high / item2.high,
+                        low: item1.low / item2.low,
+                        close: item1.close / item2.close
+                    };
+                }
+
+                return null; // Si no hay coincidencia, devolver null
+            }).filter(Boolean);
+
+        
+        
             // Aquí solo actualiza los datos sin restablecer el gráfico
             if (!isLineChart) {
                 candleSeries.setData(ratioData); // Solo si es gráfico de velas
@@ -409,6 +430,8 @@ function formatDate(date) {
 let lastValidData = ""; // Asegúrate de que sea una variable `let`
 let previousClosePriceRatio = null; // Variable global
 let previousClosePrice = null; // Variable global
+
+
 chart.subscribeCrosshairMove(function(param) {
     // Comprobar si hay datos válidos
     if (!param || !param.seriesData || param.seriesData.size === 0) {
@@ -440,6 +463,7 @@ chart.subscribeCrosshairMove(function(param) {
 
     const volumeData = param.seriesData.get(volumeSeries);
     let totalVolume = volumeData ? volumeData.value : 0; // Almacenar volumen total
+
     if (isLineChart) {
         let PercentageDifference = null;
         let lineLegendContent = `
@@ -447,27 +471,25 @@ chart.subscribeCrosshairMove(function(param) {
             <strong>Cierre:</strong> ${price.value ? price.value.toFixed(2) : 'N/A'} <br>
             <strong>Volumen:</strong> ${(totalVolume / 1000000).toFixed(2)}M <br>
         `;
-        
 
         if (previousClosePrice !== null && price.value) {
             const currentRatio = price.value;
             console.log(currentRatio);
             console.log(previousClosePrice);
-            PercentageDifference = ((currentRatio / previousClosePrice) - 1) * 100;
+            ratioPercentageDifference = ((currentRatio / previousClosePrice) - 1) * 100;
         }
-        
-        if (PercentageDifference !== null) {
+
+        if (ratioPercentageDifference !== null) {
             lineLegendContent += `
                 <strong>Diferencia:</strong> ${ratioPercentageDifference.toFixed(2)} % <br>
             `;
         }
-
         legendElement.innerHTML = lineLegendContent;
         lastValidData = lineLegendContent;
 
     } else {
         // Si no es un gráfico de línea , mostrar datos del precio para gráfico de velas
-        let ligthLegendContent =  `
+        let ligthLegendContent = `
             <strong>Fecha:</strong> ${formatDate(param.time)} <br>
             <strong>Apertura:</strong> ${price.open ? price.open.toFixed(2) : 'N/A'} <br>
             <strong>Máximo:</strong> ${price.high ? price.high.toFixed(2) : 'N/A'} <br>
@@ -489,7 +511,7 @@ chart.subscribeCrosshairMove(function(param) {
         if (PercentageDifference !== null) {
             ligthLegendContent += `
                 <strong>Diferencia:</strong> ${PercentageDifference.toFixed(2)} % <br>
-           ` ;
+            `;
         }
 
         // Actualizar la leyenda y el último dato válido
@@ -497,7 +519,6 @@ chart.subscribeCrosshairMove(function(param) {
         lastValidData = ligthLegendContent;
     }
 });
-
 // Función para obtener el cierre del día anterior
 function getPreviousClosePrice(currentDate) {
 
@@ -515,10 +536,8 @@ function getPreviousClosePrice(currentDate) {
     const previousDate = sortedDates[currentIndex - 1]; // La fecha anterior
     return dailyClosePrices[previousDate]; // Retornar el precio de cierre del día anterior
 }
-
-
 function getPreviousRatioClosePrice(currentDate) {
-    
+    dailyClosePrices = {}; // Limpiar los datos de precios de cierre diarios
 
     // Convertir la fecha actual a un objeto Date
     const currentDateObj = new Date(currentDate);
