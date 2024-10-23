@@ -468,11 +468,11 @@ chart.subscribeCrosshairMove(function(param) {
             `;
     
     
-            if (previousClosePrice !== null && price && price.value) {
+            if (previousClosePriceRatio !== null && price && price.value) {
                 const currentPriceRatio = price.value; // Cambiado de price.value a price.close
                 console.log(currentPriceRatio);
                 console.log(previousClosePriceRatio);
-                PercentageDifference = ((currentPriceRatio / previousClosePriceRatio) - 1) * 100;
+                ratioPercentageDifference = ((currentPriceRatio / previousClosePriceRatio) - 1) * 100;
             }
             
             if (ratioPercentageDifference !== null) {
@@ -484,7 +484,8 @@ chart.subscribeCrosshairMove(function(param) {
             lastValidData = LegendContent;
     
         } else {
-    
+            let PercentageDifference = null;
+
             // Si no es un gráfico de línea del ratio, mostrar datos del precio del ratio(gráfico de velas)
             LegendContent = `
                 <strong>Fecha:</strong> ${formatDate(param.time)} <br>
