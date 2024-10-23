@@ -155,7 +155,6 @@ async function fetchAndUpdateChartData(symbol) {
                 volume: volume // Agrega volumen si es necesario
             };
         });
-        console.log("formattedData:", formattedData);
 
         // Almacena el cierre diario
         rows.forEach(item => {
@@ -269,7 +268,6 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
 
                 return null; // Si no hay coincidencia, devolver null
             }).filter(Boolean);
-            console.log("Ratiodata:", ratioData);
 
         
         
