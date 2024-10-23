@@ -443,6 +443,7 @@ chart.subscribeCrosshairMove(function(param) {
 
     const currentPrice = candleSeries.coordinateToPrice(param.point.y); // Precio actual basado en el cursor
     const currentDate = formatDate(param.time); // Formatear la fecha actual
+    console.log("El current Date es: " ,currentDate);
     // Obtener el precio de cierre del día anterior
     const previousClosePrice = getPreviousClosePrice(currentDate);
     const previousClosePriceRatio = getPreviousRatioClosePrice(currentDate);
