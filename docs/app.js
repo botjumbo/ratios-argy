@@ -442,6 +442,26 @@ chart.subscribeCrosshairMove(function(param) {
     }
 
     const currentPrice = candleSeries.coordinateToPrice(param.point.y); // Precio actual basado en el cursor
+
+    // Si estamos midiendo (después de Shift + Click) y tenemos un precio inicial
+    if (isMeasuring && initialPrice !== null) {
+        // Calcular el cambio porcentual
+        const percentageChange = ((currentPrice - initialPrice) / initialPrice) * 100;
+        
+        // Mostrar y actualizar la etiqueta
+        tooltip.style.display = 'block';
+        tooltip.innerHTML = `
+            <strong>Precio inicial:</strong> ${initialPrice.toFixed(2)} <br>
+            <strong>Precio actual:</strong> ${currentPrice.toFixed(2)} <br>
+            <strong>Cambio:</strong> ${percentageChange.toFixed(2)} %
+        `;
+
+        // Posicionar la etiqueta cerca del cursor
+        tooltip.style.left = param.point.x + 'px';
+        tooltip.style.top = param.point.y + 'px';
+
+    }
+
     const currentDate = formatDate(param.time); // Formatear la fecha actual
     // Obtener el precio de cierre del día anterior
     const previousClosePrice = getPreviousClosePrice(currentDate);
