@@ -455,7 +455,7 @@ chart.subscribeCrosshairMove(function(param) {
     console.log("El precio es:" , price);
     const volumeData = param.seriesData.get(volumeSeries);
     let totalVolume = volumeData ? volumeData.value : 0; // Almacenar volumen total
-
+    console.log(selectedInstrument);
 
     if (isLineChart) {
         let PercentageDifference = null;
