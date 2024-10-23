@@ -453,10 +453,10 @@ chart.subscribeCrosshairMove(function(param) {
             const currentRatio = price.value;
             console.log(currentRatio);
             console.log(previousClosePrice);
-            ratioPercentageDifference = ((currentRatio / previousClosePrice) - 1) * 100;
+            PercentageDifference = ((currentRatio / previousClosePrice) - 1) * 100;
         }
         
-        if (ratioPercentageDifference !== null) {
+        if (PercentageDifference !== null) {
             lineLegendContent += `
                 <strong>Diferencia:</strong> ${ratioPercentageDifference.toFixed(2)} % <br>
             `;
