@@ -49,7 +49,7 @@ volumeSeries.priceScale().applyOptions({
     },
 });
 const tooltip = document.getElementById('tooltip');
-let dailyClosePrices = {}; // Objeto para almacenar cierres diarios
+const dailyClosePrices = {}; // Objeto para almacenar cierres diarios
 const dailyRatioClosePrices = {}; // Asegúrate de inicializar este objeto
 let divisionValues = { // Declarar como variable global
     open: [],
@@ -155,6 +155,7 @@ async function fetchAndUpdateChartData(symbol) {
                 volume: volume // Agrega volumen si es necesario
             };
         });
+        console.log("formattedData:", formattedData);
 
         // Almacena el cierre diario
         rows.forEach(item => {
@@ -268,6 +269,7 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
 
                 return null; // Si no hay coincidencia, devolver null
             }).filter(Boolean);
+            console.log("Ratiodata:", ratioData);
 
         
         
@@ -431,7 +433,6 @@ let lastValidData = ""; // Asegúrate de que sea una variable `let`
 let previousClosePriceRatio = null; // Variable global
 let previousClosePrice = null; // Variable global
 
-
 chart.subscribeCrosshairMove(function(param) {
     // Comprobar si hay datos válidos
     if (!param || !param.seriesData || param.seriesData.size === 0) {
@@ -442,86 +443,80 @@ chart.subscribeCrosshairMove(function(param) {
 
     const currentPrice = candleSeries.coordinateToPrice(param.point.y); // Precio actual basado en el cursor
     const currentDate = formatDate(param.time); // Formatear la fecha actual
+    // Obtener el precio de cierre del día anterior
+    const previousClosePrice = getPreviousClosePrice(currentDate);
+    const previousClosePriceRatio = getPreviousRatioClosePrice(currentDate);
+    console.log("El dato previo de precio es:", previousClosePrice);
+
+
     // Obtener los datos de las series
     const price = isLineChart ? param.seriesData.get(lineSeries) : param.seriesData.get(candleSeries);
-    console.log("El precio es:", price);
-    
-    if (isLineChart){
-        console.log("El precio de cierre es:", price.value);
-
-    } else {
-        console.log("El precio de cierre es:", price.close);
-    }
-    
-
-    
-    // Validación de price
-    if (!price) {
-        console.warn("No hay datos para el precio en la serie seleccionada");
-        return; // Salir si price es undefined
-    }
-
+    console.log("El precio es:" , price);
     const volumeData = param.seriesData.get(volumeSeries);
     let totalVolume = volumeData ? volumeData.value : 0; // Almacenar volumen total
 
+
     if (isLineChart) {
-        let PercentageDifference = null;
-        let lineLegendContent = `
-            <strong>Fecha:</strong> ${formatDate(param.time)} <br>
-            <strong>Cierre:</strong> ${price.value ? price.value.toFixed(2) : 'N/A'} <br>
-            <strong>Volumen:</strong> ${(totalVolume / 1000000).toFixed(2)}M <br>
+        let ratioPercentageDifference = null;
+        let ratioLegendContent = `
+        <strong>Fecha:</strong> ${formatDate(param.time)} <br>
+        <strong>Cierre:</strong> ${price ? price.value.toFixed(2) : 'N/A'} <br>  <!-- Aquí accedes a price.close -->
+        <strong>Volumen:</strong> ${(totalVolume / 1000000).toFixed(2)}M <br>
         `;
 
-        if (previousClosePrice !== null && price.value) {
-            const currentRatio = price.value;
-            console.log(currentRatio);
-            console.log(previousClosePrice);
-            ratioPercentageDifference = ((currentRatio / previousClosePrice) - 1) * 100;
-        }
 
+        if (previousClosePriceRatio !== null && price && price.value) {
+            const currentRatio = price.value; // Cambiado de price.value a price.close
+            console.log(currentRatio);
+            console.log(previousClosePriceRatio);
+            ratioPercentageDifference = ((currentRatio / previousClosePriceRatio) - 1) * 100;
+        }
+        
         if (ratioPercentageDifference !== null) {
-            lineLegendContent += `
+            ratioLegendContent += `
                 <strong>Diferencia:</strong> ${ratioPercentageDifference.toFixed(2)} % <br>
             `;
         }
-        legendElement.innerHTML = lineLegendContent;
-        lastValidData = lineLegendContent;
+        legendElement.innerHTML = ratioLegendContent;
+        lastValidData = ratioLegendContent;
 
     } else {
-        // Si no es un gráfico de línea , mostrar datos del precio para gráfico de velas
-        let ligthLegendContent = `
+
+        // Si no es un gráfico de línea del ratio, mostrar datos del precio del ratio(gráfico de velas)
+        let ratioLegendContent = `
             <strong>Fecha:</strong> ${formatDate(param.time)} <br>
-            <strong>Apertura:</strong> ${price.open ? price.open.toFixed(2) : 'N/A'} <br>
-            <strong>Máximo:</strong> ${price.high ? price.high.toFixed(2) : 'N/A'} <br>
-            <strong>Mínimo:</strong> ${price.low ? price.low.toFixed(2) : 'N/A'} <br>
-            <strong>Cierre:</strong> ${price.close ? price.close.toFixed(2) : 'N/A'} <br>
+            <strong>Apertura:</strong> ${price ? price.open.toFixed(2) : 'N/A'} <br>
+            <strong>Máximo:</strong> ${price ? price.high.toFixed(2) : 'N/A'} <br>
+            <strong>Mínimo:</strong> ${price ? price.low.toFixed(2) : 'N/A'} <br>
+            <strong>Cierre:</strong> ${price ? price.close.toFixed(2) : 'N/A'} <br>
             <strong>Volumen:</strong> ${volumeData ? formatVolume(volumeData.value) : 'N/A'} <br>
         `;
-
-        const currentPriceLigth = price.close; // Cambiado de price.value a price.close
+        const currentRatio = price.close; // Cambiado de price.value a price.close
 
         // Calcular la diferencia porcentual si el cierre del día anterior es válido
-        let PercentageDifference = null;
-        if (previousClosePrice !== null && price.close) {
-            PercentageDifference = ((currentPriceLigth / previousClosePrice) - 1) * 100;
+        let ratioPercentageDifference = null;
+        if (previousClosePriceRatio !== null && price && price.close) {
+            ratioPercentageDifference = ((currentRatio / previousClosePriceRatio) - 1) * 100;
         }
-
-        console.log("La diferencia porcentual vs el día anterior es:", PercentageDifference);
+        
+        console.log("La diferencia porcentual vs el dia anterior es : " , ratioPercentageDifference);
         // Agregar la diferencia porcentual a la leyenda del gráfico de velas
-        if (PercentageDifference !== null) {
-            ligthLegendContent += `
-                <strong>Diferencia:</strong> ${PercentageDifference.toFixed(2)} % <br>
+        if (ratioPercentageDifference !== null) {
+            ratioLegendContent += `
+                <strong>Diferencia:</strong> ${ratioPercentageDifference.toFixed(2)} % <br>
             `;
         }
 
         // Actualizar la leyenda y el último dato válido
-        legendElement.innerHTML = ligthLegendContent;
-        lastValidData = ligthLegendContent;
+        legendElement.innerHTML = ratioLegendContent;
+        lastValidData = ratioLegendContent;
     }
+
+
 });
+
 // Función para obtener el cierre del día anterior
 function getPreviousClosePrice(currentDate) {
-
     // Obtener las fechas de las claves del objeto y convertirlas a un array
     const dates = Object.keys(dailyClosePrices);
     // Ordenar las fechas para buscar la anterior
@@ -537,8 +532,6 @@ function getPreviousClosePrice(currentDate) {
     return dailyClosePrices[previousDate]; // Retornar el precio de cierre del día anterior
 }
 function getPreviousRatioClosePrice(currentDate) {
-    dailyClosePrices = {}; // Limpiar los datos de precios de cierre diarios
-
     // Convertir la fecha actual a un objeto Date
     const currentDateObj = new Date(currentDate);
 
@@ -1058,13 +1051,13 @@ function toggleChartType() {
 
 }
 
+
 function updateChart() {
     // Reiniciar datos previos al actualizar el gráfico
 
     // Si hay un símbolo seleccionado
     if (selectedInstrument) {
         if (!selectedInstrument.includes('/')) { // Comprueba que hay un solo símbolo
-            
             fetchAndUpdateChartData(selectedInstrument); // Llama a la función con el símbolo seleccionado
 
             
@@ -1077,7 +1070,6 @@ function updateChart() {
                     console.error('Ambos símbolos deben estar definidos antes de hacer la solicitud.');
                     return; // Detener ejecución si hay un símbolo indefinido
                 }
-                
                 //fetchAndUpdateChartData(divisionValues); // Llama a la función con el símbolo seleccionado
 
                 fetchAndUpdateChartDataRatio(symbol1, symbol2);
@@ -1092,4 +1084,3 @@ function updateChart() {
 
 // Llamar a updateChart cada segundo
 //setInterval(updateChart, 1000);
-
