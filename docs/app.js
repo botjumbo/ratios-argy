@@ -286,6 +286,8 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
             const combinedVolumeData = formattedData1.map(item1 => {
                 const item2 = formattedData2.find(item2 => item2.time === item1.time);
                 if (item2) {
+                    const combinedVolume = item1.volume + item2.volume;
+
                     const openRatio = item1.open / item2.open;
                     const closeRatio = item1.close / item2.close;
 
