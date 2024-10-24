@@ -286,11 +286,11 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
             const combinedVolumeData = formattedData1.map(item1 => {
                 const item2 = formattedData2.find(item2 => item2.time === item1.time);
                 if (item2) {
-                    const combinedVolume = item1.volume + item2.volume;
-                    const useItem1Color = item1.volume >= item2.volume;
-                    const color = useItem1Color
-                        ? (item1.close >= item1.open ? '#4fff00' : '#ff4976')
-                        : (item2.close >= item2.open ? '#4fff00' : '#ff4976');
+                    const openRatio = item1.open / item2.open;
+                    const closeRatio = item1.close / item2.close;
+
+                    
+                    const color = closeRatio >= openRatio ? '#4fff00' : '#ff4976'; // Verde si el ratio es alcista, rojo si es bajista
 
                     return {
                         time: item1.time,
