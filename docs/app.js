@@ -250,24 +250,35 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
                     volume: parseFloat(item.volumen)
                 }));
 
-            // Crear la serie de datos para el ratio
-            ratioData = formattedData1.map(item1 => {
-                const item2 = formattedData2.find(item2 => item2.time === item1.time);
-
+            // Crear la serie de datos para el ratio (cierre,alto,bajo,open de AL30 dividido entre cierre,alto,bajo,open de AL30D)
+            const ratioData = formattedData1.map(item1 => {
+                const item2 = formattedData2.find(item2 => item2.time === item1.time); // Buscar la fecha coincidente en AL30D
                 if (item2) {
+                    const ratioOpen = item1.open / item2.open;
+                    const ratioHigh = item1.high / item2.high;
+                    let ratioLow = item1.low / item2.low;
                     const ratioClose = item1.close / item2.close;
+                    // Condición adicional: si el ratioClose es menor que ratioLow, asignar ratioLow a ratioClose
+                    if (ratioClose < ratioLow) {
+                        ratioLow = ratioClose;
+                    }
+                    
+
                     dailyRatioClosePrices[item2.time] = ratioClose;
+                    // Condición adicional: si el ratioClose es menor que ratioLow, asignar ratioLow a ratioClose
+                 
+
                     return {
                         time: item1.time,
-                        open: item1.open / item2.open,
-                        high: item1.high / item2.high,
-                        low: item1.low / item2.low,
-                        close: item1.close / item2.close
+                        open: ratioOpen,    // Calcular el ratio del open
+                        high: ratioHigh,    // Calcular el ratio del high
+                        low: ratioLow,      // Calcular el ratio del low
+                        close: ratioClose   // Calcular el ratio del close (modificado si es menor que ratioLow)
                     };
                 }
-
+                
                 return null; // Si no hay coincidencia, devolver null
-            }).filter(Boolean);
+            }).filter(Boolean); // Filtrar los valores nulos para mantener solo los datos válidos
 
         
         
