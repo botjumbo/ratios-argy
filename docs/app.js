@@ -139,7 +139,9 @@ function loadCSV(filePath) {
             close: item.cierre,
             volume: item.volumen,
         }));
-
+        formattedData.forEach(item => {
+            console.log(`Fecha: ${item.time}, Apertura: ${item.open}, Cierre: ${item.close}`);
+        });
         // Almacenar cierre diario
         rows.forEach(item => {
             const date = item.fecha;
