@@ -222,7 +222,6 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
                 }
                 return response.text(); // Obtener el contenido como texto
             })
-            .then(text => console.log('Contenido del CSV para symbol2:', text))
 
         ]);
 
@@ -241,17 +240,28 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
                     close: parseFloat(item.cierre),
                     volume: parseFloat(item.volumen)
                 }));
-
             // Filtrar y formatear los datos de data2 (ej. AL30D)
-            const formattedData2 = data2.filter(item => item.fecha && item.apertura && item.maximo && item.minimo && item.cierre && item.volumen)
-                .map(item => ({
-                    time: item.fecha,
-                    open: parseFloat(item.apertura),
-                    high: parseFloat(item.maximo),
-                    low: parseFloat(item.minimo),
-                    close: parseFloat(item.cierre),
-                    volume: parseFloat(item.volumen)
-                }));
+            const formattedData2 = data2.filter(item => {
+                const isValid = item.fecha && item.apertura && item.maximo && item.minimo && item.cierre && item.volumen;
+                if (!isValid) {
+                    console.warn('Fila con datos faltantes o volumen 0 en symbol2:', item);
+                }
+                return isValid && parseFloat(item.volumen) > 0; // Filtrar filas con volumen > 0
+            }).map(item => ({
+                time: item.fecha,
+                open: parseFloat(item.apertura),
+                high: parseFloat(item.maximo),
+                low: parseFloat(item.minimo),
+                close: parseFloat(item.cierre),
+                volume: parseFloat(item.volumen)
+            }));
+            
+            // Revisa si formattedData2 quedó vacío o contiene suficientes datos
+            if (formattedData2.length === 0) {
+                console.error('formattedData2 no contiene datos válidos después del filtrado.');
+            } else {
+                console.log('Datos formateados para symbol2:', formattedData2);
+            }
 
             // Crear la serie de datos para el ratio (cierre,alto,bajo,open de AL30 dividido entre cierre,alto,bajo,open de AL30D)
             ratioData = formattedData1.map(item1 => {
@@ -287,8 +297,6 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
                 lineSeries.setData(lineDataRatio); // Actualiza línea si ya es gráfico de línea
                 candleSeries.setData([]); // Limpiar datos de velas
             }
-            console.log('Datos formateados para symbol1:', formattedData1);
-            console.log('Datos formateados para symbol2:', formattedData2);
             // Crear una nueva serie para los volúmenes sumados
             const combinedVolumeData = formattedData1.map(item1 => {
                 const item2 = formattedData2.find(item2 => item2.time === item1.time);
