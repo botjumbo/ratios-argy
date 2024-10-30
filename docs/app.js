@@ -169,42 +169,40 @@ function loadCSV(filePath) {
             color: item.cierre >= item.apertura ? '#4fff00' : '#ff4976',
         }));
         volumeSeries.setData(volumeData);
-
         // Verificar datos antes de calcular las bandas de Bollinger
         if (formattedData.length === 0) {
             console.warn("No hay datos disponibles para calcular las bandas de Bollinger.");
             return;
         }
-
+        
         const validData = formattedData.filter(item => item.close > 0);
         if (validData.length < 20) {  // Reemplaza 20 con el período que necesites
-            console.warn(No hay suficientes datos válidos (se requiere un mínimo de 20 puntos) para calcular las bandas de Bollinger.);
+            console.warn("No hay suficientes datos válidos (se requiere un mínimo de 20 puntos) para calcular las bandas de Bollinger.");
             return;
         }
-
+        
         validData.forEach(item => {
             if (typeof item.close !== 'number' || isNaN(item.close)) {
-                console.warn(El valor de cierre no es válido para la fecha ${item.time}: ${item.close});
+                console.warn(`El valor de cierre no es válido para la fecha ${item.time}: ${item.close}`);
             }
         });
-
+        
         console.log("Datos para el cálculo de bandas de Bollinger:", validData.map(item => ({ fecha: item.time, cierre: item.close })));
-
+        
         // Calcular las bandas de Bollinger y la media móvil
         const { bands, movingAverage } = calculateBollingerBands(
-            formattedData.map(result => ({
+            validData.map(result => ({
                 fecha: result.time,
                 cierre: result.close
             }))
         );
-
         
         upperBandData = bands.map(b => ({ time: b.time, value: b.upper }));
         lowerBandData = bands.map(b => ({ time: b.time, value: b.lower }));
         movingAverageData = movingAverage;
-            // Mostrar u ocultar las bandas de Bollinger según el estado
+        
+        // Mostrar u ocultar las bandas de Bollinger según el estado
         updateBollingerBandsVisibility();
-
     } catch (error) {
         console.error(`Error al cargar los datos del símbolo: ${symbol}.`, error);
     }
