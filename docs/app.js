@@ -204,21 +204,21 @@ async function fetchAndUpdateChartData(symbol) {
 
 
 async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
-    const url1 = /ratios-argy/${symbol1};
-    const url2 = /ratios-argy/${symbol2};
+    const url1 = `/ratios-argy/${symbol1}`;
+    const url2 = `/ratios-argy/${symbol2}`;
 
     try {
         // Cargar ambos archivos CSV de manera asíncrona
         const [csvText1, csvText2] = await Promise.all([
             fetch(url1).then(response => {
                 if (!response.ok) {
-                    throw new Error(Error al cargar ${url1});
+                    throw new Error(`Error al cargar ${url1}`);
                 }
                 return response.text(); // Obtener el contenido como texto
             }),
             fetch(url2).then(response => {
                 if (!response.ok) {
-                    throw new Error(Error al cargar ${url2});
+                    throw new Error(`Error al cargar ${url2}`);
                 }
                 return response.text(); // Obtener el contenido como texto
             })
@@ -263,7 +263,12 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
                     if (ratioClose < ratioLow) {
                         ratioLow = ratioClose;
                     }
-                    dailyRatioClosePrices[item2.time] = ratioClose;              
+                    
+
+                    dailyRatioClosePrices[item2.time] = ratioClose;
+                    // Condición adicional: si el ratioClose es menor que ratioLow, asignar ratioLow a ratioClose
+                 
+
                     return {
                         time: item1.time,
                         open: ratioOpen,    // Calcular el ratio del open
@@ -274,7 +279,10 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
                 }
                 
                 return null; // Si no hay coincidencia, devolver null
-            }).filter(Boolean); // Filtrar los valores nulos para mantener solo los datos válido
+            }).filter(Boolean); // Filtrar los valores nulos para mantener solo los datos válidos
+
+        
+        
             // Aquí solo actualiza los datos sin restablecer el gráfico
             if (!isLineChart) {
                 candleSeries.setData(ratioData); // Solo si es gráfico de velas
@@ -340,6 +348,8 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
         console.error('Error al cargar los datos del símbolo:', error);
     }
 }
+
+
 function processInput(input) {
     // Convertir la entrada del usuario a mayúsculas y eliminar espacios extra
     const instrumentToLoad = input.trim().toUpperCase();
