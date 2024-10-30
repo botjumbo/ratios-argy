@@ -241,34 +241,36 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
                     volume: parseFloat(item.volumen)
                 }));
             console.log('Datos formateados para symbol1:', formattedData1);
-
-            // Filtrar y formatear los datos de data2 (ej. AL30D)
-          // Filtrar y formatear los datos de data2 (ej. AL30D)
+            // Verificar si data2 es un array, si no, convertirlo en uno
+            if (!Array.isArray(data2)) {
+                data2 = [data2]; // Envolver data2 en un array si es un objeto único
+            }
+            
+            // Ahora puedes proceder con el filtrado y mapeo
             const formattedData2 = data2.filter(item => {
-                // Verificar que todos los campos clave están presentes y el volumen es mayor a 0
-                const isValid = item.fecha && item.apertura && item.maximo && item.minimo && item.cierre && item.volumen;
-                if (!isValid) {
-                    console.warn('Fila con datos faltantes o incorrectos en symbol2:', item);
-                    return false; // Excluir fila del array
-                }
-                
-                const volume = parseFloat(item.volumen);
-                if (isNaN(volume) || volume <= 0) {
-                    console.warn('Fila con volumen inválido (0 o NaN) en symbol2:', item);
-                    return false; // Excluir fila del array
+                // Validaciones como antes...
+                const hasAllFields = item.fecha && item.apertura && item.alto && item.bajo && item.cierre && item.volumen;
+                if (!hasAllFields) {
+                    console.warn('Fila con datos faltantes en symbol2:', item);
+                    return false;
                 }
             
-                return true; // Incluir solo las filas válidas
+                const volume = parseFloat(item.volumen);
+                if (isNaN(volume) || volume <= 0) {
+                    console.warn('Fila con volumen inválido en symbol2:', item);
+                    return false;
+                }
+            
+                return true;
             }).map(item => ({
                 time: item.fecha,
                 open: parseFloat(item.apertura),
-                high: parseFloat(item.maximo),
-                low: parseFloat(item.minimo),
+                high: parseFloat(item.alto),
+                low: parseFloat(item.bajo),
                 close: parseFloat(item.cierre),
                 volume: parseFloat(item.volumen)
             }));
             
-            // Verifica si formattedData2 quedó vacío después del filtrado
             if (formattedData2.length === 0) {
                 console.error('formattedData2 no contiene datos válidos después del filtrado.');
             } else {
