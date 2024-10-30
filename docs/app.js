@@ -171,11 +171,12 @@ async function fetchAndUpdateChartData(symbol) {
                 cierre: result.close
             }))
         );
-
+        console.log("Datos de la banda superior:", bands.map(b => b.upper));
+        console.log("Datos de la banda inferior:", bands.map(b => b.lower));
+        console.log("Datos de la media móvil:", movingAverage.map(ma => ma.value));
         upperBandData = bands.map(b => ({ time: b.time, value: b.upper }));
         lowerBandData = bands.map(b => ({ time: b.time, value: b.lower }));
         movingAverageData = movingAverage;
-
         updateBollingerBandsVisibility();
 
     } catch (error) {
@@ -765,10 +766,6 @@ function calculateBollingerBands(data, period = 20, multiplier = 2) {
     }
 
     return { bands, movingAverage };
-        // Filtrar valores no válidos antes de actualizar el gráfico
-    upperBandData = upperBandData.filter(point => point.value !== null && point.value !== undefined);
-    lowerBandData = lowerBandData.filter(point => point.value !== null && point.value !== undefined);
-    movingAverageData = movingAverageData.filter(point => point.value !== null && point.value !== undefined);
 
 }
 
