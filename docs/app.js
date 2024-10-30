@@ -201,12 +201,10 @@ async function fetchAndUpdateChartData(symbol) {
         console.error(`Error al cargar los datos del símbolo: ${symbol}.`, error);
     }
 }
-
 async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
     const url1 = `/ratios-argy/${symbol1}`;
     const url2 = `/ratios-argy/${symbol2}`;
     
-
     try {
         // Cargar ambos archivos CSV de manera asíncrona
         const [csvText1, csvText2] = await Promise.all([
@@ -222,144 +220,136 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
                 }
                 return response.text(); // Obtener el contenido como texto
             })
-
         ]);
 
         // Procesar los CSV usando PapaParse
-        const data1 = Papa.parse(csvText1, { header: true, skipEmptyLines: true }).data;
-        const data2 = Papa.parse(csvText2, { header: true, skipEmptyLines: true }).data;
+        let data1 = Papa.parse(csvText1, { header: true, skipEmptyLines: true }).data;
+        let data2 = Papa.parse(csvText2, { header: true, skipEmptyLines: true }).data;
 
-        if (Array.isArray(data1) && Array.isArray(data2)) {
-            // Filtrar y formatear los datos de data1 (ej. AL30)
-            const formattedData1 = data1.filter(item => item.fecha && item.apertura && item.maximo && item.minimo && item.cierre && item.volumen)
-                .map(item => ({
-                    time: item.fecha,
-                    open: parseFloat(item.apertura),
-                    high: parseFloat(item.maximo),
-                    low: parseFloat(item.minimo),
-                    close: parseFloat(item.cierre),
-                    volume: parseFloat(item.volumen)
-                }));
-            console.log('Datos formateados para symbol1:', formattedData1);
-            // Verificar si data2 es un array, si no, convertirlo en uno
-            if (!Array.isArray(data2)) {
-                data2 = [data2]; // Envolver data2 en un array si es un objeto único
-            }
-            
-            // Ahora puedes proceder con el filtrado y mapeo
-            const formattedData2 = data2.filter(item => {
-                // Validaciones como antes...
-                const hasAllFields = item.fecha && item.apertura && item.alto && item.bajo && item.cierre && item.volumen;
-                if (!hasAllFields) {
-                    console.warn('Fila con datos faltantes en symbol2:', item);
-                    return false;
-                }
-            
-                const volume = parseFloat(item.volumen);
-                if (isNaN(volume) || volume <= 0) {
-                    console.warn('Fila con volumen inválido en symbol2:', item);
-                    return false;
-                }
-            
-                return true;
-            }).map(item => ({
+        // Verificar si data1 y data2 son arrays, si no, convertirlos en uno
+        if (!Array.isArray(data1)) {
+            data1 = [data1]; // Envolver data1 en un array si es un objeto único
+        }
+        if (!Array.isArray(data2)) {
+            data2 = [data2]; // Envolver data2 en un array si es un objeto único
+        }
+
+        // Filtrar y formatear los datos de data1 (ej. AL30)
+        const formattedData1 = data1.filter(item => item.fecha && item.apertura && item.maximo && item.minimo && item.cierre && item.volumen)
+            .map(item => ({
                 time: item.fecha,
                 open: parseFloat(item.apertura),
-                high: parseFloat(item.alto),
-                low: parseFloat(item.bajo),
+                high: parseFloat(item.maximo),
+                low: parseFloat(item.minimo),
                 close: parseFloat(item.cierre),
                 volume: parseFloat(item.volumen)
             }));
-            
-            if (formattedData2.length === 0) {
-                console.error('formattedData2 no contiene datos válidos después del filtrado.');
-            } else {
-                console.log('Datos formateados para symbol2:', formattedData2);
+        console.log('Datos formateados para symbol1:', formattedData1);
+
+        // Filtrar y formatear los datos de data2 (ej. AL30D)
+        const formattedData2 = data2.filter(item => {
+            const hasAllFields = item.fecha && item.apertura && item.alto && item.bajo && item.cierre && item.volumen;
+            if (!hasAllFields) {
+                console.warn('Fila con datos faltantes en symbol2:', item);
+                return false;
             }
-            // Crear la serie de datos para el ratio (cierre,alto,bajo,open de AL30 dividido entre cierre,alto,bajo,open de AL30D)
-            ratioData = formattedData1.map(item1 => {
-                const item2 = formattedData2.find(item2 => item2.time === item1.time); // Buscar la fecha coincidente en AL30D
-                if (item2) {
-                    const ratioOpen = item1.open / item2.open;
-                    const ratioHigh = item1.high / item2.high;
-                    let ratioLow = item1.low / item2.low;
-                    const ratioClose = item1.close / item2.close;
-                    // Condición adicional: si el ratioClose es menor que ratioLow, asignar ratioLow a ratioClose
-                    if (ratioClose < ratioLow) {
-                        ratioLow = ratioClose;
-                    }
-                    dailyRatioClosePrices[item2.time] = ratioClose;              
-                    return {
-                        time: item1.time,
-                        open: ratioOpen,    // Calcular el ratio del open
-                        high: ratioHigh,    // Calcular el ratio del high
-                        low: ratioLow,      // Calcular el ratio del low
-                        close: ratioClose   // Calcular el ratio del close (modificado si es menor que ratioLow)
-                    };
-                }
-                
-                return null; // Si no hay coincidencia, devolver null
-            }).filter(Boolean); // Filtrar los valores nulos para mantener solo los datos válido
-            // Aquí solo actualiza los datos sin restablecer el gráfico
-            if (!isLineChart) {
-                candleSeries.setData(ratioData); // Solo si es gráfico de velas
-                lineSeries.setData([]); // Limpiar datos de línea
         
-            } else {
-                const lineDataRatio = convertCandleToLineSeries(ratioData);
-                lineSeries.setData(lineDataRatio); // Actualiza línea si ya es gráfico de línea
-                candleSeries.setData([]); // Limpiar datos de velas
+            const volume = parseFloat(item.volumen);
+            if (isNaN(volume) || volume <= 0) {
+                console.warn('Fila con volumen inválido en symbol2:', item);
+                return false;
             }
-            // Crear una nueva serie para los volúmenes sumados
-            const combinedVolumeData = formattedData1.map(item1 => {
-                const item2 = formattedData2.find(item2 => item2.time === item1.time);
-                if (item2) {
-                    const combinedVolume = item1.volume + item2.volume;
+        
+            return true;
+        }).map(item => ({
+            time: item.fecha,
+            open: parseFloat(item.apertura),
+            high: parseFloat(item.alto),
+            low: parseFloat(item.bajo),
+            close: parseFloat(item.cierre),
+            volume: parseFloat(item.volumen)
+        }));
 
-                    const openRatio = item1.open / item2.open;
-                    const closeRatio = item1.close / item2.close;
-
-                    
-                    const color = closeRatio >= openRatio ? '#4fff00' : '#ff4976'; // Verde si el ratio es alcista, rojo si es bajista
-
-                    return {
-                        time: item1.time,
-                        value: combinedVolume,
-                        color: color
-                    };
-                }
-                return null; // Si no hay coincidencia en las fechas, ignoramos el dato
-            }).filter(Boolean);
-
-            volumeSeries.setData(combinedVolumeData);
-
-            if (ratioData && ratioData.length > 0) {
-                try {
-                    const { bands, movingAverage } = calculateBollingerBands(
-                        ratioData.map(result => ({
-                            fecha: result.time,
-                            cierre: result.close
-                        }))
-                    );
-
-                    // Actualizar las bandas globalmente
-                    upperBandData = bands.map(b => ({ time: b.time, value: b.upper }));
-                    lowerBandData = bands.map(b => ({ time: b.time, value: b.lower }));
-                    movingAverageData = movingAverage;
-
-                } catch (error) {
-                    console.error('Error al calcular las bandas de Bollinger:', error);
-                }
-            } else {
-                console.error('ratioData está vacío o no tiene datos válidos.');
-            }
-
-            // Mostrar u ocultar las bandas de Bollinger según el estado
-            updateBollingerBandsVisibility();
-
+        if (formattedData2.length === 0) {
+            console.error('formattedData2 no contiene datos válidos después del filtrado.');
         } else {
-            console.error('data1 o data2 no son arreglos', { data1, data2 });
+            console.log('Datos formateados para symbol2:', formattedData2);
         }
+
+        // Crear la serie de datos para el ratio (cierre, alto, bajo, open de AL30 dividido entre cierre, alto, bajo, open de AL30D)
+        const ratioData = formattedData1.map(item1 => {
+            const item2 = formattedData2.find(item2 => item2.time === item1.time);
+            if (item2) {
+                const ratioOpen = item1.open / item2.open;
+                const ratioHigh = item1.high / item2.high;
+                let ratioLow = item1.low / item2.low;
+                const ratioClose = item1.close / item2.close;
+
+                if (ratioClose < ratioLow) {
+                    ratioLow = ratioClose;
+                }
+
+                dailyRatioClosePrices[item2.time] = ratioClose;
+                return {
+                    time: item1.time,
+                    open: ratioOpen,
+                    high: ratioHigh,
+                    low: ratioLow,
+                    close: ratioClose
+                };
+            }
+            return null;
+        }).filter(Boolean);
+
+        if (!isLineChart) {
+            candleSeries.setData(ratioData);
+            lineSeries.setData([]);
+        } else {
+            const lineDataRatio = convertCandleToLineSeries(ratioData);
+            lineSeries.setData(lineDataRatio);
+            candleSeries.setData([]);
+        }
+
+        const combinedVolumeData = formattedData1.map(item1 => {
+            const item2 = formattedData2.find(item2 => item2.time === item1.time);
+            if (item2) {
+                const combinedVolume = item1.volume + item2.volume;
+                const openRatio = item1.open / item2.open;
+                const closeRatio = item1.close / item2.close;
+                const color = closeRatio >= openRatio ? '#4fff00' : '#ff4976';
+
+                return {
+                    time: item1.time,
+                    value: combinedVolume,
+                    color: color
+                };
+            }
+            return null;
+        }).filter(Boolean);
+
+        volumeSeries.setData(combinedVolumeData);
+
+        if (ratioData && ratioData.length > 0) {
+            try {
+                const { bands, movingAverage } = calculateBollingerBands(
+                    ratioData.map(result => ({
+                        fecha: result.time,
+                        cierre: result.close
+                    }))
+                );
+
+                upperBandData = bands.map(b => ({ time: b.time, value: b.upper }));
+                lowerBandData = bands.map(b => ({ time: b.time, value: b.lower }));
+                movingAverageData = movingAverage;
+            } catch (error) {
+                console.error('Error al calcular las bandas de Bollinger:', error);
+            }
+        } else {
+            console.error('ratioData está vacío o no tiene datos válidos.');
+        }
+
+        updateBollingerBandsVisibility();
+
     } catch (error) {
         console.error('Error al cargar los datos del símbolo:', error);
     }
