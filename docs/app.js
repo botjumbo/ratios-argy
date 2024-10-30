@@ -195,8 +195,11 @@ function loadCSV(filePath) {
         upperBandData = bands.map(b => ({ time: b.time, value: b.upper }));
         lowerBandData = bands.map(b => ({ time: b.time, value: b.lower }));
         movingAverageData = movingAverage;
-        
-        updateBollingerBandsVisibility();
+        // Imprimir los resultados finales para verificación
+        console.log('Datos de la Banda Superior:', upperBandData);
+        console.log('Datos de la Banda Inferior:', lowerBandData);
+        console.log('Media Móvil:', movingAverageData);
+        //updateBollingerBandsVisibility();
 
     } catch (error) {
         console.error(`Error al cargar los datos del símbolo: ${symbol}.`, error);
