@@ -729,27 +729,41 @@ function parseCSV(data) {
 }
 
 function calculateBollingerBands(data, period = 20, multiplier = 2) {
+    if (data.length < period) {
+        console.warn("No hay suficientes datos para calcular las bandas de Bollinger.");
+        return { bands: [], movingAverage: [] };
+    }
+
     const bands = [];
     const movingAverage = [];
 
-    for (let i = period - 1; i < data.length; i++) {
-        const slice = data.slice(i - period + 1, i + 1);
-        const prices = slice.map(d => d.cierre);
-        const average = prices.reduce((sum, value) => sum + value, 0) / period;
-        movingAverage.push({ time: data[i].fecha, value: average });
+    for (let i = 0; i <= data.length - period; i++) {
+        const periodData = data.slice(i, i + period);
 
-        const variance = prices.reduce((sum, value) => sum + Math.pow(value - average, 2), 0) / period;
+        // Obtener los precios de cierre y reemplazar valores atípicos o ceros con la media del periodo
+        const closes = periodData.map(item => item.cierre || periodData.reduce((sum, val) => sum + val.cierre, 0) / period);
+        
+        // Calcular la media móvil simple
+        const avg = closes.reduce((sum, val) => sum + val, 0) / period;
+        movingAverage.push({ time: periodData[period - 1].fecha, value: parseFloat(avg.toFixed(2)) });
+
+        // Calcular la desviación estándar
+        const variance = closes.reduce((sum, val) => sum + Math.pow(val - avg, 2), 0) / period;
         const stdDev = Math.sqrt(variance);
+
+        // Calcular bandas superior e inferior
+        const upper = avg + multiplier * stdDev;
+        const lower = avg - multiplier * stdDev;
+
         bands.push({
-            time: data[i].fecha,
-            upper: average + (multiplier * stdDev),
-            lower: average - (multiplier * stdDev),
+            time: periodData[period - 1].fecha,
+            upper: parseFloat(upper.toFixed(2)),
+            lower: parseFloat(lower.toFixed(2)),
         });
     }
 
     return { bands, movingAverage };
 }
-
 // Función para calcular los ratios (cierre, apertura, alto, bajo)
 function calculateRatio(data1, data2) {
 
