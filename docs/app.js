@@ -727,7 +727,6 @@ function parseCSV(data) {
 
     return result;
 }
-
 function calculateBollingerBands(data, period = 20, multiplier = 2) {
     if (data.length < period) {
         console.warn("No hay suficientes datos para calcular las bandas de Bollinger.");
@@ -740,12 +739,11 @@ function calculateBollingerBands(data, period = 20, multiplier = 2) {
     for (let i = 0; i <= data.length - period; i++) {
         const periodData = data.slice(i, i + period);
 
-        // Obtener los precios de cierre y reemplazar valores atípicos o ceros con la media del periodo
+        // Obtener los precios de cierre y manejar valores nulos o ceros
         const closes = periodData.map(item => item.cierre || periodData.reduce((sum, val) => sum + val.cierre, 0) / period);
         
         // Calcular la media móvil simple
         const avg = closes.reduce((sum, val) => sum + val, 0) / period;
-        movingAverage.push({ time: periodData[period - 1].fecha, value: parseFloat(avg.toFixed(2)) });
 
         // Calcular la desviación estándar
         const variance = closes.reduce((sum, val) => sum + Math.pow(val - avg, 2), 0) / period;
@@ -755,15 +753,20 @@ function calculateBollingerBands(data, period = 20, multiplier = 2) {
         const upper = avg + multiplier * stdDev;
         const lower = avg - multiplier * stdDev;
 
-        bands.push({
-            time: periodData[period - 1].fecha,
-            upper: parseFloat(upper.toFixed(2)),
-            lower: parseFloat(lower.toFixed(2)),
-        });
+        // Solo agrega valores válidos (no null ni undefined)
+        if (!isNaN(avg) && !isNaN(upper) && !isNaN(lower)) {
+            movingAverage.push({ time: periodData[period - 1].fecha, value: parseFloat(avg.toFixed(2)) });
+            bands.push({
+                time: periodData[period - 1].fecha,
+                upper: parseFloat(upper.toFixed(2)),
+                lower: parseFloat(lower.toFixed(2)),
+            });
+        }
     }
 
     return { bands, movingAverage };
 }
+
 // Función para calcular los ratios (cierre, apertura, alto, bajo)
 function calculateRatio(data1, data2) {
 
