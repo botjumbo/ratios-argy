@@ -257,7 +257,6 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
                     volume: parseFloat(item.volumen)
                 }));
 
-            // Crear la serie de datos para el ratio (cierre,alto,bajo,open de AL30 dividido entre cierre,alto,bajo,open de AL30D)
             ratioData = formattedData1.map(item1 => {
                 const item2 = formattedData2.find(item2 => item2.time === item1.time); // Buscar la fecha coincidente en AL30D
                 if (item2) {
@@ -286,7 +285,7 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
                 
                 return null; // Si no hay coincidencia, devolver null
             }).filter(Boolean); // Filtrar los valores nulos para mantener solo los datos válidos
-
+            console.log("Ratio data es: " ,ratioData);
         
         
             // Aquí solo actualiza los datos sin restablecer el gráfico
@@ -320,6 +319,7 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
                 }
                 return null; // Si no hay coincidencia en las fechas, ignoramos el dato
             }).filter(Boolean);
+            console.log("Volumen es: " ,combinedVolumeData);
 
             volumeSeries.setData(combinedVolumeData);
 
