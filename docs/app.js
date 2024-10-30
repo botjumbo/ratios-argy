@@ -262,12 +262,7 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
                     if (ratioClose < ratioLow) {
                         ratioLow = ratioClose;
                     }
-                    
-
-                    dailyRatioClosePrices[item2.time] = ratioClose;
-                    // Condición adicional: si el ratioClose es menor que ratioLow, asignar ratioLow a ratioClose
-                 
-
+                    dailyRatioClosePrices[item2.time] = ratioClose;              
                     return {
                         time: item1.time,
                         open: ratioOpen,    // Calcular el ratio del open
@@ -278,10 +273,7 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
                 }
                 
                 return null; // Si no hay coincidencia, devolver null
-            }).filter(Boolean); // Filtrar los valores nulos para mantener solo los datos válidos
-
-        
-        
+            }).filter(Boolean); // Filtrar los valores nulos para mantener solo los datos válido
             // Aquí solo actualiza los datos sin restablecer el gráfico
             if (!isLineChart) {
                 candleSeries.setData(ratioData); // Solo si es gráfico de velas
@@ -292,7 +284,8 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
                 lineSeries.setData(lineDataRatio); // Actualiza línea si ya es gráfico de línea
                 candleSeries.setData([]); // Limpiar datos de velas
             }
-            
+            console.log('Datos formateados para symbol1:', formattedData1);
+            console.log('Datos formateados para symbol2:', formattedData2);
             // Crear una nueva serie para los volúmenes sumados
             const combinedVolumeData = formattedData1.map(item1 => {
                 const item2 = formattedData2.find(item2 => item2.time === item1.time);
