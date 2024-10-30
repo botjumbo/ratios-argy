@@ -440,13 +440,10 @@ function formatVolume(volume) {
 }
 
 
+// Función para formatear la fecha
 function formatDate(date) {
-    const parsedDate = new Date(date);
-    if (isNaN(parsedDate.getTime())) {
-        console.error("Fecha inválida:", date);
-        return null; // O manejarlo de otra manera
-    }
-    return Math.floor(parsedDate.getTime() / 1000);
+    // Retorna la fecha en formato "YYYY-MM-DD"
+    return date; // Simplemente devuelve la fecha como está
 }
 
 let lastValidData = ""; // Asegúrate de que sea una variable `let`
