@@ -93,8 +93,7 @@ function loadCSV(filePath) {
         .then(data => {
             return parseCSV(data); // Función para procesar y convertir el CSV a un formato útil
         });
-}
-async function fetchAndUpdateChartData(symbol) {
+}async function fetchAndUpdateChartData(symbol) {
     try {
         const response = await fetch(`/ratios-argy/${symbol}`);
         if (!response.ok) {
@@ -164,25 +163,49 @@ async function fetchAndUpdateChartData(symbol) {
         }));
         volumeSeries.setData(volumeData);
 
+        // Verificar datos antes de calcular las bandas de Bollinger
+        if (formattedData.length === 0) {
+            console.warn("No hay datos disponibles para calcular las bandas de Bollinger.");
+            return;
+        }
+
+        const validData = formattedData.filter(item => item.close > 0);
+        if (validData.length < 20) {  // Reemplaza 20 con el período que necesites
+            console.warn(`No hay suficientes datos válidos (se requiere un mínimo de 20 puntos) para calcular las bandas de Bollinger.`);
+            return;
+        }
+
+        validData.forEach(item => {
+            if (typeof item.close !== 'number' || isNaN(item.close)) {
+                console.warn(`El valor de cierre no es válido para la fecha ${item.time}: ${item.close}`);
+            }
+        });
+
+        console.log("Datos para el cálculo de bandas de Bollinger:", validData.map(item => ({ fecha: item.time, cierre: item.close })));
+
         // Calcular las bandas de Bollinger y la media móvil
         const { bands, movingAverage } = calculateBollingerBands(
-            formattedData.map(result => ({
+            validData.map(result => ({
                 fecha: result.time,
                 cierre: result.close
             }))
         );
+        
         console.log("Datos de la banda superior:", bands.map(b => b.upper));
         console.log("Datos de la banda inferior:", bands.map(b => b.lower));
         console.log("Datos de la media móvil:", movingAverage.map(ma => ma.value));
+        
         upperBandData = bands.map(b => ({ time: b.time, value: b.upper }));
         lowerBandData = bands.map(b => ({ time: b.time, value: b.lower }));
         movingAverageData = movingAverage;
+        
         updateBollingerBandsVisibility();
 
     } catch (error) {
         console.error(`Error al cargar los datos del símbolo: ${symbol}.`, error);
     }
 }
+
 
 
 async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
@@ -725,45 +748,33 @@ function parseCSV(data) {
 
     return result;
 }
-function calculateBollingerBands(data, period = 20, multiplier = 2) {
-    if (data.length < period) {
-        console.warn("No hay suficientes datos para calcular las bandas de Bollinger.");
-        return { bands: [], movingAverage: [] };
-    }
 
-    const bands = [];
-    const movingAverage = [];
+function calculateBollingerBands(data, period = 20, stdDevMultiplier = 2) {
+    if (data.length < period) return { bands: [], movingAverage: [] };
 
-    for (let i = 0; i <= data.length - period; i++) {
-        const periodData = data.slice(i, i + period);
+    let bands = [];
+    let movingAverage = [];
 
-        // Obtener los precios de cierre y manejar valores nulos o ceros
-        const closes = periodData.map(item => item.cierre || periodData.reduce((sum, val) => sum + val.cierre, 0) / period);
-        
-        // Calcular la media móvil simple
-        const avg = closes.reduce((sum, val) => sum + val, 0) / period;
+    for (let i = period - 1; i < data.length; i++) {
+        const window = data.slice(i - period + 1, i + 1);  // Ventana de precios de cierre
+        const closePrices = window.map(entry => entry.cierre);
 
-        // Calcular la desviación estándar
-        const variance = closes.reduce((sum, val) => sum + Math.pow(val - avg, 2), 0) / period;
+        // Calcular la media móvil (promedio de precios de cierre en la ventana)
+        const avg = closePrices.reduce((acc, val) => acc + val, 0) / period;
+        movingAverage.push(avg);
+
+        // Calcular la desviación estándar en la ventana
+        const variance = closePrices.reduce((acc, val) => acc + Math.pow(val - avg, 2), 0) / period;
         const stdDev = Math.sqrt(variance);
 
         // Calcular bandas superior e inferior
-        const upper = avg + multiplier * stdDev;
-        const lower = avg - multiplier * stdDev;
+        const upper = avg + stdDev * stdDevMultiplier;
+        const lower = avg - stdDev * stdDevMultiplier;
 
-        // Solo agrega valores válidos (no null ni undefined)
-        if (!isNaN(avg) && !isNaN(upper) && !isNaN(lower)) {
-            movingAverage.push({ time: periodData[period - 1].fecha, value: parseFloat(avg.toFixed(2)) });
-            bands.push({
-                time: periodData[period - 1].fecha,
-                upper: parseFloat(upper.toFixed(2)),
-                lower: parseFloat(lower.toFixed(2)),
-            });
-        }
+        bands.push({ time: data[i].fecha, upper, lower });
     }
 
     return { bands, movingAverage };
-
 }
 
 // Función para calcular los ratios (cierre, apertura, alto, bajo)
