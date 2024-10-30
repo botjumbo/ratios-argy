@@ -1083,7 +1083,7 @@ function updateBollingerBandsVisibility() {
 // Botón para alternar la visibilidad de las bandas de Bollinger
 document.getElementById('toggle-bands').addEventListener('click', function () {
     bandsVisible = !bandsVisible; // Cambiar el estado de las bandas de Bollinger
-    updateBollingerBandsVisibility(); // Actualizar la visibilidad según el estado
+    //updateBollingerBandsVisibility(); // Actualizar la visibilidad según el estado
 
 });
 
