@@ -241,12 +241,22 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
                     volume: parseFloat(item.volumen)
                 }));
             // Filtrar y formatear los datos de data2 (ej. AL30D)
+          // Filtrar y formatear los datos de data2 (ej. AL30D)
             const formattedData2 = data2.filter(item => {
+                // Verificar que todos los campos clave están presentes y el volumen es mayor a 0
                 const isValid = item.fecha && item.apertura && item.maximo && item.minimo && item.cierre && item.volumen;
                 if (!isValid) {
-                    console.warn('Fila con datos faltantes o volumen 0 en symbol2:', item);
+                    console.warn('Fila con datos faltantes o incorrectos en symbol2:', item);
+                    return false; // Excluir fila del array
                 }
-                return isValid && parseFloat(item.volumen) > 0; // Filtrar filas con volumen > 0
+                
+                const volume = parseFloat(item.volumen);
+                if (isNaN(volume) || volume <= 0) {
+                    console.warn('Fila con volumen inválido (0 o NaN) en symbol2:', item);
+                    return false; // Excluir fila del array
+                }
+            
+                return true; // Incluir solo las filas válidas
             }).map(item => ({
                 time: item.fecha,
                 open: parseFloat(item.apertura),
@@ -256,13 +266,12 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
                 volume: parseFloat(item.volumen)
             }));
             
-            // Revisa si formattedData2 quedó vacío o contiene suficientes datos
+            // Verifica si formattedData2 quedó vacío después del filtrado
             if (formattedData2.length === 0) {
                 console.error('formattedData2 no contiene datos válidos después del filtrado.');
             } else {
                 console.log('Datos formateados para symbol2:', formattedData2);
             }
-
             // Crear la serie de datos para el ratio (cierre,alto,bajo,open de AL30 dividido entre cierre,alto,bajo,open de AL30D)
             ratioData = formattedData1.map(item1 => {
                 const item2 = formattedData2.find(item2 => item2.time === item1.time); // Buscar la fecha coincidente en AL30D
