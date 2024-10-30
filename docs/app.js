@@ -94,7 +94,6 @@ function loadCSV(filePath) {
             return parseCSV(data); // Función para procesar y convertir el CSV a un formato útil
         });
 }
-
 async function fetchAndUpdateChartData(symbol) {
     try {
         const response = await fetch(`/ratios-argy/${symbol}`);
@@ -105,27 +104,21 @@ async function fetchAndUpdateChartData(symbol) {
         const data = await response.text();
         const rows = data.split('\n').slice(1).map(row => {
             const items = row.split(',').map(item => item.trim());
-
-            if (items.length < 7 || items.every(item => item === '')) return null;
+            if (items.length < 7) return null;  // Ignora solo si no tiene suficientes columnas
 
             const [especie, fecha, apertura, maximo, minimo, cierre, volumen] = items;
 
-            // Verificar campos y convertir a números
-            const parsedApertura = parseFloat(apertura) || 0;
-            const parsedMaximo = parseFloat(maximo) || 0;
-            const parsedMinimo = parseFloat(minimo) || 0;
-            const parsedCierre = parseFloat(cierre) || 0;
-            const parsedVolumen = parseInt(volumen) || 0;
-
-            if (!especie || !fecha || parsedApertura === 0 || parsedMaximo === 0 || parsedMinimo === 0 || parsedCierre === 0 || parsedVolumen === 0) {
-                console.error("Datos no válidos para:", { especie, fecha, apertura, maximo, minimo, cierre, volumen });
-                return null;
-            }
+            // Convertir a número y asignar valor predeterminado si es nulo o cero
+            const parsedApertura = parseFloat(apertura) || 0.01; // Valor predeterminado
+            const parsedMaximo = parseFloat(maximo) || parsedApertura; // Asume apertura si max es 0
+            const parsedMinimo = parseFloat(minimo) || parsedApertura; // Asume apertura si min es 0
+            const parsedCierre = parseFloat(cierre) || parsedApertura; // Asume apertura si cierre es 0
+            const parsedVolumen = parseInt(volumen) || 1; // Valor predeterminado para volumen
 
             return { 
                 especie, 
                 fecha, 
-                apertura: parseFloat(parsedApertura.toFixed(2)), // Limita a 2 decimales
+                apertura: parseFloat(parsedApertura.toFixed(2)), 
                 maximo: parseFloat(parsedMaximo.toFixed(2)), 
                 minimo: parseFloat(parsedMinimo.toFixed(2)), 
                 cierre: parseFloat(parsedCierre.toFixed(2)), 
@@ -138,6 +131,7 @@ async function fetchAndUpdateChartData(symbol) {
             return;
         }
 
+        // Formatear los datos para el gráfico
         formattedData = rows.map(item => ({
             time: formatDate(item.fecha),
             open: item.apertura,
@@ -147,12 +141,14 @@ async function fetchAndUpdateChartData(symbol) {
             volume: item.volumen,
         }));
 
+        // Almacenar cierre diario
         rows.forEach(item => {
             const date = item.fecha;
             const closePrice = item.cierre;
             dailyClosePrices[date] = closePrice;
         });
 
+        // Actualizar gráficos
         if (!isLineChart) {
             candleSeries.setData(formattedData);
         } else {
@@ -160,6 +156,7 @@ async function fetchAndUpdateChartData(symbol) {
             lineSeries.setData(lineData);
         }
 
+        // Configurar datos de volumen con color según variación
         const volumeData = rows.map(item => ({
             time: item.fecha,
             value: item.volumen,
@@ -167,6 +164,7 @@ async function fetchAndUpdateChartData(symbol) {
         }));
         volumeSeries.setData(volumeData);
 
+        // Calcular las bandas de Bollinger y la media móvil
         const { bands, movingAverage } = calculateBollingerBands(
             formattedData.map(result => ({
                 fecha: result.time,
