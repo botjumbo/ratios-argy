@@ -205,6 +205,7 @@ async function fetchAndUpdateChartData(symbol) {
 async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
     const url1 = `/ratios-argy/${symbol1}`;
     const url2 = `/ratios-argy/${symbol2}`;
+    
 
     try {
         // Cargar ambos archivos CSV de manera asíncrona
@@ -221,6 +222,8 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
                 }
                 return response.text(); // Obtener el contenido como texto
             })
+            .then(text => console.log('Contenido del CSV para symbol2:', text))
+
         ]);
 
         // Procesar los CSV usando PapaParse
