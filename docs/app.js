@@ -191,9 +191,6 @@ function loadCSV(filePath) {
             }))
         );
         
-        console.log("Datos de la banda superior:", bands.map(b => b.upper));
-        console.log("Datos de la banda inferior:", bands.map(b => b.lower));
-        console.log("Datos de la media móvil:", movingAverage.map(ma => ma.value));
         
         upperBandData = bands.map(b => ({ time: b.time, value: b.upper }));
         lowerBandData = bands.map(b => ({ time: b.time, value: b.lower }));
