@@ -765,6 +765,11 @@ function calculateBollingerBands(data, period = 20, multiplier = 2) {
     }
 
     return { bands, movingAverage };
+        // Filtrar valores no válidos antes de actualizar el gráfico
+    upperBandData = upperBandData.filter(point => point.value !== null && point.value !== undefined);
+    lowerBandData = lowerBandData.filter(point => point.value !== null && point.value !== undefined);
+    movingAverageData = movingAverageData.filter(point => point.value !== null && point.value !== undefined);
+
 }
 
 // Función para calcular los ratios (cierre, apertura, alto, bajo)
