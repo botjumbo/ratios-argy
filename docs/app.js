@@ -186,7 +186,6 @@ function loadCSV(filePath) {
             }
         });
 
-        console.log("Datos para el cálculo de bandas de Bollinger:", validData.map(item => ({ fecha: item.time, cierre: item.close })));
 
         // Calcular las bandas de Bollinger y la media móvil
         const { bands, movingAverage } = calculateBollingerBands(
@@ -201,9 +200,6 @@ function loadCSV(filePath) {
         lowerBandData = bands.map(b => ({ time: b.time, value: b.lower }));
         movingAverageData = movingAverage;
         // Imprimir los resultados finales para verificación
-        console.log('Datos de la Banda Superior:', upperBandData);
-        console.log('Datos de la Banda Inferior:', lowerBandData);
-        console.log('Media Móvil:', movingAverageData);
         updateBollingerBandsVisibility();
 
     } catch (error) {
