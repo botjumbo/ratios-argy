@@ -199,7 +199,7 @@ function loadCSV(filePath) {
         console.log('Datos de la Banda Superior:', upperBandData);
         console.log('Datos de la Banda Inferior:', lowerBandData);
         console.log('Media Móvil:', movingAverageData);
-        //updateBollingerBandsVisibility();
+        updateBollingerBandsVisibility();
 
     } catch (error) {
         console.error(`Error al cargar los datos del símbolo: ${symbol}.`, error);
@@ -440,10 +440,13 @@ function formatVolume(volume) {
 }
 
 
-// Función para formatear la fecha
 function formatDate(date) {
-    // Retorna la fecha en formato "YYYY-MM-DD"
-    return date; // Simplemente devuelve la fecha como está
+    const parsedDate = new Date(date);
+    if (isNaN(parsedDate.getTime())) {
+        console.error("Fecha inválida:", date);
+        return null; // O manejarlo de otra manera
+    }
+    return Math.floor(parsedDate.getTime() / 1000);
 }
 
 let lastValidData = ""; // Asegúrate de que sea una variable `let`
