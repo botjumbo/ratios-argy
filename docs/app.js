@@ -240,6 +240,8 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
                     close: parseFloat(item.cierre),
                     volume: parseFloat(item.volumen)
                 }));
+            console.log('Datos formateados para symbol1:', formattedData1);
+
             // Filtrar y formatear los datos de data2 (ej. AL30D)
           // Filtrar y formatear los datos de data2 (ej. AL30D)
             const formattedData2 = data2.filter(item => {
