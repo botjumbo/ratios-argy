@@ -254,8 +254,15 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
         }
 
         // Ahora puedes proceder con el filtrado y mapeo
-        const formattedData2 = data2.filter(item => {
-            // Validaciones como antes...
+        const formattedData2 = data2.filter(item => item.fecha && item.apertura && item.maximo && item.minimo && item.cierre && item.volumen)
+            .map(item => ({
+                time: item.fecha,
+                open: parseFloat(item.apertura),
+                high: parseFloat(item.maximo),
+                low: parseFloat(item.minimo),
+                close: parseFloat(item.cierre),
+                volume: parseFloat(item.volumen)
+            }));
             const hasAllFields = item.fecha && item.apertura && item.alto && item.bajo && item.cierre && item.volumen;
             if (!hasAllFields) {
                 console.warn('Fila con datos faltantes en symbol2:', item);
