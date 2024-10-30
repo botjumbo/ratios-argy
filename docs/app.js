@@ -139,9 +139,14 @@ function loadCSV(filePath) {
             close: item.cierre,
             volume: item.volumen,
         }));
-        formattedData.forEach(item => {
-            console.log(`Fecha: ${item.time}, Apertura: ${item.open}, Cierre: ${item.close}`);
-        });
+     
+        const dates = formattedData.map(item => new Date(item.time));
+
+        const earliestDate = new Date(Math.min(...dates));
+        const latestDate = new Date(Math.max(...dates));
+        
+        console.log(`Fecha más temprana: ${earliestDate.toISOString().split('T')[0]}`);
+        console.log(`Fecha más reciente: ${latestDate.toISOString().split('T')[0]}`);
         // Almacenar cierre diario
         rows.forEach(item => {
             const date = item.fecha;
