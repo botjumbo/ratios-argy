@@ -140,13 +140,11 @@ function loadCSV(filePath) {
             volume: item.volumen,
         }));
      
-        const dates = formattedData.map(item => new Date(item.time));
-
-        const earliestDate = new Date(Math.min(...dates));
-        const latestDate = new Date(Math.max(...dates));
-        
-        console.log(`Fecha más temprana: ${earliestDate.toISOString().split('T')[0]}`);
-        console.log(`Fecha más reciente: ${latestDate.toISOString().split('T')[0]}`);
+        formattedData.forEach(item => {
+            if (!item.time || !item.open || !item.close || isNaN(item.open) || isNaN(item.close)) {
+                console.warn(`Datos inválidos para la fecha: ${item.time}`);
+            }
+        });
         // Almacenar cierre diario
         rows.forEach(item => {
             const date = item.fecha;
