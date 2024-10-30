@@ -1098,7 +1098,7 @@ function convertCandleToLineSeries(candleData) {
 function toggleChartType() {
     // Reiniciar variables relevantes al cambiar el tipo de gráfico
 
-    const chartTypeText = isLineChart ? "Mostrar Gráfico de Línea" : "Mostrar Gráfico de Velas";
+    const chartTypeText = isLineChart ? "Línea" : "Velas";
 
     // Obtener el valor del input de búsqueda
     const searchInputValue = document.getElementById('search-input').value;
