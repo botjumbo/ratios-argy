@@ -176,6 +176,19 @@ function loadCSV(filePath) {
             return;
         }
 
+        const validData = formattedData.filter(item => item.close > 0);
+        if (validData.length < 20) {  // Reemplaza 20 con el período que necesites
+            console.warn(No hay suficientes datos válidos (se requiere un mínimo de 20 puntos) para calcular las bandas de Bollinger.);
+            return;
+        }
+
+        validData.forEach(item => {
+            if (typeof item.close !== 'number' || isNaN(item.close)) {
+                console.warn(El valor de cierre no es válido para la fecha ${item.time}: ${item.close});
+            }
+        });
+
+        console.log("Datos para el cálculo de bandas de Bollinger:", validData.map(item => ({ fecha: item.time, cierre: item.close })));
 
         // Calcular las bandas de Bollinger y la media móvil
         const { bands, movingAverage } = calculateBollingerBands(
