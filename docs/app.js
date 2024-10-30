@@ -745,16 +745,16 @@ function parseCSV(data) {
 
     return result;
 }
-
 function calculateBollingerBands(data, period = 20, stdDevMultiplier = 2) {
+    // Asegúrate de que haya suficientes datos
     if (data.length < period) return { bands: [], movingAverage: [] };
 
     let bands = [];
     let movingAverage = [];
 
     for (let i = period - 1; i < data.length; i++) {
-        const window = data.slice(i - period + 1, i + 1);  // Ventana de precios de cierre
-        const closePrices = window.map(entry => entry.cierre);
+        const window = data.slice(i - period + 1, i + 1); // Ventana de precios de cierre
+        const closePrices = window.map(entry => entry.cierre); // Suponiendo que 'cierre' es el precio de cierre
 
         // Calcular la media móvil (promedio de precios de cierre en la ventana)
         const avg = closePrices.reduce((acc, val) => acc + val, 0) / period;
@@ -768,6 +768,7 @@ function calculateBollingerBands(data, period = 20, stdDevMultiplier = 2) {
         const upper = avg + stdDev * stdDevMultiplier;
         const lower = avg - stdDev * stdDevMultiplier;
 
+        // Almacenar las bandas con la fecha correspondiente
         bands.push({ time: data[i].fecha, upper, lower });
     }
 
