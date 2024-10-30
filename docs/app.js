@@ -225,7 +225,10 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
 
         // Procesar los CSV usando PapaParse
         const data1 = Papa.parse(csvText1, { header: true, skipEmptyLines: true }).data;
-        let data2 = Papa.parse(csvText2, { header: true, skipEmptyLines: true }).data;
+        const data2 = Papa.parse(csvText2, { header: true, skipEmptyLines: true }).data;
+        console.log(`Data1:`, data1); // Verificar datos de simbolo 1
+        console.log(`Data2:`, data2); // Verificar datos de simbolo 2
+
 
         // Verificar que data1 es un array
         if (!Array.isArray(data1)) {
@@ -233,47 +236,30 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
             data1 = [];
         }
 
-        // Filtrar y formatear los datos de data1 (ej. AL30)
-        const formattedData1 = data1.filter(item => item.fecha && item.apertura && item.maximo && item.minimo && item.cierre && item.volumen)
-            .map(item => ({
-                time: item.fecha,
-                open: parseFloat(item.apertura),
-                high: parseFloat(item.maximo),
-                low: parseFloat(item.minimo),
-                close: parseFloat(item.cierre),
-                volume: parseFloat(item.volumen)
-            }));
-        console.log('Datos formateados para symbol1:', formattedData1);
+        if (Array.isArray(data1) && Array.isArray(data2)) {
+            const formattedData1 = data1.filter(item => item.fecha && item.apertura && item.maximo && item.minimo && item.cierre && item.volumen)
+                .map(item => ({
+                    time: item.fecha,
+                    open: parseFloat(item.apertura),
+                    high: parseFloat(item.maximo),
+                    low: parseFloat(item.minimo),
+                    close: parseFloat(item.cierre),
+                    volume: parseFloat(item.volumen)
+                }));
 
-        // Verificar si data2 es un array, si no, convertirlo en uno
-        if (!Array.isArray(data2)) {
-            console.warn('data2 no es un array. Convertir a array vacío.');
-            data2 = [data2]; // Envolver data2 en un array si es un objeto único
-        }
+            const formattedData2 = data2.filter(item => item.fecha && item.apertura && item.maximo && item.minimo && item.cierre && item.volumen)
+                .map(item => ({
+                    time: item.fecha,
+                    open: parseFloat(item.apertura),
+                    high: parseFloat(item.maximo),
+                    low: parseFloat(item.minimo),
+                    close: parseFloat(item.cierre),
+                    volume: parseFloat(item.volumen)
+                }));
 
-        // Filtrar y formatear los datos de data2 (ej. AL30D)
-        const formattedData2 = data2.filter(item => {
-            const hasAllFields = item.fecha && item.apertura && item.maximo && item.minimo && item.cierre && item.volumen;
-            if (!hasAllFields) {
-                console.warn('Fila con datos faltantes en symbol2:', item);
-                return false;
-            }
-        
-            const volume = parseFloat(item.volumen);
-            if (isNaN(volume) || volume <= 0) {
-                console.warn('Fila con volumen inválido en symbol2:', item);
-                return false;
-            }
-        
-            return true;
-        }).map(item => ({
-            time: item.fecha,
-            open: parseFloat(item.apertura),
-            high: parseFloat(item.maximo),
-            low: parseFloat(item.minimo),
-            close: parseFloat(item.cierre),
-            volume: parseFloat(item.volumen)
-        }));
+    
+            console.log(`Formatted Data1:`, formattedData1); // Verificar datos formateados de simbolo 1
+            console.log(`Formatted Data2:`, formattedData2); // Verificar datos formateados de simbolo 2
         
         if (formattedData2.length === 0) {
             console.error('formattedData2 no contiene datos válidos después del filtrado.');
