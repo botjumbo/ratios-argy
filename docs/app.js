@@ -461,7 +461,6 @@ chart.subscribeCrosshairMove(function(param) {
     const previousClosePrice = getPreviousClosePrice(currentDate);
     const previousClosePriceRatio = getPreviousRatioClosePrice(currentDate);
 
-    console.log(previousClosePriceRatio);
     // Obtener los datos de las series
     const price = isLineChart ? param.seriesData.get(lineSeries) : param.seriesData.get(candleSeries);
     const volumeData = param.seriesData.get(volumeSeries);
@@ -625,14 +624,12 @@ chart.subscribeClick(function(param) {
         const currentPrice = candleSeries.coordinateToPrice(param.point.y);
         initialPrice = currentPrice; // Guardar el precio inicial
         isMeasuring = true; // Comenzar la medición
-        console.log(`Precio inicial capturado: ${initialPrice}`);
         tooltip.style.display = 'block'; // Mostrar el tooltip
     } else if (isMeasuring) {
         // Si ya estamos midiendo y se hace clic, ocultar el tooltip y detener la medición
         isMeasuring = false;
         initialPrice = null; // Reiniciar el precio inicial
         tooltip.style.display = 'none'; // Ocultar el tooltip
-        console.log('Medición finalizada');
     }
 });
 
