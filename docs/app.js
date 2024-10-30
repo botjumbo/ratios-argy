@@ -201,11 +201,10 @@ async function fetchAndUpdateChartData(symbol) {
         console.error(`Error al cargar los datos del símbolo: ${symbol}.`, error);
     }
 }
-
 async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
     const url1 = `/ratios-argy/${symbol1}`;
     const url2 = `/ratios-argy/${symbol2}`;
-    
+
     try {
         // Cargar ambos archivos CSV de manera asíncrona
         const [csvText1, csvText2] = await Promise.all([
@@ -226,15 +225,9 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
         // Procesar los CSV usando PapaParse
         const data1 = Papa.parse(csvText1, { header: true, skipEmptyLines: true }).data;
         const data2 = Papa.parse(csvText2, { header: true, skipEmptyLines: true }).data;
+
         console.log(`Data1:`, data1); // Verificar datos de simbolo 1
         console.log(`Data2:`, data2); // Verificar datos de simbolo 2
-
-
-        // Verificar que data1 es un array
-        if (!Array.isArray(data1)) {
-            console.warn('data1 no es un array. Convertir a array vacío.');
-            data1 = [];
-        }
 
         if (Array.isArray(data1) && Array.isArray(data2)) {
             const formattedData1 = data1.filter(item => item.fecha && item.apertura && item.maximo && item.minimo && item.cierre && item.volumen)
@@ -257,96 +250,42 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
                     volume: parseFloat(item.volumen)
                 }));
 
-    
             console.log(`Formatted Data1:`, formattedData1); // Verificar datos formateados de simbolo 1
             console.log(`Formatted Data2:`, formattedData2); // Verificar datos formateados de simbolo 2
-        
-        if (formattedData2.length === 0) {
-            console.error('formattedData2 no contiene datos válidos después del filtrado.');
-        } else {
-            console.log('Datos formateados para symbol2:', formattedData2);
-        }
 
-        // Crear la serie de datos para el ratio
-        const ratioData = formattedData1.map(item1 => {
-            const item2 = formattedData2.find(item2 => item2.time === item1.time); // Buscar la fecha coincidente
-            if (item2) {
-                const ratioOpen = item1.open / item2.open;
-                const ratioHigh = item1.high / item2.high;
-                let ratioLow = item1.low / item2.low;
-                const ratioClose = item1.close / item2.close;
-
-                // Condición adicional
-                if (ratioClose < ratioLow) {
-                    ratioLow = ratioClose;
+            // Crear la serie de datos para el ratio
+            ratioData = formattedData1.map(item1 => {
+                const item2 = formattedData2.find(item2 => item2.time === item1.time);
+                if (item2) {
+                    const ratioOpen = item1.open / item2.open;
+                    const ratioHigh = item1.high / item2.high;
+                    let ratioLow = item1.low / item2.low;
+                    const ratioClose = item1.close / item2.close;
+                    if (ratioClose < ratioLow) {
+                        ratioLow = ratioClose;
+                    }
+                    return {
+                        time: item1.time,
+                        open: ratioOpen,
+                        high: ratioHigh,
+                        low: ratioLow,
+                        close: ratioClose
+                    };
+                } else {
+                    console.warn(`No hay coincidencia de fecha para: ${item1.time}`);
                 }
+                return null; 
+            }).filter(Boolean);
 
-                return {
-                    time: item1.time,
-                    open: ratioOpen,
-                    high: ratioHigh,
-                    low: ratioLow,
-                    close: ratioClose
-                };
+            if (ratioData && ratioData.length > 0) {
+                // Continuar con la lógica de actualización de gráficos...
+            } else {
+                console.error('ratioData está vacío o no tiene datos válidos.');
             }
-            return null; // Si no hay coincidencia, devolver null
-        }).filter(Boolean); // Filtrar los valores nulos
-        
-        // Actualizar datos del gráfico
-        if (!isLineChart) {
-            candleSeries.setData(ratioData);
-            lineSeries.setData([]);
+
         } else {
-            const lineDataRatio = convertCandleToLineSeries(ratioData);
-            lineSeries.setData(lineDataRatio);
-            candleSeries.setData([]);
+            console.error('data1 o data2 no son arreglos', { data1, data2 });
         }
-        
-        // Crear una nueva serie para los volúmenes sumados
-        const combinedVolumeData = formattedData1.map(item1 => {
-            const item2 = formattedData2.find(item2 => item2.time === item1.time);
-            if (item2) {
-                const combinedVolume = item1.volume + item2.volume;
-                const openRatio = item1.open / item2.open;
-                const closeRatio = item1.close / item2.close;
-                const color = closeRatio >= openRatio ? '#4fff00' : '#ff4976';
-
-                return {
-                    time: item1.time,
-                    value: combinedVolume,
-                    color: color
-                };
-            }
-            return null; // Ignorar si no hay coincidencia
-        }).filter(Boolean);
-
-        volumeSeries.setData(combinedVolumeData);
-
-        // Calcular las bandas de Bollinger
-        if (ratioData && ratioData.length > 0) {
-            try {
-                const { bands, movingAverage } = calculateBollingerBands(
-                    ratioData.map(result => ({
-                        fecha: result.time,
-                        cierre: result.close
-                    }))
-                );
-
-                // Actualizar las bandas globalmente
-                upperBandData = bands.map(b => ({ time: b.time, value: b.upper }));
-                lowerBandData = bands.map(b => ({ time: b.time, value: b.lower }));
-                movingAverageData = movingAverage;
-
-            } catch (error) {
-                console.error('Error al calcular las bandas de Bollinger:', error);
-            }
-        } else {
-            console.error('ratioData está vacío o no tiene datos válidos.');
-        }
-
-        // Mostrar u ocultar las bandas de Bollinger
-        updateBollingerBandsVisibility();
-
     } catch (error) {
         console.error('Error al cargar los datos del símbolo:', error);
     }
