@@ -14,8 +14,8 @@ const chart = LightweightCharts.createChart(document.getElementById('chart'), {
 
 // Definición de series
 const candleSeries = chart.addCandlestickSeries({
-    upColor: '#4fff00',
-    downColor: '#ff4976',
+    upColor: '#1e8c6e',
+    downColor: '#d65a5a',
     borderVisible: false,
     wickUpColor: '#4fff00',
     wickDownColor: '#ff4976',
@@ -167,7 +167,7 @@ function loadCSV(filePath) {
         const volumeData = rows.map(item => ({
             time: item.fecha,
             value: item.volumen,
-            color: item.cierre >= item.apertura ? '#4fff00' : '#ff4976',
+            color: item.cierre >= item.apertura ? '#1e8c6e' : '#d65a5a',
         }));
         volumeSeries.setData(volumeData);
         // Verificar datos antes de calcular las bandas de Bollinger
