@@ -152,10 +152,9 @@ function loadCSV(filePath) {
             const date = item.fecha;
             const closePrice = item.cierre;
             dailyClosePrices[date] = closePrice;
-            console.log(date);
-            console.log(closePrice);
-        });
         
+        });
+        console.log(formattedData);
         // Actualizar gráficos
         if (!isLineChart) {
             candleSeries.setData(formattedData);
