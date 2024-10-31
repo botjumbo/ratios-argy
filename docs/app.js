@@ -119,10 +119,10 @@ function loadCSV(filePath) {
             return { 
                 especie, 
                 fecha, 
-                apertura: parseFloat(parsedApertura.toFixed(2)), 
-                maximo: parseFloat(parsedMaximo.toFixed(2)), 
-                minimo: parseFloat(parsedMinimo.toFixed(2)), 
-                cierre: parseFloat(parsedCierre.toFixed(2)), 
+                apertura: parseFloat(parsedApertura.toFixed(3)), 
+                maximo: parseFloat(parsedMaximo.toFixed(3)), 
+                minimo: parseFloat(parsedMinimo.toFixed(3)), 
+                cierre: parseFloat(parsedCierre.toFixed(3)), 
                 volumen: parsedVolumen,
             };
         }).filter(item => item !== null);
@@ -553,7 +553,7 @@ chart.subscribeCrosshairMove(function(param) {
             let PercentageDifference = null;
             let LegendContent = `
             <strong>Fecha:</strong> ${formatDate(param.time)} <br>
-            <strong>Cierre:</strong> ${price ? price.value.toFixed(2) : 'N/A'} <br>  <!-- Aquí accedes a price.close -->
+            <strong>Cierre:</strong> ${price ? price.value.toFixed(3) : 'N/A'} <br>  <!-- Aquí accedes a price.close -->
             <strong>Volumen:</strong> ${(totalVolume / 1000000).toFixed(2)}M <br>
             `;
     
@@ -576,10 +576,10 @@ chart.subscribeCrosshairMove(function(param) {
             // Si no es un gráfico de línea del ratio, mostrar datos del precio del ratio(gráfico de velas)
             LegendContent = `
                 <strong>Fecha:</strong> ${formatDate(param.time)} <br>
-                <strong>Apertura:</strong> ${price ? price.open.toFixed(2) : 'N/A'} <br>
-                <strong>Máximo:</strong> ${price ? price.high.toFixed(2) : 'N/A'} <br>
-                <strong>Mínimo:</strong> ${price ? price.low.toFixed(2) : 'N/A'} <br>
-                <strong>Cierre:</strong> ${price ? price.close.toFixed(2) : 'N/A'} <br>
+                <strong>Apertura:</strong> ${price ? price.open.toFixed(3) : 'N/A'} <br>
+                <strong>Máximo:</strong> ${price ? price.high.toFixed(3) : 'N/A'} <br>
+                <strong>Mínimo:</strong> ${price ? price.low.toFixed(3) : 'N/A'} <br>
+                <strong>Cierre:</strong> ${price ? price.close.toFixed(3) : 'N/A'} <br>
                 <strong>Volumen:</strong> ${volumeData ? formatVolume(volumeData.value) : 'N/A'} <br>
             `;
             const currentPrice = price.close; // Cambiado de price.value a price.close
