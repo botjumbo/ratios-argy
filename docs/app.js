@@ -17,8 +17,8 @@ const candleSeries = chart.addCandlestickSeries({
     upColor: '#1e8c6e',
     downColor: '#d65a5a',
     borderVisible: false,
-    wickUpColor: '#4fff00',
-    wickDownColor: '#ff4976',
+    wickUpColor: '#1e8c6e',
+    wickDownColor: '#d65a5a',
     priceFormat: {
         type: 'price',   // Tipo de formato (para el precio)
         precision: 3,    // 3 decimales
@@ -311,7 +311,7 @@ async function fetchAndUpdateChartDataRatio(symbol1, symbol2) {
                     const closeRatio = item1.close / item2.close;
 
                     
-                    const color = closeRatio >= openRatio ? '#4fff00' : '#ff4976'; // Verde si el ratio es alcista, rojo si es bajista
+                    const color = closeRatio >= openRatio ? '#1e8c6e' : '#d65a5a'; // Verde si el ratio es alcista, rojo si es bajista
 
                     return {
                         time: item1.time,
