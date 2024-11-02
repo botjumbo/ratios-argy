@@ -38,8 +38,8 @@ const volumeSeries = chart.addHistogramSeries({
         type: 'volume',
     },
     priceScaleId: '', // set as an overlay by setting a blank priceScaleId
-    crossHairMarkerVisible: false, // desactivar la línea punteada del cursor
-  
+    overlay: true,     // evita mostrar la línea de volumen en la escala de precios
+
 });
 
 volumeSeries.priceScale().applyOptions({
