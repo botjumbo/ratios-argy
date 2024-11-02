@@ -38,7 +38,6 @@ const volumeSeries = chart.addHistogramSeries({
         type: 'volume',
     },
     priceScaleId: '', // set as an overlay by setting a blank priceScaleId
-    overlay: true,     // evita mostrar la línea de volumen en la escala de precios
 
 });
 
