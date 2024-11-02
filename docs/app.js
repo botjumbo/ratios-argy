@@ -38,7 +38,7 @@ const volumeSeries = chart.addHistogramSeries({
         type: 'volume',
     },
     priceScaleId: '', // set as an overlay by setting a blank priceScaleId
-    // set the positioning of the volume series
+    crossHairMarkerVisible: false, // desactivar la línea punteada del cursor
   
 });
 
